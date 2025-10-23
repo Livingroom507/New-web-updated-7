@@ -1,0 +1,10 @@
+{
+  "watch": [
+    "src/**/*.ts",
+    "public/**/*.html",
+    "public/**/*.css",
+    "public/**/*.js"
+  ],
+  "ext": "ts,html,css,js",
+  "exec": "ts-node src/index.ts"
+}

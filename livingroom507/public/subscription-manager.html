@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscription Manager | Livingroom507</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <h1>Livingroom507 Subscription Manager</h1>
+  </header>
+
+  <main class="content">
+    <section id="subscription-status" class="card">
+      <h2>Your Subscription</h2>
+      <div id="subscription-info">Loading your plan...</div>
+    </section>
+
+    <section id="rewards" class="card">
+      <h2>Compounding Rewards</h2>
+      <div id="reward-info">Loading rewards...</div>
+    </section>
+
+    <section id="affiliate-earnings" class="card">
+      <h2>Affiliate Earnings</h2>
+      <div id="affiliate-info">Loading...</div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© 2025 Livingroom507 | All rights reserved</p>
+  </footer>
+
+  <script>
+    async function loadSubscriptions() {
+      const res = await fetch('/api/subscriptions');
+      const data = await res.json();
+      const subsDiv = document.getElementById('subscription-info');
+      if (!data.length) {
+        subsDiv.textContent = "No active subscriptions found.";
+        return;
+      }
+
+      let html = '';
+      data.forEach(s => {
+        html += `
+          <div class="subscription-card">
+            <p><strong>Plan:</strong> ${s.plan_name}</p>
+            <p><strong>Fee:</strong> $${s.monthly_fee.toFixed(2)}</p>
+            <p><strong>Rate:</strong> ${s.compounding_rate}%</p>
+            <p><strong>Started:</strong> ${s.start_date}</p>
+          </div>
+        `;
+      });
+      subsDiv.innerHTML = html;
+    }
+
+    async function loadRewards() {
+      const res = await fetch('/api/compound');
+      const data = await res.json();
+      document.getElementById('reward-info').textContent = 
+        `$${data.compounded.toFixed(2)} total compounded rewards`;
+    }
+
+    async function loadAffiliate() {
+      const res = await fetch('/api/affiliate');
+      const data = await res.json();
+      document.getElementById('affiliate-info').textContent =
+        `Clients referred: ${data.customers_referred} | Total earnings: $${data.total_earnings.toFixed(2)}`;
+    }
+
+    loadSubscriptions();
+    loadRewards();
+    loadAffiliate();
+  </script>
+</body>
+</html>

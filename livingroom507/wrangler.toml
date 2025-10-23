@@ -1,0 +1,8 @@
+name = "livingroom507"
+main = "functions/index.js"
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "livingroom507-db"
+database_id = "your-cloudflare-d1-id"
