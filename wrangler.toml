@@ -1,4 +1,5 @@
 name = "livingroom507newupdate-7"
+main = "functions/index.js"
 compatibility_date = "2025-01-01"
 
 [site]
