@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Affiliate Dashboard | Living Room 507</title>
+  <link rel="stylesheet" href="style-dashboard.css">
+</head>
+<body>
+  <header class="top-nav">
+    <div>Living Room 507 MOC Affiliate Dashboard</div>
+    <div><img src="avatar.png" alt="User avatar"></div>
+  </header>
+
+  <aside class="sidebar">
+    <nav>
+      <ul>
+        <li><a href="#overview">Dashboard</a></li>
+        <li><a href="#plan">My Plan</a></li>
+        <li><a href="#referrals">Referrals</a></li>
+        <li><a href="#earnings">Earnings</a></li>
+        <li><a href="#training">Training Hub</a></li>
+        <li><a href="#settings">Settings</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <!-- Overview Section -->
+    <section id="overview" class="card">
+      <h2>Overview</h2>
+      <div class="kpi-cards">
+        <div class="kpi-card">
+          <div class="label">Total Referrals</div>
+          <div class="value" id="kpi-referrals">--</div>
+        </div>
+        <div class="kpi-card">
+          <div class="label">Current Plan</div>
+          <div class="value" id="kpi-plan">--</div>
+        </div>
+        <div class="kpi-card">
+          <div class="label">Monthly Earnings</div>
+          <div class="value" id="kpi-earnings">--</div>
+        </div>
+        <div class="kpi-card">
+          <div class="label">Compounded Rewards</div>
+          <div class="value" id="kpi-rewards">--</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- My Plan Section -->
+    <section id="plan" class="card">
+      <h2>My Plan Details</h2>
+      <div id="plan-details">Loading plan…</div>
+    </section>
+
+    <!-- Referrals Section -->
+    <section id="referrals" class="card">
+      <h2>My Referrals</h2>
+      <div class="table-responsive">
+        <table class="table" id="referrals-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Referred User</th>
+              <th>Plan Chosen</th>
+              <th>Commission Earned</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Earnings Section -->
+    <section id="earnings" class="card">
+      <h2>My Earnings</h2>
+      <div class="table-responsive">
+        <table class="table" id="earnings-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Type</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Training Hub Section -->
+    <section id="training" class="card">
+      <h2>Training Hub</h2>
+      <p>Check out the latest videos and resources to boost your referrals.</p>
+      <ul id="training-list">
+        <!-- links loaded dynamically -->
+      </ul>
+    </section>
+  </main>
+
+  <script src="affiliate-dashboard.js"></script>
+</body>
+</html>

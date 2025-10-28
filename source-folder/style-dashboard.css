@@ -1,0 +1,163 @@
+:root {
+  --brand-bg: #FFEB3B; /* yellow */
+  --text-gradient: linear-gradient(45deg, #FF5722, #FF9800); /* red-to-orange */
+  --card-bg: #ffffff;
+  --card-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  --btn-bg: #FF5722;
+  --btn-hover: #E64A19;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--brand-bg);
+  color: #333;
+}
+
+element.style {
+    width: 40px;
+    border-radius: 50%;
+}
+
+h1 {
+  text-align: center;
+  color: #111;
+}
+
+.notification {
+  background: #e0f7fa;
+  border-left: 4px solid #0288d1;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+#plans-grid .plan-card {
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#plans-grid .plan-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.plan-card .header {
+  padding: 2rem;
+  text-align: center;
+}
+
+.plan-card .header h2 {
+  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+}
+
+.plan-card .header .monthly {
+  font-size: 3.5rem;
+  font-weight: 700;
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.75rem;
+}
+
+.plan-card .content {
+  padding: 0 2rem 2rem 2rem;
+  flex-grow: 1;
+}
+
+.plan-card .content ul {
+  list-style: disc;
+  list-style-position: inside;
+  margin-top: 1rem;
+  color: #555;
+}
+
+.plan-card .footer {
+  padding: 1.5rem 2rem;
+  background: #f9f9f9;
+  text-align: center;
+}
+
+.plan-card .footer button {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--btn-bg);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.plan-card .footer button:hover {
+  background: var(--btn-hover);
+}
+
+/* Add after existing styles */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+}
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 250px;
+  background: var(--card-bg);
+  padding: 6rem 1rem 2rem;
+  box-shadow: var(--card-shadow);
+}
+
+.main-content {
+  margin-left: 250px;
+  padding: 2rem;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--card-shadow);
+}
+
+.kpi-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.kpi-card {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
