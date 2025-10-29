@@ -43,4 +43,15 @@ async function initDashboard() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', initDashboard);
+document.addEventListener('DOMContentLoaded', initDashboard);// c:\...\public\affiliate-dashboard.js
+async function fetchJSON(url) {
+  const res = await fetch(url); // This is a real API call
+  if (!res.ok) throw new Error('Network error');
+  return await res.json();
+}
+
+async function loadOverview() {
+  // This function expects a live '/api/affiliate/overview' endpoint
+  const data = await fetchJSON('/api/affiliate/overview'); 
+  // ...
+}
