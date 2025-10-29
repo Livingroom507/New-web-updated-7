@@ -1,7 +1,7 @@
 /* Dashboard Specific Styles */
 
-/* General dashboard layout */
-body {
+/* General dashboard layout - now scoped to .dashboard-layout */
+.dashboard-layout {
     display: flex; /* Use flexbox for main layout */
     min-height: 100vh;
     flex-direction: row; /* Default to row for desktop */
@@ -208,7 +208,7 @@ body {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    body {
+    .dashboard-layout {
         flex-direction: column; /* Stack elements vertically on small screens */
     }
     .top-nav {
