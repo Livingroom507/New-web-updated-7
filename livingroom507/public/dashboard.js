@@ -5,27 +5,36 @@ async function loadPlans() {
     try {
         // Using mock data instead of a real API call
         const plans = MOCK_API.plans; // MOCK_API is loaded from mock-api.js
-        plansGrid.innerHTML = plans.map(plan => `
-            <div class="card plan-card">
-                <h3>${plan.name}</h3>
-                <p>${plan.description}</p>
-                <p><strong>Monthly Cost:</strong> $${plan.monthly_cost.toFixed(2)}</p>
-                <p><strong>Yearly Capital:</strong> $${plan.yearly_capital.toFixed(2)}</p>
-                <h4>Benefits:</h4>
-                <ul>
-                    ${plan.benefits.map(benefit => `<li>${benefit}</li>`).join('')}
-                </ul>
-                <button class="btn select-plan-btn" data-plan-name="${plan.plan_name}">Select Plan</button>
+        plansGrid.innerHTML = plans
+            .map(plan => `
+            <div class="new-plan-card">
+                <div class="new-plan-card-header">
+                    <h2 class="plan-name">${plan.name}</h2>
+                    <p class="plan-price">${plan.monthlyPrice}<span class="price-per-month">/month</span></p>
+                    <p class="plan-earnings">Network Earnings: <span class="earnings-amount">${plan.networkEarnings}</span></p>
+                </div>
+                <div class="new-plan-card-body">
+                    <ul class="plan-features">
+                        ${plan.description.map(item => `<li class="feature-item">${item}</li>`).join('')}
+                    </ul>
+                </div>
+                <div class="new-plan-card-footer">
+                    <button class="btn-choose-plan" data-plan-name="${plan.name}">
+                        Choose ${plan.name}
+                    </button>
+                </div>
             </div>
         `).join('');
 
         // Add event listeners to the new buttons
-        document.querySelectorAll('.select-plan-btn').forEach(button => {
+        document.querySelectorAll('.btn-choose-plan').forEach(button => {
             button.addEventListener('click', (event) => {
                 const planName = event.target.getAttribute('data-plan-name');
-                const selectedPlan = MOCK_API.plans.find(p => p.plan_name === planName);
+                const selectedPlan = MOCK_API.plans.find(p => p.name === planName);
                 // Store the selected plan in localStorage to access it on the checkout page
-                localStorage.setItem('selectedPlan', JSON.stringify(selectedPlan));
+                // We need to rename plan_name to name for checkout.js to work
+                const checkoutPlan = { ...selectedPlan, plan_name: selectedPlan.name };
+                localStorage.setItem('selectedPlan', JSON.stringify(checkoutPlan));
                 // Redirect to the checkout page
                 window.location.href = 'checkout.html';
             });
