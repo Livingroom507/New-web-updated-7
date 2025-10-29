@@ -156,7 +156,15 @@ body {
   margin-top: 1rem;
 }
 
-/* Plans Page Specific Styles */
+/* --- Plans Page Specific Styles --- */
+
+#plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* This creates the responsive grid */
+    gap: 2rem;
+    padding: 20px;
+}
+
 .plan-card {
     /* Inherits .card styles from style.css */
     display: flex;
