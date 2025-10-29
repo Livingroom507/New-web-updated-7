@@ -159,6 +159,15 @@
     <section id="settings" class="card">
       <h2>Account Settings</h2>
       <form id="account-settings-form">
+        <div class="avatar-upload-container">
+          <img src="avatar.png" alt="Current Avatar" class="avatar-preview" id="avatar-preview">
+          <div>
+            <label for="setting-avatar">Update Profile Picture</label>
+            <input type="file" id="setting-avatar" accept="image/*">
+            <small>Recommended: Square image (e.g., 200x200px)</small>
+          </div>
+        </div>
+        <hr class="form-divider">
         <div class="form-group">
           <label for="setting-name">Full Name</label>
           <input type="text" id="setting-name" value="Affiliate Name" placeholder="Enter your full name">
@@ -166,6 +175,15 @@
         <div class="form-group">
           <label for="setting-email">Email Address</label>
           <input type="email" id="setting-email" value="affiliate@example.com" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+          <label for="setting-bio">Public Bio</label>
+          <textarea id="setting-bio" rows="4" placeholder="Tell us a little about yourself..."></textarea>
+        </div>
+        <hr class="form-divider">
+        <div class="form-group">
+          <label for="setting-paypal">PayPal Email (for Payouts)</label>
+          <input type="email" id="setting-paypal" placeholder="Enter your PayPal email">
         </div>
         <hr class="form-divider">
         <div class="form-group">

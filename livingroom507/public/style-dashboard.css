@@ -323,6 +323,38 @@
     margin: 25px 0;
 }
 
+/* Avatar Upload Section in Settings */
+.avatar-upload-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.avatar-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--light-gray);
+}
+
+.avatar-upload-container input[type="file"] {
+    margin-top: 5px;
+}
+
+.avatar-upload-container small {
+    display: block;
+    font-size: 0.8em;
+    color: #7f8c8d;
+    margin-top: 5px;
+}
+
+.form-group textarea {
+    /* Inherits most styles from input, but we can add specifics */
+    resize: vertical; /* Allow vertical resizing */
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .dashboard-layout {

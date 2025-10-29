@@ -72,6 +72,24 @@ function setupDropdown() {
     });
 }
 
+function setupSettingsForm() {
+    const avatarInput = document.getElementById('setting-avatar');
+    const avatarPreview = document.getElementById('avatar-preview');
+
+    if (!avatarInput || !avatarPreview) return;
+
+    avatarInput.addEventListener('change', () => {
+        const file = avatarInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                avatarPreview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
 async function initDashboard() {
   try {
     await loadOverview();
@@ -89,6 +107,7 @@ async function initDashboard() {
 document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
     setupDropdown();
+    setupSettingsForm();
 });
 async function fetchJSON(url) {
   const res = await fetch(url); // This is a real API call
