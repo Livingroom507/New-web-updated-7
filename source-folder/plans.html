@@ -4,15 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Subscription Plans | Living Room 507</title>
+  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="style-dashboard.css">
 </head>
 <body>
+  <a href="affiliate-dashboard.html" class="back-link">&larr; Back to Dashboard</a>
   <h1>Our Subscription Plans</h1>
 
   <div class="notification-box">
     <h2>Commission Breakdown & Network Goal</h2>
     <p>
-      The network goal or full network total (Paid subscriptions) is <span id="network-goal" class="font-bold text-orange-700">--</span>.
+      The network goal or full network total (Paid subscriptions) is <span id="network-goal">--</span>.
       Once this count is met, the system will reset and recycle the campaign (Release Payment).
     </p>
   </div>
@@ -21,6 +23,7 @@
     <!-- Plan cards will be injected here via JS -->
   </div>
 
+  <script src="mock-api.js"></script>
   <script src="dashboard.js"></script>
 </body>
 </html>

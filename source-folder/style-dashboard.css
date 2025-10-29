@@ -90,6 +90,10 @@
     color: white;
 }
 
+.sidebar nav ul li a .fas {
+    margin-right: 10px; /* Add space between icon and text */
+}
+
 .main-content {
     margin-left: 200px; /* Space for sidebar */
     padding: 80px 20px 20px 20px; /* Space for top-nav and general padding */

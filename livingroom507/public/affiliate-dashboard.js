@@ -30,10 +30,30 @@ async function loadTable(url, tableId, columns) {
   }).join('');
 }
 
+async function loadPlanFinancials() {
+  // In the future, this would be: const plans = await fetchJSON('/api/plans');
+  // For now, we use the mock data loaded in plans.html
+  const plans = MOCK_API.plans;
+  const tbody = document.querySelector('#plans-table tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = plans.map(p => `
+    <tr>
+      <td>${p.role}</td>
+      <td>${p.plan_name}</td>
+      <td>$${p.monthly_cost.toFixed(2)}</td>
+      <td>$${p.break_even_flow.toFixed(2)}</td>
+      <td>$${p.network_earnings.toFixed(2)}</td>
+      <td>$${p.yearly_capital.toFixed(2)}</td>
+    </tr>
+  `).join('');
+}
+
 async function initDashboard() {
   try {
     await loadOverview();
     await loadPlanDetails();
+    await loadPlanFinancials();
     await loadTable('/api/affiliate/referrals', 'referrals-table', 
       ['date','referred_user','plan_chosen','commission','status']);
     await loadTable('/api/affiliate/earnings', 'earnings-table', 
@@ -43,7 +63,7 @@ async function initDashboard() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', initDashboard);// c:\...\public\affiliate-dashboard.js
+document.addEventListener('DOMContentLoaded', initDashboard);
 async function fetchJSON(url) {
   const res = await fetch(url); // This is a real API call
   if (!res.ok) throw new Error('Network error');

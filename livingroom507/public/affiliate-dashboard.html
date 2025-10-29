@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Affiliate Dashboard | Living Room 507</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Adding Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="style-dashboard.css">
 </head>
 <body class="dashboard-layout">
@@ -22,7 +24,9 @@
   <aside class="sidebar">
     <nav>
       <ul>
+        <li><a href="index.html"><i class="fas fa-home"></i> Back to Home</a></li>
         <li><a href="#overview">Dashboard</a></li>
+        <li><a href="#plan-financials">Plan Financials</a></li>
         <li><a href="#plan">My Plan</a></li>
         <li><a href="#referrals">Referrals</a></li>
         <li><a href="#earnings">Earnings</a></li>
@@ -61,6 +65,38 @@
       <h2>My Plan Details</h2>
       <div id="plan-details">Loading plan…</div>
       <a href="plans.html" class="btn plan-change-btn">View/Change Plan</a>
+    </section>
+
+    <!-- Graph / Trend Section -->
+    <section id="trends" class="card">
+        <h2>Performance Trends</h2>
+        <div class="chart-container">
+            <!-- A canvas element for a chart library like Chart.js -->
+            <canvas id="performance-chart"></canvas>
+        </div>
+    </section>
+
+    <!-- Plan Financials Section (Training Lab) -->
+    <section id="plan-financials" class="card">
+      <h2>Membership Plans & Roles (Training Lab)</h2>
+      <p>Explore the available plans and their financial structures within the Livingroom507 community.</p>
+      <div class="table-responsive">
+        <table id="plans-table" class="table">
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Plan</th>
+              <th>Monthly Cost</th>
+              <th>Break-Even Flow</th>
+              <th>Network Earnings</th>
+              <th>Yearly Capital</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Populated by affiliate-dashboard.js -->
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <!-- Referrals Section -->
@@ -107,13 +143,18 @@
     <!-- Training Hub Section -->
     <section id="training" class="card">
       <h2>Training Hub</h2>
-      <p>Check out the latest videos and resources to boost your referrals.</p>
-      <ul id="training-list">
-        <!-- links loaded dynamically -->
-      </ul>
+      <p>Check out the latest videos and resources to boost your referrals. (Leaderboard coming soon!)</p>
+      <div class="training-grid" id="training-list">
+        <!-- Training items will be populated by JS -->
+      </div>
     </section>
   </main>
 
+  <!--
+    The mock-api.js file is needed for the affiliate dashboard to load its data.
+    It's also used by plans.html.
+  -->
+  <script src="mock-api.js"></script>
   <script src="affiliate-dashboard.js"></script>
 </body>
 </html>
