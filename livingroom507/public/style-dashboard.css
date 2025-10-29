@@ -313,8 +313,9 @@
 
 .plan-features {
     list-style-type: disc;
-    list-style-position: inside;
+    list-style-position: outside; /* The Fix: Move bullets outside the text flow */
     color: #374151; /* text-gray-700 */
+    padding-left: 1.25rem; /* The Fix: Add space for the bullets */
 }
 
 .feature-item {
