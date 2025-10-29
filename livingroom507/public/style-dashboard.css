@@ -170,6 +170,8 @@ body {
 .plan-card h3 {
     color: var(--primary-color);
     margin-bottom: 15px;
+    font-size: 1.8em;
+    font-weight: bold;
 }
 
 .plan-card ul {
@@ -177,6 +179,23 @@ body {
     padding: 0;
     margin: 15px 0;
     text-align: left;
+}
+
+.plan-card ul li {
+    margin-bottom: 5px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.plan-card ul li::before {
+    content: '\2713'; /* Checkmark character */
+    position: absolute;
+    left: 0;
+    color: var(--accent-green);
+    font-weight: bold;
+}
+.plan-card .btn {
+    width: 100%; /* Make button full width of card */
 }
 
 /* Responsive adjustments */
@@ -212,5 +231,12 @@ body {
     .main-content {
         margin-left: 0;
         padding-top: 20px; /* Adjust padding as top-nav is no longer fixed at top */
+    }
+}
+
+@media (max-width: 600px) {
+    #plans-grid {
+        grid-template-columns: 1fr; /* Single column on very small screens */
+        padding: 10px;
     }
 }
