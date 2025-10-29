@@ -15,6 +15,8 @@ async function loadPlans() {
 
     try {
         const plans = await fetchJSON('/api/plans');
+        // Using mock data instead of a real API call
+        const plans = MOCK_API.plans;
         plansGrid.innerHTML = plans.map(plan => `
             <div class="card plan-card">
                 <h3>${plan.name}</h3>
@@ -40,6 +42,8 @@ async function loadNetworkGoal() {
 
     try {
         const data = await fetchJSON('/api/network-goal');
+        // Using mock data instead of a real API call
+        const data = MOCK_API.networkGoal;
         networkGoalSpan.textContent = `${data.current_paid_subscriptions} / ${data.target_paid_subscriptions}`;
     } catch (error) {
         console.error('Error loading network goal:', error);
