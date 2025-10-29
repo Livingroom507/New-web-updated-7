@@ -30,7 +30,7 @@ async function loadNetworkGoal() {
 
     try {
         // Using mock data instead of a real API call
-        const data = MOCK_API.networkGoal; // MOCK_API is loaded from mock-api.js
+        const data = MOCK_API.networkGoal;
         networkGoalSpan.textContent = `${data.current_paid_subscriptions} / ${data.target_paid_subscriptions}`;
     } catch (error) {
         console.error('Error loading network goal:', error);
