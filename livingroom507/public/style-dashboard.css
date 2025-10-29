@@ -278,7 +278,7 @@
 }
 
 .plan-name {
-    font-size: 1.875rem; /* text-3xl */
+    font-size: 1.5rem; /* Reduced from 1.875rem */
     font-weight: 700; /* font-bold */
     color: #111827; /* text-gray-900 */
     margin-bottom: 0.5rem; /* mb-2 */
@@ -286,7 +286,7 @@
 }
 
 .plan-price {
-    font-size: 3rem; /* text-5xl */
+    font-size: 2.5rem; /* Reduced from 3rem */
     font-weight: 800; /* font-extrabold */
     color: #4f46e5; /* text-indigo-600 */
     text-align: center;
@@ -319,8 +319,8 @@
 }
 
 .feature-item {
-    line-height: 1.75; /* leading-relaxed */
-    margin-bottom: 0.5rem; /* space-y-2 */
+    line-height: 1.6; /* Reduced from 1.75 */
+    margin-bottom: 0.4rem; /* Reduced from 0.5rem */
 }
 
 .new-plan-card-footer {
