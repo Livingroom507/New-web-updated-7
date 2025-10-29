@@ -15,9 +15,21 @@ async function loadPlans() {
                 <ul>
                     ${plan.benefits.map(benefit => `<li>${benefit}</li>`).join('')}
                 </ul>
-                <button class="btn">Select Plan</button>
+                <button class="btn select-plan-btn" data-plan-name="${plan.plan_name}">Select Plan</button>
             </div>
         `).join('');
+
+        // Add event listeners to the new buttons
+        document.querySelectorAll('.select-plan-btn').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const planName = event.target.getAttribute('data-plan-name');
+                const selectedPlan = MOCK_API.plans.find(p => p.plan_name === planName);
+                // Store the selected plan in localStorage to access it on the checkout page
+                localStorage.setItem('selectedPlan', JSON.stringify(selectedPlan));
+                // Redirect to the checkout page
+                window.location.href = 'checkout.html';
+            });
+        });
     } catch (error) {
         console.error('Error loading plans:', error);
         plansGrid.innerHTML = '<p>Failed to load subscription plans. Please try again later.</p>';

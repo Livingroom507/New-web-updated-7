@@ -355,6 +355,32 @@
     resize: vertical; /* Allow vertical resizing */
 }
 
+/* Checkout Page Styles */
+.checkout-container {
+    padding: 40px 20px;
+    background-color: var(--background-color);
+    min-height: 100vh;
+}
+
+.checkout-card {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.checkout-card h1 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.payment-note {
+    background-color: #fffbe6;
+    border: 1px solid #ffe58f;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .dashboard-layout {
