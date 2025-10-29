@@ -21,17 +21,41 @@ body {
     z-index: 1000;
 }
 
-.top-nav div {
+.brand-title {
     font-weight: bold;
     color: var(--primary-color); /* From style.css */
 }
 
-.top-nav img {
-    height: 40px;
-    width: 40px;
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Space between description and avatar */
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+
+.user-name {
+    font-weight: bold;
+    font-size: 1em;
+    color: var(--text-color);
+}
+
+.user-role {
+    font-size: 0.8em;
+    color: #7f8c8d; /* Grey text */
+}
+
+.avatar {
+    height: 45px;
+    width: 45px;
     border-radius: 50%;
     object-fit: cover;
     background-color: var(--light-gray); /* Placeholder */
+    border: 2px solid var(--primary-color);
 }
 
 .sidebar {
