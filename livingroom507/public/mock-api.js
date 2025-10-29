@@ -158,5 +158,15 @@ const MOCK_API = {
       { title: "Mastering the Sales Funnel", type: "Video", url: "#" },
       { title: "Advanced SEO for Affiliates", type: "Article", url: "#" },
       { title: "Top 5 Closing Techniques", type: "Video", url: "#" },
-  ]
+  ],
+
+  // Mock data for Empath Closing School
+  empathSchool: {
+    userProgress: { currentModule: 1 },
+    modules: [
+      { id: 1, phase: "Foundation", title: "Sales Psychology", lessons: ["Lesson 1.1", "Lesson 1.2"], isCompleted: false },
+      { id: 2, phase: "Application", title: "The Closing System", lessons: ["Lesson 2.1", "Lesson 2.2"], isCompleted: false },
+      { id: 3, phase: "Scale", title: "Placement & Scaling", lessons: ["Lesson 3.1", "Lesson 3.2"], isCompleted: false }
+    ]
+  }
 };

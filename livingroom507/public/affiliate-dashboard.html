@@ -12,12 +12,18 @@
 <body class="dashboard-layout">
   <header class="top-nav">
     <div class="brand-title">Living Room 507 MOC Affiliate Dashboard</div>
-    <div class="user-profile">
-      <div class="user-info">
-        <span class="user-name">Affiliate Name</span>
-        <span class="user-role">Current Plan</span>
+    <div class="user-profile-container">
+      <div class="user-profile" id="user-profile-trigger">
+        <div class="user-info">
+          <span class="user-name">Affiliate Name</span>
+          <span class="user-role">Current Plan</span>
+        </div>
+        <img src="avatar.png" alt="User avatar" class="avatar">
       </div>
-      <img src="avatar.png" alt="User avatar" class="avatar">
+      <div class="dropdown-menu hidden" id="user-dropdown-menu">
+        <a href="#settings" class="dropdown-item">Account Settings</a>
+        <a href="index.html" class="dropdown-item">Logout</a>
+      </div>
     </div>
   </header>
 
@@ -147,6 +153,31 @@
       <div class="training-grid" id="training-list">
         <!-- Training items will be populated by JS -->
       </div>
+    </section>
+
+    <!-- Settings Section -->
+    <section id="settings" class="card">
+      <h2>Account Settings</h2>
+      <form id="account-settings-form">
+        <div class="form-group">
+          <label for="setting-name">Full Name</label>
+          <input type="text" id="setting-name" value="Affiliate Name" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+          <label for="setting-email">Email Address</label>
+          <input type="email" id="setting-email" value="affiliate@example.com" placeholder="Enter your email">
+        </div>
+        <hr class="form-divider">
+        <div class="form-group">
+          <label for="setting-password">New Password</label>
+          <input type="password" id="setting-password" placeholder="Enter a new password">
+        </div>
+        <div class="form-group">
+          <label for="setting-password-confirm">Confirm New Password</label>
+          <input type="password" id="setting-password-confirm" placeholder="Confirm your new password">
+        </div>
+        <button type="submit" class="btn">Save Changes</button>
+      </form>
     </section>
   </main>
 

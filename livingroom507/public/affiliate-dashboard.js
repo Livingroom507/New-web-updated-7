@@ -49,6 +49,29 @@ async function loadPlanFinancials() {
   `).join('');
 }
 
+function setupDropdown() {
+    const trigger = document.getElementById('user-profile-trigger');
+    const menu = document.getElementById('user-dropdown-menu');
+
+    if (!trigger || !menu) return;
+
+    trigger.addEventListener('click', (event) => {
+        event.stopPropagation(); // Prevents the window click event from firing immediately
+        menu.classList.toggle('hidden');
+    });
+
+    // Close dropdown if clicking outside
+    window.addEventListener('click', () => {
+        if (!menu.classList.contains('hidden')) {
+            menu.classList.add('hidden');
+        }
+    });
+
+    menu.addEventListener('click', (event) => {
+        event.stopPropagation(); // Prevents window click from closing menu if clicking inside
+    });
+}
+
 async function initDashboard() {
   try {
     await loadOverview();
@@ -63,7 +86,10 @@ async function initDashboard() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', initDashboard);
+document.addEventListener('DOMContentLoaded', () => {
+    initDashboard();
+    setupDropdown();
+});
 async function fetchJSON(url) {
   const res = await fetch(url); // This is a real API call
   if (!res.ok) throw new Error('Network error');
