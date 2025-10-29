@@ -130,6 +130,29 @@ body {
   margin-top: 1rem;
 }
 
+/* Plans Page Specific Styles */
+.plan-card {
+    /* Inherits .card styles from style.css */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Push button to bottom */
+    text-align: center;
+    padding: 25px;
+    border: 1px solid var(--light-gray);
+}
+
+.plan-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.plan-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+    text-align: left;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     body {

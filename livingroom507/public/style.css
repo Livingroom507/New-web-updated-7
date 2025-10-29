@@ -42,7 +42,7 @@ nav ul li a:hover { color: var(--secondary-color); /* Hover color from menuBtn *
 .hero { text-align: center; padding: 60px 20px; }
 .hero h1 { font-size: 3em; color: var(--primary-color); }
 .card-container { display: flex; justify-content: center; gap: 30px; margin-top: 40px; flex-wrap: wrap; }
-.card { background: var(--card-bg); border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px; width: 300px; text-align: left; }
+.card { background: var(--card-bg); border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px; text-align: left; }
 .card h3 { color: var(--secondary-color); }
 /* Landing Pages */
 .landing-page { text-align: center; max-width: 800px; margin: 0 auto; }
