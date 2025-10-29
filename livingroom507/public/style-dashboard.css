@@ -1,0 +1,9 @@
+/* Add your existing dashboard styles here */
+
+/*
+  This style was moved from an inline style in affiliate-dashboard.html
+  to keep the structure and styling separate.
+*/
+.plan-change-btn {
+  margin-top: 1rem;
+}
