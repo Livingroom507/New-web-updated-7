@@ -222,6 +222,12 @@
     padding-left: 1.25rem; /* The Fix: Add space for the bullets */
 }
 
+.paypal-btn {
+    background-color: #0070ba; /* PayPal blue */
+    color: white;
+    font-weight: bold;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .dashboard-layout {

@@ -11,7 +11,7 @@ const MOCK_API = {
       networkEarnings: "$1,825.94",
       description: [
         "Subscriptions: $19.50 monthly",
-        "Purchases: $7.21 per each $44.41, totaling in sales ($44.41 = 1 Purchase earning) or purchased items in that summary is counted as | each $44.41 = ex. Total purchase $88.82 in that sale, you will earn $14.42.",
+        "Earnings: $7.21 per each purchase of $44.41, totaling in sales ($44.41 = 1 Purchase earning) or purchased items in that summary is counted as | each $44.41 = ex. Total purchase $88.82 in that sale, you will earn $14.42.",
         "Advocating publicly supporting or recommending a particular cause or policy or services.",
         "Has access to Livingroom507.com",
         "Social Media Livingroom507MOC Joined Members",
@@ -29,7 +29,7 @@ const MOCK_API = {
       networkEarnings: "$2,762.32",
       description: [
         "Subscriptions: $29.50 monthly",
-        "Purchases: $10.91 per each $67.18, totaling in a sale ($67.18 = 1 Purchase earning) or purchased items in that summary is counted as | each $67.18 = ex. Total purchase of $134.36 in that sale, you will earn $21.82.",
+        "Earnings: $10.91 per each purchase of $67.18, totaling in a sale ($67.18 = 1 Purchase earning) or purchased items in that summary is counted as | each $67.18 = ex. Total purchase of $134.36 in that sale, you will earn $21.82.",
         "Advocating publicly supporting or recommending a particular cause or policy, or service.",
         "Has access to Livingroom507.com",
         "Social Media Livingroom507MOC Joined Members",
@@ -48,7 +48,7 @@ const MOCK_API = {
       networkEarnings: "$3,698.70",
       description: [
         "Subscriptions: $39.50 monthly",
-        "Purchases: $14.61 per each $89.95, totaling in sales ($89.95 = 1 Purchase earning) or purchased items in that summary is counted as | each $89.95 = ex. Total purchase of $179.9 in that sale, you will earn $14.61.",
+        "Earnings: $14.61 per each purchase of $89.95, totaling in sales ($89.95 = 1 Purchase earning) or purchased items in that summary is counted as | each $89.95 = ex. Total purchase of $179.9 in that sale, you will earn $14.61.",
         "Advocating publicly supporting or recommending a particular cause or policy or services.",
         "Has access to Livingroom507.com",
         "Social Media Livingroom507MOC Joined Members",
@@ -66,7 +66,7 @@ const MOCK_API = {
       networkEarnings: "$6,601.48",
       description: [
         "Subscriptions: $70.50 monthly",
-        "Purchases: $26.09 per each $160.55, totaling in sales ($160.55 = 1 Purchase earning) or purchased items in that summary is counted as | each $160.55 = ex. Total purchase of $321.10 in that sale, you will earn $52.18.",
+        "Earnings: $26.09 per each purchase of $160.55, totaling in sales ($160.55 = 1 Purchase earning) or purchased items in that summary is counted as | each $160.55 = ex. Total purchase of $321.10 in that sale, you will earn $52.18.",
         "Advocating publicly supporting or recommending a particular cause or policy or services.",
         "Has access to Livingroom507.com",
         "Social Media Livingroom507MOC Joined Members",
@@ -84,7 +84,7 @@ const MOCK_API = {
       networkEarnings: "$9,986.49",
       description: [
         "Subscriptions: $106.65 monthly",
-        "Purchases: $7.21 per each $242.87, totaling in sales ($242.87 = 1 Purchase earning) or purchased items in that summary is counted as | each $242.87 = ex. Total purchase 485.74 in that sale, you will earn $39.47.",
+        "Earnings: $39.47 per each purchase of $242.87, totaling in sales ($242.87 = 1 Purchase earning) or purchased items in that summary is counted as | each $242.87 = ex. Total purchase 485.74 in that sale, you will earn $78.94.",
         "Advocating publicly supporting or recommending a particular cause or policy or services.",
         "Has access to Livingroom507.com",
         "Social Media Livingroom507MOC Joined Members",
@@ -102,7 +102,7 @@ const MOCK_API = {
       networkEarnings: "$13,372.44",
       description: [
         "Subscriptions: $142.81 monthly",
-        "Purchases: $52.85 per each $325.22, totaling in sales ($325.22 = 1 Purchase earning) or purchased items in that summary is counted as | each $52.85 = ex. Total purchase of $105.7 in that sale you will earn $105.7.",
+        "Earnings: $52.85 per each purchase of $325.22, totaling in sales ($325.22 = 1 Purchase earning) or purchased items in that summary is counted as | each $52.85 = ex. Total purchase of $105.7 in that sale you will earn $105.7.",
         "Advocating publicly supporting or recommending a particular cause or policy or service.",
         "Has access to Livingroom507.com",
         "Social Media Livingroom507MOC Joined Members",
@@ -120,7 +120,7 @@ const MOCK_API = {
       networkEarnings: "$18,534.70",
       description: [
         "Subscriptions: $197.94 monthly",
-        "Purchases: $73.25 per each $450.77, totaling in sales ($450.77 = 1 Purchase earning) or purchased items in that summary is counted as | each $450.77 = ex. Total purchase of $901.54 in that sale, you will earn $146.5.",
+        "Earnings: $73.25 per each purchase of $450.77, totaling in sales ($450.77 = 1 Purchase earning) or purchased items in that summary is counted as | each $450.77 = ex. Total purchase of $901.54 in that sale, you will earn $146.5.",
         "Advocating publicly supporting or recommending a particular cause or policy, or services.",
         "Has access to Livingroom507.com",
         "Social Media Livingroom507MOC Joined Members",

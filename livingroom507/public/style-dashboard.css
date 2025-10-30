@@ -475,6 +475,12 @@
     margin-bottom: 20px;
 }
 
+.paypal-btn {
+    background-color: #0070ba; /* PayPal blue */
+    color: white;
+    font-weight: bold;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .dashboard-layout {
