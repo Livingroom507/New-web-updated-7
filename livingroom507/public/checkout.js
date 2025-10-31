@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (selectedPlan) {
         orderSummaryDiv.innerHTML = `
             <h3>Order Summary: ${selectedPlan.name}</h3>
-            <p><strong>Price:</strong> $${selectedPlan.monthly_cost.toFixed(2)} / month</p>
+            <p><strong>Price:</strong> ${selectedPlan.monthlyPrice} / month</p>
             <p><strong>Network Earnings:</strong> ${selectedPlan.networkEarnings}</p>
             <p><strong>Description:</strong></p>
             <ul>
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // In a real application, this would make an AJAX call to your backend (Cloudflare Worker)
         // Your backend would then interact with PayPal's API to create an order/subscription.
         // PayPal would return a redirect URL, and your frontend would navigate to it.
-        alert(`Simulating PayPal checkout for ${selectedPlan.name} ($${selectedPlan.monthly_cost.toFixed(2)}/month).\n\n` +
+        alert(`Simulating PayPal checkout for ${selectedPlan.name} (${selectedPlan.monthlyPrice}/month).\n\n` +
               `In a real scenario, you would now be redirected to PayPal to complete the payment.`);
 
         // For now, we'll just simulate success and redirect after a short delay
