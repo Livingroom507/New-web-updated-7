@@ -138,6 +138,7 @@ const MOCK_API = {
       networkEarnings: "$23,046.17",
       description: [
         "Subscriptions: $246.12 monthly",
+        "Earnings: $90.76 per each purchase of $558.89, totaling in sales ($558.89 = 1 Purchase earning) or purchased items in that summary is counted as | each $558.89 = ex. Total purchase of $1117.78 in that sale, you will earn $181.52.",
         "Includes core features for large-scale operations.",
         "Access to Livingroom507.com",
         "Social Media Livingroom507MOC Joined Members",
@@ -151,6 +152,7 @@ const MOCK_API = {
       networkEarnings: "$30,859.32",
       description: [
         "Subscriptions: $329.56 monthly",
+        "Earnings: $121.49 per each purchase of $748.10, totaling in sales ($748.10 = 1 Purchase earning) or purchased items in that summary is counted as | each $748.10 = ex. Total purchase of $1496.20 in that sale, you will earn $242.98.",
         "Tailored for comprehensive business needs.",
         "Access to Livingroom507.com",
         "Social Media Livingroom507MOC Joined Members",
