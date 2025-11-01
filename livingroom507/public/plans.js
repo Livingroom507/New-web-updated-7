@@ -30,9 +30,18 @@ document.addEventListener('DOMContentLoaded', () => {
         <ul>
           ${plan.description.map(item => `<li>${item}</li>`).join('')}
         </ul>
-        <a href="checkout.html?plan=${plan.name}" class="btn">Choose ${plan.name}</a>
+        <a href="checkout.html" class="btn choose-plan-btn" data-plan='${JSON.stringify(plan)}'>Choose ${plan.name}</a>
       `;
       plansGrid.appendChild(planCard);
+    });
+
+    // Add event listeners to the choose plan buttons
+    const choosePlanBtns = document.querySelectorAll('.choose-plan-btn');
+    choosePlanBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const planData = e.target.getAttribute('data-plan');
+        localStorage.setItem('selectedPlan', planData);
+      });
     });
   }
 });

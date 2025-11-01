@@ -2,16 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const orderSummaryDiv = document.getElementById('order-summary');
     const payWithPaypalBtn = document.getElementById('pay-with-paypal-btn');
 
-    // Retrieve the plan name from the URL query string
-    const urlParams = new URLSearchParams(window.location.search);
-    const planName = urlParams.get('plan');
-
-    let selectedPlan = null;
-
-    if (planName) {
-        // Find the selected plan in the MOCK_API data
-        selectedPlan = MOCK_API.plans.find(p => p.name === planName);
-    }
+    // Retrieve the selected plan from localStorage
+    const selectedPlan = JSON.parse(localStorage.getItem('selectedPlan'));
 
     if (selectedPlan) {
         orderSummaryDiv.innerHTML = `
@@ -41,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // For now, we'll just simulate success and redirect after a short delay
         setTimeout(() => {
+            localStorage.removeItem('selectedPlan'); // Clear selected plan
             window.location.href = 'affiliate-dashboard.html'; // Redirect to dashboard
         }, 2000); // Simulate network delay
     });
