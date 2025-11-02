@@ -523,3 +523,26 @@
         padding: 10px;
     }
 }
+
+/* Partner Box styles */
+.partner-box {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.partner-box h4 {
+    color: #007bff;
+    margin-top: 0;
+}
+
+/* Legal Note styles */
+.legal-note {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ffeeba;
+    margin-bottom: 20px;
+}
