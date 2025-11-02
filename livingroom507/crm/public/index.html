@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empath Closer CRM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Empath Closer CRM</h1>
+        <nav>
+            <a href="index.html">Pipeline</a>
+            <a href="dashboard.html">Dashboard</a>
+        </nav>
+    </header>
+    <main id="app-container">
+        <div id="pipeline-board" class="pipeline-board">
+            <!-- Pipeline stages will be dynamically generated here -->
+        </div>
+    </main>
+
+    <!-- Modal for adding/editing a deal -->
+    <div id="deal-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Add New Deal</h2>
+            <form id="deal-form">
+                <input type="hidden" id="deal-id">
+                <div class="form-group">
+                    <label for="contact-name">Contact Name</label>
+                    <input type="text" id="contact-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-email">Contact Email</label>
+                    <input type="email" id="contact-email" required>
+                </div>
+                <hr>
+                <h3>Diagnostic Data (Empath Closer Method)</h3>
+                <div class="form-group">
+                    <label for="main-pain">Prospect's Main Pain</label>
+                    <textarea id="main-pain" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="emotional-cost">Emotional Cost of Inaction</label>
+                    <textarea id="emotional-cost" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="uvp">Unique Value Promise (UVP)</label>
+                    <input type="text" id="uvp">
+                </div>
+                <div class="form-group">
+                    <label for="readiness-score">Readiness/Commitment Score (1-5)</label>
+                    <input type="number" id="readiness-score" min="1" max="5">
+                </div>
+                <button type="submit" class="btn">Save Deal</button>
+            </form>
+        </div>
+    </div>
+
+    <button id="add-deal-btn" class="btn-floating">+</button>
+
+    <script src="script.js"></script>
+</body>
+</html>

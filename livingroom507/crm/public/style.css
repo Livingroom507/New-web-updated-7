@@ -1,0 +1,188 @@
+:root {
+    --primary-color: #87996f;
+    --secondary-color: #d6b937;
+    --background-color: #f4f5f7;
+    --text-color: #34495e;
+    --card-bg: #ffffff;
+    --light-gray: #dfe1e6;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px 30px;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+#app-container {
+    padding: 20px;
+}
+
+.pipeline-board {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 15px;
+}
+
+.pipeline-stage {
+    flex: 0 0 300px;
+    background-color: var(--light-gray);
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.pipeline-stage h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.1em;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.deal-cards {
+    flex-grow: 1;
+    min-height: 100px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.deal-card {
+    background-color: var(--card-bg);
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px var(--shadow-color);
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.deal-card:hover {
+    box-shadow: 0 4px 8px var(--shadow-color);
+    transform: translateY(-2px);
+}
+
+.deal-card h4 {
+    margin: 0 0 5px 0;
+    font-size: 1em;
+}
+
+.deal-card p {
+    font-size: 0.9em;
+    margin: 0;
+    color: #5e6c84;
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 600px;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover, .close-button:focus {
+    color: var(--text-color);
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid var(--light-gray);
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.btn {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 15px;
+}
+
+.btn:hover {
+    background-color: #6c7a58; /* Darker primary */
+}
+
+.btn-floating {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--secondary-color);
+    color: white;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px var(--shadow-color);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-floating:hover {
+    background-color: #b59c2b; /* Darker secondary */
+    transform: scale(1.05);
+}
