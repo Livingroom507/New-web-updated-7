@@ -1,10 +1,5 @@
 # c:\Users\roblq\OneDrive\Documents\(websites)\New-web-updated-7\wrangler.toml
 
-[[d1_databases]]
-binding = "DB"
-database_name = "livingroom507-db" # <--- This is the name you need to use
-database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14"
-migrations_dir = "db/migrations"
 name = "livingroom507newupdate-7"
 compatibility_date = "2025-01-01"
 
