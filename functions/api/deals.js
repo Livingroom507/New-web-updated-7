@@ -1,7 +1,8 @@
 export async function onRequestGet({ env }) {
     try {
+        // Diagnostic query to check for table creation
         const { results } = await env.DB.prepare(
-            'SELECT d.*, c.name as contactName, c.email as contactEmail FROM deals d JOIN contacts c ON d.contact_id = c.id'
+            "SELECT name FROM sqlite_master WHERE type='table';"
         ).all();
 
         return new Response(JSON.stringify(results), {
