@@ -200,3 +200,21 @@ nav ul li a {
 .btn-highlight:hover {
     background-color: #d35400; /* Darker shade of highlight */
 }
+
+/* Styles moved from inline */
+#total-closers, #mastery-count {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.description-page .page-title {
+    font-size: 2em;
+}
+
+.btn.cancel-btn {
+    background-color: var(--light-gray);
+}
+
+.error-message {
+    text-align: center;
+}

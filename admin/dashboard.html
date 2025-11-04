@@ -24,21 +24,21 @@
         <div class="card-container">
             <div class="card">
                 <h3>Total Certified Closers</h3>
-                <p id="total-closers" style="font-size: 2em; font-weight: bold;">--</p>
+                <p id="total-closers">--</p>
             </div>
             <div class="card">
                 <h3>Module 3 Mastery</h3>
-                <p id="mastery-count" style="font-size: 2em; font-weight: bold;">--</p>
+                <p id="mastery-count">--</p>
             </div>
         </div>
 
-        <div class="flyer-section" style="margin-top: 40px;">
+        <div class="flyer-section">
             <h2><i class="fas fa-envelope"></i> Team Communication</h2>
             <button class="btn btn-highlight" onclick="openEmailModal()">Send Team Update/Offer</button>
         </div>
 
-        <div class="description-page" style="margin-top: 40px;">
-            <h2 class="page-title" style="font-size: 2em;">Certified Closer Profiles</h2>
+        <div class="description-page">
+            <h2 class="page-title">Certified Closer Profiles</h2>
             <table class="profile-table" id="closer-table">
                 <thead>
                     <tr>
@@ -64,7 +64,7 @@
             <input type="text" id="email-subject" placeholder="Subject">
             <textarea id="email-body" placeholder="Message" rows="8"></textarea>
             <button class="btn" onclick="sendTeamEmail()">Send Email</button>
-            <button class="btn" style="background-color: var(--light-gray);" onclick="closeEmailModal()">Cancel</button>
+            <button class="btn cancel-btn" onclick="closeEmailModal()">Cancel</button>
         </div>
     </div>
 
@@ -84,7 +84,7 @@
                 renderDashboard(data);
             } catch (error) {
                 console.error("Could not load admin data:", error);
-                document.querySelector('#closer-table tbody').innerHTML = `<tr><td colspan="7" style="text-align:center;">Error loading data: ${error.message}</td></tr>`;
+                document.querySelector('#closer-table tbody').innerHTML = `<tr><td colspan="7" class="error-message">Error loading data: ${error.message}</td></tr>`;
             }
         }
 
