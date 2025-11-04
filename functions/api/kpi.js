@@ -1,18 +1,18 @@
 export async function onRequestGet({ env }) {
     try {
-        const { results: closedWon } = await env.DB.prepare(
+        const closedWon = await env.DB.prepare(
             "SELECT COUNT(*) as count FROM deals WHERE pipeline_stage = 'Closed/Won'"
         ).first();
 
-        const { results: diagnosticComplete } = await env.DB.prepare(
+        const diagnosticComplete = await env.DB.prepare(
             "SELECT COUNT(*) as count FROM deals WHERE pipeline_stage = 'Diagnostic Complete'"
         ).first();
 
-        const { results: proposalSent } = await env.DB.prepare(
+        const proposalSent = await env.DB.prepare(
             "SELECT COUNT(*) as count FROM deals WHERE pipeline_stage = 'Proposal Sent'"
         ).first();
 
-        const { results: nurturingLeads } = await env.DB.prepare(
+        const nurturingLeads = await env.DB.prepare(
             "SELECT COUNT(*) as count FROM deals WHERE pipeline_stage = 'Lost/Nurture'"
         ).first();
 

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empath Closer Admin Dashboard</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f7f9; }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .stat-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; }
+        .stat-box h3 { margin-top: 0; color: #0056b3; }
+        .profile-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .profile-table th, .profile-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        /* Modal and Email Form Styles would be added here */
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-header">
+        <h1>Empath Closer Team Oversight</h1>
+        <div id="team-summary" style="display: flex; gap: 20px;">
+            <div class="stat-box"><h3>Total Certified Closers: <span id="total-closers">--</span></h3></div>
+            <div class="stat-box"><h3>Module 3 Mastery: <span id="mastery-count">--</span></h3></div>
+        </div>
+    </div>
+
+    <h2>Team Communication 📧</h2>
+    <button onclick="openEmailModal()">Send Team Update/Offer</button>
+
+    <h2>Certified Closer Profiles</h2>
+    <table class="profile-table" id="closer-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Experience</th>
+                <th>Niche Interest</th>
+                <th>Module 3 Score</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+
+    <div id="email-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+        <div style="background:white; padding:20px; border-radius:8px; width:500px; margin:100px auto;">
+            <h2>Send Team Communication</h2>
+            <input type="text" id="email-subject" placeholder="Subject" style="width:100%; padding:10px; margin-bottom:10px;">
+            <textarea id="email-body" placeholder="Message" style="width:100%; height:150px; padding:10px; margin-bottom:10px;"></textarea>
+            <button onclick="sendTeamEmail()">Send Email</button>
+            <button onclick="closeEmailModal()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const API_ENDPOINT = '/api/admin/data'; 
+        // !!! The AUTH_TOKEN must be securely provided to the client at login !!!
+        // For this example, we'll use a placeholder, but this token should come from a login process.
+        const AUTH_TOKEN = 'YOUR_SECRET_ADMIN_KEY_FROM_LOGIN'; 
+
+        async function fetchAdminData() {
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    // Pass the required security header
+                    headers: { 
+                        'X-Admin-Auth': AUTH_TOKEN 
+                    }
+                });
+                
+                if (response.status === 401) {
+                     throw new Error('Authentication Failed. Please log in.');
+                }
+                if (!response.ok) throw new Error('Server Error');
+
+                // ... rest of the successful data processing
+                const data = await response.json();
+                renderDashboard(data);
+            } catch (error) {
+                console.error("Could not load admin data:", error);
+                document.getElementById('closer-table').innerHTML = `<tr><td colspan="6">Error loading data: ${error.message}</td></tr>`;
+            }
+        }
+
+        function renderDashboard(data) {
+            // 1. Render Summary Stats
+            document.getElementById('total-closers').textContent = data.teamSize || 0;
+            document.getElementById('mastery-count').textContent = data.topPerformers.length; // Simple count of top performers
+
+            // 2. Render Profile Table
+            const tableBody = document.getElementById('closer-table').querySelector('tbody');
+            tableBody.innerHTML = ''; // Clear previous data
+
+            data.profiles.forEach(profile => {
+                const row = tableBody.insertRow();
+                const score = data.topPerformers.find(p => p.email === profile.email)?.score || 'N/A';
+                
+                row.insertCell().innerHTML = `<input type="checkbox" class="email-select" value="${profile.email}">`;
+                row.insertCell().textContent = profile.fullName;
+                row.insertCell().textContent = profile.email;
+                row.insertCell().textContent = profile.salesExperience;
+                row.insertCell().textContent = profile.nicheInterest;
+                row.insertCell().textContent = score;
+
+                // Action Button: Pull up full profile details (Module 1/2/3 answers)
+                const actionCell = row.insertCell();
+                const profileBtn = document.createElement('button');
+                profileBtn.textContent = 'Analyze Profile';
+                profileBtn.onclick = () => showFullProfile(profile.email);
+                actionCell.appendChild(profileBtn);
+            });
+        }
+
+        function showFullProfile(email) {
+            // Function to fetch the detailed profile (Module answers, Deep Pain Summary, etc.)
+            // This would call another secure API endpoint: /api/admin/profile?email=...
+            alert(`Fetching full details for ${email}...`); 
+        }
+
+        function openEmailModal() {
+            document.getElementById('email-modal').style.display = 'block';
+        }
+
+        function closeEmailModal() {
+            document.getElementById('email-modal').style.display = 'none';
+        }
+
+        const SEND_EMAIL_ENDPOINT = '/api/admin/send-email';
+
+        async function sendTeamEmail() {
+            const selectedEmails = getSelectedEmailsForUpdate();
+            const subject = document.getElementById('email-subject').value;
+            const body = document.getElementById('email-body').value;
+
+            if (selectedEmails.length === 0 || !subject || !body) {
+                alert("Please select recipients and fill out the subject and body.");
+                return;
+            }
+
+            try {
+                const response = await fetch(SEND_EMAIL_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Admin-Auth': AUTH_TOKEN
+                    },
+                    body: JSON.stringify({
+                        recipientEmails: selectedEmails,
+                        subject: subject,
+                        body: body
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    throw new Error(errorData || "Failed to send emails.");
+                }
+
+                alert(`Success! Message sent to ${selectedEmails.length} certified closers.`);
+                closeEmailModal();
+
+            } catch (error) {
+                console.error('Error sending team email:', error);
+                alert(`Error: ${error.message}. Check console for details.`);
+            }
+        }
+
+        function getSelectedEmailsForUpdate() {
+            const checkboxes = document.querySelectorAll('.email-select:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        fetchAdminData();
+    </script>
+
+</body>
+</html>

@@ -1,177 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz: Module 3 | Empath Closing School</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="style-dashboard.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 3 Quiz | Empath Closing School</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style-dashboard.css">
 </head>
 <body>
-    <a href="module-3.html" class="back-link">&larr; Back to Module 3</a>
-    <div class="container">
-        <h1 class="page-title">Module 3 Assessment: Impact & Scale</h1>
-        <div id="quiz-container" class="card">
-            <!-- Questions will be injected here by script.js -->
-        </div>
-        <button id="submit-btn" class="btn">Submit Answers</button>
-        <div id="results-container" class="card hidden"></div>
+  <a href="module-3.html" class="back-link">&larr; Back to Module 3</a>
+  <div class="container">
+    <h1 class="page-title"><i class="fas fa-question-circle"></i> Module 3 Quiz</h1>
+    <div class="card">
+      <p>You are now ready to take the Module 3 assessment.</p>
+      <p>Click the button below to open the quiz in a new tab.</p>
+      <a href="https://gemini.google.com/share/9b1f5c00aa77" target="_blank" rel="noopener noreferrer" class="btn">Take the Quiz</a>
+      <hr>
+      <p><em>The quiz will be integrated directly into this page in a future update, using a secure and scalable architecture with Cloudflare Workers and D1.</em></p>
     </div>
-
-    <script>
-        const quizData = [
-            {
-                question: "What is the primary goal of the \"SOP Mandate\" in Module 3?",
-                answers: {
-                    a: "To hire more staff quickly.",
-                    b: "To make every repeatable action documented for consistency and delegation.",
-                    c: "To increase the price of the service.",
-                    d: "To reduce the need for digital assets."
-                },
-                correctAnswer: "b"
-            },
-            {
-                question: "What is the main purpose of the 90-Day Results Check-In?",
-                answers: {
-                    a: "To sell the client a new, more expensive product.",
-                    b: "To ask for a testimonial for marketing purposes.",
-                    c: "To focus on the client's success and create a natural opportunity for a referral.",
-                    d: "To check if their payment has been processed."
-                },
-                correctAnswer: "c"
-            },
-            {
-                question: "Which of the following is NOT one of the \"Core Four for Scale\" KPIs?",
-                answers: {
-                    a: "Client Acquisition Cost (CAC)",
-                    b: "Social Media Follower Count",
-                    c: "Lifetime Value (LTV)",
-                    d: "Closing Ratio"
-                },
-                correctAnswer: "b"
-            },
-            {
-                question: "According to the module, what is a buyer of a business primarily purchasing?",
-                answers: {
-                    a: "The founder's personal talent and charisma.",
-                    b: "The company's social media accounts.",
-                    c: "The documented systems and processes (SOPs, CRM data).",
-                    d: "The office furniture and equipment."
-                },
-                correctAnswer: "c"
-            },
-            {
-                question: "What is the ideal time to use the \"Who Do You Know?\" script?",
-                answers: {
-                    a: "At the very beginning of the 90-Day Check-In call.",
-                    b: "Immediately after the client has paid for the initial service.",
-                    c: "In a random email sent a year after they finish.",
-                    d: "After the client has enthusiastically confirmed their success during the check-in."
-                },
-                correctAnswer: "d"
-            },
-            {
-                question: "What does \"Minimizing Single-Point Failure\" mean in the context of scaling a business?",
-                answers: {
-                    a: "Ensuring the business website never goes down.",
-                    b: "Ensuring no critical business function depends solely on the founder.",
-                    c: "Having only one core product to sell.",
-                    d: "Working with only one client at a time."
-                },
-                correctAnswer: "b"
-            },
-            {
-                question: "What is the primary function of a \"Delegation Framework\"?",
-                answers: {
-                    a: "To automate the entire sales process.",
-                    b: "To offload non-core tasks, freeing up the closer to focus on high-value activities.",
-                    c: "To create a new company department.",
-                    d: "To track employee work hours."
-                },
-                correctAnswer: "b"
-            },
-            {
-                question: "Which of the \"Core Four\" KPIs is described as the total revenue expected from a single client relationship?",
-                answers: {
-                    a: "Closing Ratio",
-                    b: "Client Acquisition Cost (CAC)",
-                    c: "Revenue Per Sales Hour",
-                    d: "Lifetime Value (LTV)"
-                },
-                correctAnswer: "d"
-            },
-            {
-                question: "Why is a \"Weekly Scorecard\" that tracks the Core Four KPIs recommended?",
-                answers: {
-                    a: "To create complex reports for investors.",
-                    b: "To allow for fast, data-driven decisions on where to allocate time and capital.",
-                    c: "To share on social media for marketing.",
-                    d: "To replace the need for a CRM."
-                },
-                correctAnswer: "b"
-            },
-            {
-                question: "What is the key principle behind the sample paragraph on the 90-Day Results Check-In?",
-                answers: {
-                    a: "The call should be a surprise to the client.",
-                    b: "The primary intent is to celebrate the client's success, not to sell.",
-                    c: "The main goal is to get a video testimonial.",
-                    d: "It should be an automated email, not a call."
-                },
-                correctAnswer: "b"
-            }
-        ];
-
-        const quizContainer = document.getElementById('quiz-container');
-        const resultsContainer = document.getElementById('results-container');
-        const submitButton = document.getElementById('submit-btn');
-
-        function buildQuiz() {
-            const output = [];
-            quizData.forEach((currentQuestion, questionNumber) => {
-                const answers = [];
-                for (letter in currentQuestion.answers) {
-                    answers.push(
-                        `<label class="quiz-label">
-                            <input type="radio" name="question${questionNumber}" value="${letter}">
-                            ${letter} : ${currentQuestion.answers[letter]}
-                        </label>`
-                    );
-                }
-                output.push(
-                    `<div class="quiz-question">
-                        <div class="question-text">${currentQuestion.question}</div>
-                        <div class="answers-block">${answers.join('')}</div>
-                    </div>`
-                );
-            });
-            quizContainer.innerHTML = output.join('');
-        }
-
-        function showResults() {
-            const answerContainers = quizContainer.querySelectorAll('.answers-block');
-            let numCorrect = 0;
-
-            quizData.forEach((currentQuestion, questionNumber) => {
-                const answerContainer = answerContainers[questionNumber];
-                const selector = `input[name=question${questionNumber}]:checked`;
-                const userAnswer = (answerContainer.querySelector(selector) || {}).value;
-
-                if (userAnswer === currentQuestion.correctAnswer) {
-                    numCorrect++;
-                    answerContainers[questionNumber].style.color = 'green';
-                } else {
-                    answerContainers[questionNumber].style.color = 'red';
-                }
-            });
-
-            resultsContainer.innerHTML = `You got ${numCorrect} out of ${quizData.length} correct.`;
-            resultsContainer.classList.remove('hidden');
-            submitButton.classList.add('hidden');
-        }
-
-        buildQuiz();
-        submitButton.addEventListener('click', showResults);
-    </script>
+  </div>
 </body>
 </html>

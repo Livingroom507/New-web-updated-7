@@ -3,42 +3,119 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Placement Opportunities | Empath Closing School</title>
+  <title>Phase 4: Activation & Placement | Empath Closing School</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="style-dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
   <a href="index.html#empath-classroom" class="back-link">&larr; Back to Business Center</a>
   <div class="container">
-    <h1 class="page-title"><i class="fas fa-briefcase"></i> Placement Opportunities (Hiring Partners) 🤝</h1>
+    <h1 class="page-title"><i class="fas fa-rocket"></i> Phase 4: Activation & Placement</h1>
+    <p class="page-subtitle">You are now a certified Empath Closer. Let's transition you from trainee to a deployable professional.</p>
+
+    <!-- 1. Official Certification & Recognition -->
     <div class="card">
-        <p>Your success as an Empath Closer is valuable. We actively cultivate relationships with high-growth businesses and entrepreneurs who specifically seek closers trained in integrity and high-ticket systems. This section outlines your pathway from certification to placement.</p>
+      <h3>1. Official Certification & Recognition <i class="fas fa-medal"></i></h3>
+      <p>Congratulations on mastering the psychology, system application, and scaling strategies of the Empath Closing methodology. Your first step is to claim your formal recognition.</p>
+      <a href="#" class="button primary-button" id="generate-certificate-btn"><i class="fas fa-certificate"></i> Download Your Certificate</a>
+      <hr>
+      <h4>Unlock Final Content</h4>
+      <p>You now have access to the final resources to support your professional journey:</p>
+      <ul class="resource-list">
+        <li><a href="contracts.html"><i class="fas fa-file-contract"></i> Contract Templates (ICA/NDA)</a></li>
+        <li><a href="#"><i class="fas fa-users"></i> Referral Toolkit & Affiliate Scripts</a></li>
+      </ul>
     </div>
+
+    <!-- 2. Activate the Placement Pipeline -->
     <div class="card">
-        <h3>The Certification Advantage</h3>
-        <p>Completing all three modules and passing the assessments certifies you as an <strong>Empath Closer</strong>. This designation validates your skills in psychology, system application, and ethical scaling—qualities our hiring partners prioritize above all else.</p>
-    </div>
-    <div class="card">
-        <h3>The Placement Process</h3>
-        <ol>
-            <li><strong>Profile Creation:</strong> Complete the final certification form to generate your placement profile, which includes your assessment scores and a summary of your closing philosophy.</li>
-            <li><strong>Vetting & Matching:</strong> Our team matches your profile with roles from our network of high-ticket coaches, service providers, and agencies who require remote closing talent.</li>
-            <li><strong>Introduction:</strong> We facilitate a warm introduction to the hiring partner. You will enter the interview process having already been pre-vetted based on your training results.</li>
-            <li><strong>Ongoing Support:</strong> We provide interview preparation materials focused on translating your 'Empath Closer' methodology into a language hiring managers understand (e.g., 'high Closing Ratio,' 'low CAC,' 'high LTV').</li>
-        </ol>
-    </div>
-    <div class="card">
-        <h3>Current Partner Focus Areas</h3>
-        <p>Our partners typically operate in sectors where integrity and high-trust selling are paramount:</p>
-        <div class="partner-box">
-            <h4>High-Ticket Coaching & Consulting</h4>
-            <p>Partners who sell programs priced $5,000+ and require closers who prioritize client diagnosis over quick conversion. Ideal for closers with a strong background in <strong>The Diagnostic Approach</strong> (Module 1).</p>
+      <h3>2. Activate the Placement Pipeline <i class="fas fa-handshake"></i></h3>
+      <p>If you are seeking a high-ticket closing role, complete the Placement Profile Form below. Submitting this form alerts our internal team to initiate the vetting and matching process with our hiring partners.</p>
+      
+      <form id="placement-profile-form" class="placement-form" action="/api/submit-placement-profile" method="POST">
+        <h4>Placement Profile Form</h4>
+        
+        <div class="form-group">
+          <label for="full-name">Full Name</label>
+          <input type="text" id="full-name" name="full_name" placeholder="Enter your full name" required>
         </div>
-        <div class="partner-box">
-            <h4>Digital Agencies & SaaS</h4>
-            <p>Companies selling long-term contracts (>$10,000 LTV) where pipeline management and systematic follow-up are essential. Expertise in <strong>High-Ticket CRM Setup</strong> (Module 2) is a key requirement here.</p>
+        
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="Enter your professional email" required>
         </div>
+
+        <div class="form-group">
+          <label for="linkedin-url">LinkedIn Profile URL</label>
+          <input type="url" id="linkedin-url" name="linkedin_url" placeholder="https://www.linkedin.com/in/yourprofile/" required>
+        </div>
+
+        <div class="form-group">
+          <label for="sales-experience">Years of Sales Experience</label>
+          <input type="number" id="sales-experience" name="sales_experience_years" min="0" placeholder="e.g., 5" required>
+        </div>
+
+        <div class="form-group">
+          <label for="availability">Availability</label>
+          <select id="availability" name="availability" required>
+            <option value="" disabled selected>Select your availability</option>
+            <option value="Full-Time">Full-Time (30-40 hours/week)</option>
+            <option value="Part-Time">Part-Time (15-25 hours/week)</option>
+            <option value="Contract">Open to Contract/Freelance Roles</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="niche-interest">Desired Niche</label>
+          <select id="niche-interest" name="niche_interest" required>
+            <option value="" disabled selected>Select your desired niche</option>
+            <option value="High-Ticket Coaching">High-Ticket Coaching & Consulting</option>
+            <option value="SaaS">Digital Agencies & SaaS</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+            <label for="crm-familiarity">CRM Familiarity</label>
+            <input type="text" id="crm-familiarity" name="crm_familiarity" placeholder="e.g., HubSpot, Salesforce, Apollo.io" required>
+        </div>
+
+        <div class="form-group">
+          <label for="deep-pain-summary">Deep Pain Summary</label>
+          <textarea id="deep-pain-summary" name="deep_pain_summary" rows="5" placeholder="In 2-3 sentences, describe your understanding of identifying a prospect's 'deep pain' during a diagnostic call." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="objection-handling-view">Objection Handling Philosophy</label>
+          <textarea id="objection-handling-view" name="objection_handling_view" rows="5" placeholder="Explain how you view objections and your strategy for handling them, particularly the 'I need to think about it' objection." required></textarea>
+        </div>
+
+        <button type="submit" class="button primary-button">Submit to Placement Pipeline</button>
+      </form>
     </div>
+
+    <!-- 3. Initiate Advanced System Integration -->
+    <div class="card">
+      <h3>3. Initiate Advanced System Integration <i class="fas fa-chart-line"></i></h3>
+      <p>For those building their own closing business, mastering your data is paramount. It's time to track the <strong>Core Four for Scale</strong>.</p>
+      <p>Use the resources below to set up your weekly scorecard and customize your CRM for real-world application.</p>
+      <a href="metrics.html" class="button secondary-button"><i class="fas fa-tachometer-alt"></i> Access Advanced Metrics & Scorecard</a>
+      <ul class="resource-list">
+        <li><a href="#"><i class="fas fa-cogs"></i> Guide: Installing Custom Fields in Your CRM</a></li>
+      </ul>
+    </div>
+
+    <!-- 4. Ongoing Support & Community -->
+    <div class="card">
+      <h3>4. Ongoing Support & Community <i class="fas fa-comments"></i></h3>
+      <p>Your certification is just the beginning. Join our private community of certified Empath Closers to network, share opportunities, and receive ongoing support.</p>
+      <a href="#" class="button secondary-button"><i class="fab fa-discord"></i> Join the Certified Closers Community</a>
+      <hr>
+      <h4>Post-Certification Coaching</h4>
+      <p>For closers seeking to further refine their skills, advanced coaching on pipeline audits and call deconstruction is available. Explore your options in the <a href="metrics.html">metrics and coaching section</a>.</p>
+    </div>
+
   </div>
 </body>
 </html>
