@@ -70,15 +70,34 @@
 
     <script>
         const API_ENDPOINT = '/api/admin/data';
-        const AUTH_TOKEN = 'YOUR_SECRET_ADMIN_KEY_FROM_LOGIN'; // Placeholder
+        let authToken = '';
+
+        function getAuthToken() {
+            if (sessionStorage.getItem('adminAuthToken')) {
+                return sessionStorage.getItem('adminAuthToken');
+            } else {
+                const token = prompt('Please enter your Admin API Key:');
+                if (token) {
+                    sessionStorage.setItem('adminAuthToken', token);
+                    return token;
+                }
+                return null;
+            }
+        }
 
         async function fetchAdminData() {
+            authToken = getAuthToken();
+            if (!authToken) {
+                document.querySelector('#closer-table tbody').innerHTML = `<tr><td colspan="7" class="error-message">Authentication token not provided.</td></tr>`;
+                return;
+            }
+
             try {
                 const response = await fetch(API_ENDPOINT, {
                     method: 'POST',
-                    headers: { 'X-Admin-Auth': AUTH_TOKEN }
+                    headers: { 'X-Admin-Auth': authToken }
                 });
-                if (response.status === 401) throw new Error('Authentication Failed. Please log in.');
+                if (response.status === 401) throw new Error('Authentication Failed. Please check your API Key.');
                 if (!response.ok) throw new Error('Server Error');
                 const data = await response.json();
                 renderDashboard(data);
@@ -115,6 +134,10 @@
         }
 
         function openEmailModal() {
+            if (!authToken) {
+                alert('Please authenticate to send emails.');
+                return;
+            }
             document.getElementById('email-modal').classList.add('active');
         }
 
@@ -139,7 +162,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Admin-Auth': AUTH_TOKEN
+                        'X-Admin-Auth': authToken
                     },
                     body: JSON.stringify({ recipientEmails: selectedEmails, subject, body })
                 });
