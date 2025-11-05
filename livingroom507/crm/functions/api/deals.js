@@ -37,14 +37,18 @@ export async function onRequestPost({ request, env }) {
 
         // 2. Create the deal associated with the new contact
         const dealInsert = await env.DB.prepare(
-            `INSERT INTO deals (contact_id, main_pain, emotional_cost, uvp, readiness_score) 
-             VALUES (?, ?, ?, ?, ?)`
+            `INSERT INTO deals (contact_id, main_pain, emotional_cost, uvp, readiness_score, purchased_plan, referring_affiliate, network_goal_status, marketing_channel_source) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
         ).bind(
             contactId,
             dealData.mainPain,
             dealData.emotionalCost,
             dealData.uvp,
-            dealData.readinessScore
+            dealData.readinessScore,
+            dealData.purchased_plan,
+            dealData.referring_affiliate,
+            dealData.network_goal_status,
+            dealData.marketing_channel_source
         ).run();
         
         // 3. Fetch the newly created deal to return it
@@ -85,13 +89,17 @@ export async function onRequestPut({ request, env, params }) {
         // 2. Update the deal
         await env.DB.prepare(
             `UPDATE deals 
-             SET main_pain = ?, emotional_cost = ?, uvp = ?, readiness_score = ?
+             SET main_pain = ?, emotional_cost = ?, uvp = ?, readiness_score = ?, purchased_plan = ?, referring_affiliate = ?, network_goal_status = ?, marketing_channel_source = ?
              WHERE id = ?`
         ).bind(
             dealData.mainPain,
             dealData.emotionalCost,
             dealData.uvp,
             dealData.readinessScore,
+            dealData.purchased_plan,
+            dealData.referring_affiliate,
+            dealData.network_goal_status,
+            dealData.marketing_channel_source,
             dealId
         ).run();
 

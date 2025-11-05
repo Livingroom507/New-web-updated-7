@@ -20,6 +20,10 @@ CREATE TABLE deals (
     uvp TEXT,
     readiness_score INTEGER,
     follow_up_trigger_date DATE,
+    purchased_plan TEXT,
+    referring_affiliate TEXT,
+    network_goal_status INTEGER,
+    marketing_channel_source TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (contact_id) REFERENCES contacts(id)
 );

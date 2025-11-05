@@ -8,7 +8,6 @@ async function loadOverview() {
   const data = await fetchJSON('/api/affiliate/overview');
   document.getElementById('kpi-referrals').textContent = data.totalReferrals || '0';
   document.getElementById('kpi-plan').textContent = data.currentPlan || '--';
-  document.getElementById('kpi-earnings').textContent = `$${(data.monthlyEarnings || 0).toFixed(2)}`;
   document.getElementById('kpi-rewards').textContent = `$${(data.compoundedRewards || 0).toFixed(2)}`;
 }
 
@@ -90,6 +89,23 @@ function setupSettingsForm() {
     });
 }
 
+async function loadEarnings() {
+  //TODO: a dynamic affiliate id should be used instead of a hardcoded one
+  const data = await fetchJSON('/api/affiliate/earnings?affiliate_id=1');
+  document.getElementById('kpi-total-earnings').textContent = `$${data.totalEarnings || '0.00'}`;
+
+  const tbody = document.getElementById('earnings-table').querySelector('tbody');
+  tbody.innerHTML = data.earningsBreakdown.map(item => {
+    return `<tr>
+        <td>${item.referred_user_id}</td>
+        <td>${item.plan}</td>
+        <td>$${item.subscription_commission}</td>
+        <td>$${item.purchase_commission}</td>
+        <td>$${item.total_commission}</td>
+      </tr>`;
+  }).join('');
+}
+
 async function initDashboard() {
   try {
     await loadOverview();
@@ -97,8 +113,7 @@ async function initDashboard() {
     await loadPlanFinancials();
     await loadTable('/api/affiliate/referrals', 'referrals-table', 
       ['date','referred_user','plan_chosen','commission','status']);
-    await loadTable('/api/affiliate/earnings', 'earnings-table', 
-      ['date','amount','type','status']);
+    await loadEarnings();
   } catch(err) {
     console.error('Dashboard loading error:', err);
   }
