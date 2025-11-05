@@ -1,0 +1,7 @@
+CREATE TABLE Module3Results (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL,
+    score INTEGER NOT NULL,
+    knowledgeLevel TEXT NOT NULL,
+    submissionDate TEXT DEFAULT CURRENT_TIMESTAMP
+);
