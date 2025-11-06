@@ -179,5 +179,22 @@ footer { background-color: var(--primary-color); color: var(--barber-shop-white)
     .card-container { flex-direction: column; align-items: center; }
     .hero h1 { font-size: 2.5em; }
     .flyer-header { flex-direction: column; text-align: center; }
-    .why-choose-us-grid { grid-template-columns: 1fr; }
+}
+
+/* Quiz Specific Styles */
+.quiz-results-visible {
+    display: block;
+}
+
+.feedback-green {
+    color: green;
+}
+
+.feedback-orange {
+    color: orange;
+}
+
+/* Utility Class */
+.hidden {
+    display: none;
 }

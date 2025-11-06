@@ -126,41 +126,113 @@
                 <div class="product-selection-container">
                     <h2>Product Selection (Best Fashion Products to Sell)</h2>
                     <!-- 1. Women's Dresses -->
-                    <div class="product-category">
-                        <h3>1. <strong>Women's Dresses</strong></h3>
-                        <div class="blaster-cards-container"><div class="blaster-card"><h4>Description</h4><p>Trendy, seasonal, and timeless styles.</p></div><div class="blaster-card"><h4>Reason to Sell</h4><p>High demand, especially during seasonal changes.</p></div></div>
-                        <div class="image-card-container"><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/E8D2C4/000000?text=Dress+1" alt="Fashion Dress 1"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/BDB7AB/000000?text=Dress+2" alt="Fashion Dress 2"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/A39B8B/FFFFFF?text=Dress+3" alt="Fashion Dress 3"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/8A7F70/FFFFFF?text=Dress+4" alt="Fashion Dress 4"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/C1B8AC/000000?text=Dress+5" alt="Fashion Dress 5"></a></div>
-                    </div>
+                    <div class="product-category" data-category-id="dresses">
+    <h3>1. <strong>Women's Dresses</strong></h3>
+    <div class="blaster-cards-container">
+        <div class="blaster-card"><h4>Description</h4><p>Trendy, seasonal, and timeless styles.</p></div>
+        <div class="blaster-card"><h4>Reason to Sell</h4><p>High demand, especially during seasonal changes.</p></div>
+        
+        <div class="blaster-card selection-status" id="status-dresses">
+            <h4>Collaboration Status</h4>
+            <p>Awaiting Admin confirmation...</p>
+        </div>
+    </div>
+    
+    <button class="client-action-btn" onclick="sendClientSignal('dresses')">This Looks Right</button>
+
+    <div class="image-card-container">
+        </div>
+</div>
                     <!-- 2. T-Shirts -->
-                    <div class="product-category">
-                        <h3>2. <strong>T-Shirts</strong></h3>
-                        <div class="blaster-cards-container"><div class="blaster-card"><h4>Description</h4><p>Graphic, vintage, and basic tees for all audiences.</p></div><div class="blaster-card"><h4>Reason to Sell</h4><p>Evergreen product with high-profit margin potential.</p></div></div>
-                        <div class="image-card-container"><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/333333/FFFFFF?text=T-Shirt+1" alt="Fashion T-Shirt 1"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/555555/FFFFFF?text=T-Shirt+2" alt="Fashion T-Shirt 2"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/777777/FFFFFF?text=T-Shirt+3" alt="Fashion T-Shirt 3"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/999999/000000?text=T-Shirt+4" alt="Fashion T-Shirt 4"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/BBBBBB/000000?text=T-Shirt+5" alt="Fashion T-Shirt 5"></a></div>
-                    </div>
+                    <div class="product-category" data-category-id="t-shirts">
+    <h3>2. <strong>T-Shirts</strong></h3>
+    <div class="blaster-cards-container">
+        <div class="blaster-card"><h4>Description</h4><p>Graphic, vintage, and basic tees for all audiences.</p></div>
+        <div class="blaster-card"><h4>Reason to Sell</h4><p>Evergreen product with high-profit margin potential.</p></div>
+        
+        <div class="blaster-card selection-status" id="status-t-shirts">
+            <h4>Collaboration Status</h4>
+            <p>Awaiting Admin confirmation...</p>
+        </div>
+    </div>
+    
+    <button class="client-action-btn" onclick="sendClientSignal('t-shirts')">This Looks Right</button>
+
+    <div class="image-card-container">
+        </div>
+</div>
                     <!-- 3. Activewear -->
-                    <div class="product-category">
-                         <h3>3. <strong>Activewear</strong></h3>
-                        <div class="blaster-cards-container"><div class="blaster-card"><h4>Description</h4><p>Leggings, sports bras, and performance tops.</p></div><div class="blaster-card"><h4>Reason to Sell</h4><p>Growing health and wellness trend fuels demand.</p></div></div>
-                        <div class="image-card-container"><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/4B878B/FFFFFF?text=Active+1" alt="Activewear 1"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/305F72/FFFFFF?text=Active+2" alt="Activewear 2"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/F1886B/FFFFFF?text=Active+3" alt="Activewear 3"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/E2D58B/000000?text=Active+4" alt="Activewear 4"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/726A95/FFFFFF?text=Active+5" alt="Activewear 5"></a></div>
-                    </div>
+                    <div class="product-category" data-category-id="activewear">
+    <h3>3. <strong>Activewear</strong></h3>
+    <div class="blaster-cards-container">
+        <div class="blaster-card"><h4>Description</h4><p>Leggings, sports bras, and performance tops.</p></div>
+        <div class="blaster-card"><h4>Reason to Sell</h4><p>Growing health and wellness trend fuels demand.</p></div>
+        
+        <div class="blaster-card selection-status" id="status-activewear">
+            <h4>Collaboration Status</h4>
+            <p>Awaiting Admin confirmation...</p>
+        </div>
+    </div>
+    
+    <button class="client-action-btn" onclick="sendClientSignal('activewear')">This Looks Right</button>
+
+    <div class="image-card-container">
+        </div>
+</div>
                     <!-- 4. Jewelry -->
-                    <div class="product-category">
-                        <h3>4. <strong>Jewelry</strong></h3>
-                        <div class="blaster-cards-container"><div class="blaster-card"><h4>Description</h4><p>Necklaces, bracelets, earrings, and rings.</p></div><div class="blaster-card"><h4>Reason to Sell</h4><p>Low shipping costs and great for impulse buys.</p></div></div>
-                        <div class="image-card-container"><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/FFD700/000000?text=Jewelry+1" alt="Jewelry 1"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/C0C0C0/000000?text=Jewelry+2" alt="Jewelry 2"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/B87333/FFFFFF?text=Jewelry+3" alt="Jewelry 3"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/E5E4E2/000000?text=Jewelry+4" alt="Jewelry 4"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/D2B48C/000000?text=Jewelry+5" alt="Jewelry 5"></a></div>
-                    </div>
+                    <div class="product-category" data-category-id="jewelry">
+    <h3>4. <strong>Jewelry</strong></h3>
+    <div class="blaster-cards-container">
+        <div class="blaster-card"><h4>Description</h4><p>Necklaces, bracelets, earrings, and rings.</p></div>
+        <div class="blaster-card"><h4>Reason to Sell</h4><p>Low shipping costs and great for impulse buys.</p></div>
+        
+        <div class="blaster-card selection-status" id="status-jewelry">
+            <h4>Collaboration Status</h4>
+            <p>Awaiting Admin confirmation...</p>
+        </div>
+    </div>
+    
+    <button class="client-action-btn" onclick="sendClientSignal('jewelry')">This Looks Right</button>
+
+    <div class="image-card-container">
+        </div>
+</div>
                     <!-- 5. Streetwear -->
-                    <div class="product-category">
-                        <h3>5. <strong>Streetwear</strong></h3>
-                        <div class="blaster-cards-container"><div class="blaster-card"><h4>Description</h4><p>Hoodies, sneakers, joggers, and graphic apparel.</p></div><div class="blaster-card"><h4>Reason to Sell</h4><p>Dominant youth culture trend with a loyal following.</p></div></div>
-                        <div class="image-card-container"><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/2C3E50/FFFFFF?text=Street+1" alt="Streetwear 1"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/E74C3C/FFFFFF?text=Street+2" alt="Streetwear 2"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/F1C40F/000000?text=Street+3" alt="Streetwear 3"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/BDC3C7/000000?text=Street+4" alt="Streetwear 4"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/1ABC9C/FFFFFF?text=Street+5" alt="Streetwear 5"></a></div>
-                    </div>
+                    <div class="product-category" data-category-id="streetwear">
+    <h3>5. <strong>Streetwear</strong></h3>
+    <div class="blaster-cards-container">
+        <div class="blaster-card"><h4>Description</h4><p>Hoodies, sneakers, joggers, and graphic apparel.</p></div>
+        <div class="blaster-card"><h4>Reason to Sell</h4><p>Dominant youth culture trend with a loyal following.</p></div>
+        
+        <div class="blaster-card selection-status" id="status-streetwear">
+            <h4>Collaboration Status</h4>
+            <p>Awaiting Admin confirmation...</p>
+        </div>
+    </div>
+    
+    <button class="client-action-btn" onclick="sendClientSignal('streetwear')">This Looks Right</button>
+
+    <div class="image-card-container">
+        </div>
+</div>
                     <!-- 6. Handbags/Accessories -->
-                    <div class="product-category">
-                        <h3>6. <strong>Handbags/Accessories</strong></h3>
-                        <div class="blaster-cards-container"><div class="blaster-card"><h4>Description</h4><p>Totes, clutches, belts, scarves, and sunglasses.</p></div><div class="blaster-card"><h4>Reason to Sell</h4><p>Easy to upsell and complements other fashion items.</p></div></div>
-                        <div class="image-card-container"><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/8E44AD/FFFFFF?text=Bag+1" alt="Handbag 1"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/3498DB/FFFFFF?text=Scarf+2" alt="Accessory 2"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/F39C12/FFFFFF?text=Belt+3" alt="Accessory 3"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/27AE60/FFFFFF?text=Bag+4" alt="Handbag 4"></a><a href="#" class="image-card"><img width="250" height="350" src="https://via.placeholder.com/250x350/D35400/FFFFFF?text=Accessory+5" alt="Accessory 5"></a></div>
-                    </div>
+                    <div class="product-category" data-category-id="handbags">
+    <h3>6. <strong>Handbags/Accessories</strong></h3>
+    <div class="blaster-cards-container">
+        <div class="blaster-card"><h4>Description</h4><p>Totes, clutches, belts, scarves, and sunglasses.</p></div>
+        <div class="blaster-card"><h4>Reason to Sell</h4><p>Easy to upsell and complements other fashion items.</p></div>
+        
+        <div class="blaster-card selection-status" id="status-handbags">
+            <h4>Collaboration Status</h4>
+            <p>Awaiting Admin confirmation...</p>
+        </div>
+    </div>
+    
+    <button class="client-action-btn" onclick="sendClientSignal('handbags')">This Looks Right</button>
+
+    <div class="image-card-container">
+        </div>
+</div>
                 </div>
             </div>
         </section>

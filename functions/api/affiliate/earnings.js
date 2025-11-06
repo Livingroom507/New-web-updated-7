@@ -11,9 +11,7 @@ export async function onRequestGet({ env, request }) {
     }
 
     // Get all users referred by this affiliate
-    const referralsResult = await env.DB.prepare(`
-      SELECT referred_user_id FROM referrals WHERE affiliate_id = ? AND referred_user_id IS NOT NULL
-    `).bind(affiliateId).all();
+    const referralsResult = await env.DB.prepare('SELECT referred_user_id FROM referrals WHERE affiliate_id = ? AND referred_user_id IS NOT NULL').bind(affiliateId).all();
 
     const referredUserIds = referralsResult.results.map(row => row.referred_user_id);
 

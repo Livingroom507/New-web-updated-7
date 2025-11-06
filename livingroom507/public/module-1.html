@@ -128,10 +128,220 @@
     </div>
 
     <div class="card">
-        <h2>Module 1 Quiz</h2>
-        <p>You have completed the reading material for Module 1. Click the button below to start the quiz.</p>
-        <a href="quiz.html" class="btn">Start Quiz</a>
+        <h2>Module 1 Quiz: The Empath Closer Assessment</h2>
+        <form id="quiz-form">
+            <!-- Questions will be injected here by JavaScript -->
+        </form>
+        <button id="submit-quiz" class="btn">Submit Quiz</button>
+        <div id="quiz-results" class="card hidden">
+            <h3>Quiz Results</h3>
+            <p>Your score: <span id="score"></span></p>
+            <p id="feedback"></p>
+        </div>
     </div>
+
+<script>
+    const quizData = [
+        {
+            question: "What is the primary focus of the Empathy principle in the 4 E's?",
+            options: ["Aggressive negotiation", "Genuinely understanding the prospect's world and feelings", "Selling the solution immediately", "Giving a discount"],
+            answer: "Genuinely understanding the prospect's world and feelings"
+        },
+        {
+            question: "The Diagnostic Approach aims to move beyond surface-level problems to find what?",
+            options: ["The prospect's favorite hobby", "The technical specifications of their product", "The emotional cost of inaction (Deep Pain)", "The price they want to pay"],
+            answer: "The emotional cost of inaction (Deep Pain)"
+        },
+        {
+            question: "The Empowerment principle means the closer should ensure the prospect feels what?",
+            options: ["That the decision is theirs, rooted in their desired future", "That they have no other options", "That the closer is superior", "That they must rush the decision"],
+            answer: "That the decision is theirs, rooted in their desired future"
+        },
+        {
+            question: "What is the purpose of Value Stacking?",
+            options: ["To make the price look smaller through deception", "To make the perceived value significantly outweigh the high-ticket price", "To hide the true cost", "To offer unlimited bonuses"],
+            answer: "To make the perceived value significantly outweigh the high-ticket price"
+        },
+        {
+            question: "The Empath Closer's role during the pain discovery phase is primarily to be a:",
+            options: ["Pitchman", "Negotiator", "Compassionate Listener and Facilitator", "Contract lawyer"],
+            answer: "Compassionate Listener and Facilitator"
+        },
+        {
+            question: "Which of the 4 E's focuses on providing the necessary understanding for the decision?",
+            options: ["Empathy", "Education", "Empowerment", "Excellence"],
+            answer: "Education"
+        },
+        {
+            question: "When should the high-ticket price typically be presented?",
+            options: ["Immediately after the introduction", "Before discussing pain", "After the diagnosis is complete and the value has been fully established", "Only after the prospect asks three times"],
+            answer: "After the diagnosis is complete and the value has been fully established"
+        },
+        {
+            question: "The Cost of Inaction is best defined as:",
+            options: ["The cost of a competitor's product", "The discount offered", "The pain, loss, or consequence of not solving the problem", "The cost of the closer's time"],
+            answer: "The pain, loss, or consequence of not solving the problem"
+        },
+        {
+            question: "Why is the UVP (Unique Value Promise) critical to the offer?",
+            options: ["It is the specific, articulated transformation the client is buying", "It determines the CRM setup", "It is a mandatory legal term", "It is solely based on a discount"],
+            answer: "It is the specific, articulated transformation the client is buying"
+        },
+        {
+            question: "If a prospect says \"I need to think about it,\" this often signals a lack of:",
+            options: ["Time", "Money", "Certainty/Internal Alignment (Lack of Empowerment)", "Interest"],
+            answer: "Certainty/Internal Alignment (Lack of Empowerment)"
+        },
+        {
+            question: "The Excellence principle relates to what aspect of the offer?",
+            options: ["Low prices", "Delivering world-class, undeniable results post-sale", "Fast closing speeds", "Aggressive follow-up"],
+            answer: "Delivering world-class, undeniable results post-sale"
+        },
+        {
+            question: "What type of question is most effective in uncovering Deep Pain?",
+            options: ["Yes/No questions", "Open-ended, \"feeling\" questions (e.g., \"How does that impact your confidence?\")", "Financial audit questions", "Leading questions"],
+            answer: "Open-ended, \"feeling\" questions (e.g., \"How does that impact your confidence?\")"
+        },
+        {
+            question: "The 4 E's serve as the foundation for:",
+            options: ["Negotiating a discount", "Writing a contract", "Building an integrity-based, high-trust sales relationship", "Managing a marketing budget"],
+            answer: "Building an integrity-based, high-trust sales relationship"
+        },
+        {
+            question: "In Value Stacking, what is the effect of including time-sensitive or scarcity elements?",
+            options: ["It encourages prompt, decisive action", "It makes the client feel confused", "It lowers the perceived value", "It is generally illegal"],
+            answer: "It encourages prompt, decisive action"
+        },
+        {
+            question: "How does Education support the Empath-First approach?",
+            options: ["It provides clarity on the process, mitigating fear and doubt", "It shows the prospect they are wrong", "It takes up call time", "It guarantees a sale"],
+            answer: "It provides clarity on the process, mitigating fear and doubt"
+        },
+        {
+            question: "The surface-level problem is usually focused on:",
+            options: ["Money", "Technical symptoms (e.g., \"My website is slow\")", "Future aspirations", "Past failures"],
+            answer: "Technical symptoms (e.g., \"My website is slow\")"
+        },
+        {
+            question: "To maximize Empowerment, the closer should avoid:",
+            options: ["Asking questions", "Setting an agenda", "Using high-pressure tactics or guilt", "Taking notes"],
+            answer: "Using high-pressure tactics or guilt"
+        },
+        {
+            question: "A strong Value Stack must always have a high perceived value relative to:",
+            options: ["The closest competitor", "The prospect's savings account", "The price of the offer", "The time spent talking"],
+            answer: "The price of the offer"
+        },
+        {
+            question: "Deep Pain is identified when the closer ties the surface problem to the prospect's:",
+            options: ["Car model", "Emotions, identity, or long-term goals", "Lunch plans", "Current stock portfolio"],
+            answer: "Emotions, identity, or long-term goals"
+        },
+        {
+            question: "What is the risk of focusing only on the surface problem?",
+            options: ["The client won't have enough motivation to invest in a high-ticket solution", "The closer will talk too much", "The price will be too low", "The call will end too quickly"],
+            answer: "The client won't have enough motivation to invest in a high-ticket solution"
+        },
+        {
+            question: "In the context of high-ticket sales, Excellence ensures:",
+            options: ["An immediate refund", "A guaranteed next-day outcome", "The client experiences the transformation promised in the UVP", "A lifetime guarantee"],
+            answer: "The client experiences the transformation promised in the UVP"
+        },
+        {
+            question: "Empathy is best demonstrated by:",
+            options: ["Validating the prospect's feelings and repeating their pain points", "Interrupting to offer a solution", "Telling personal success stories", "Reading from a script without deviation"],
+            answer: "Validating the prospect's feelings and repeating their pain points"
+        },
+        {
+            question: "The Value Stack should include components that are difficult to replicate, such as:",
+            options: ["Free generic guides", "Basic checklists", "Exclusive access, proprietary systems, or personalized coaching time", "Standard email templates"],
+            answer: "Exclusive access, proprietary systems, or personalized coaching time"
+        },
+        {
+            question: "The Empath Closer sees the prospect's objections as:",
+            options: ["A request for more certainty or clarity (a fear)", "A personal attack", "A sign to lower the price", "A signal to end the call immediately"],
+            answer: "A request for more certainty or clarity (a fear)"
+        },
+        {
+            question: "The core philosophy of The Empath Closer is to sell based on:",
+            options: ["Scarcity and fear", "Trust, diagnosis, and empowered decision-making", "Aggressive negotiation and discounts", "Features and benefits alone"],
+            answer: "Trust, diagnosis, and empowered decision-making"
+        },
+        {
+            question: "Education includes providing context on:",
+            options: ["The weather", "The closer's family life", "The expected timeline and specific steps of the fulfillment process", "General world news"],
+            answer: "The expected timeline and specific steps of the fulfillment process"
+        },
+        {
+            question: "The psychological term for the client's internal desire to close the gap between their current reality and their UVP is:",
+            options: ["A discount need", "Motivation (leveraging the pain)", "Logic", "Curiosity"],
+            answer: "Motivation (leveraging the pain)"
+        },
+        {
+            question: "The goal of the discovery call, before presenting the price, is to establish that the offer is:",
+            options: ["A luxury", "A risk", "An experiment", "A necessity (based on the client's documented pain)"],
+            answer: "A necessity (based on the client's documented pain)"
+        },
+        {
+            question: "Why must the Value Stack be logically linked to the UVP?",
+            options: ["To prove that every component directly supports the client's transformation", "To confuse competitors", "To justify a low price", "To comply with marketing law"],
+            answer: "To prove that every component directly supports the client's transformation"
+        },
+        {
+            question: "The most effective way to close a high-ticket sale is by asking a question that focuses on:",
+            options: ["Their available credit limit", "The next logical step forward (e.g., \"Are you ready to fix this now?\")", "Who else they know", "The competitor's offer"],
+            answer: "The next logical step forward (e.g., \"Are you ready to fix this now?\")"
+        }
+    ];
+
+    const quizForm = document.getElementById('quiz-form');
+    const submitButton = document.getElementById('submit-quiz');
+    const quizResults = document.getElementById('quiz-results');
+    const scoreElement = document.getElementById('score');
+    const feedbackElement = document.getElementById('feedback');
+
+    function loadQuiz() {
+        let quizHtml = '';
+        quizData.forEach((q, index) => {
+            quizHtml += `<div class="quiz-question">`;
+            quizHtml += `<p><strong>${index + 1}. ${q.question}</strong></p>`;
+            q.options.forEach(option => {
+                quizHtml += `<label><input type="radio" name="question${index}" value="${option}"> ${option}</label><br>`;
+            });
+            quizHtml += `</div>`;
+        });
+        quizForm.innerHTML = quizHtml;
+    }
+
+    function submitQuiz() {
+        let score = 0;
+        quizData.forEach((q, index) => {
+            const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+            if (selectedOption && selectedOption.value === q.answer) {
+                score++;
+            }
+        });
+
+        const totalQuestions = quizData.length;
+        const percentage = (score / totalQuestions) * 100;
+
+        scoreElement.textContent = `${score} / ${totalQuestions} (${percentage.toFixed(2)}%)`;
+
+        if (percentage >= 80) {
+            feedbackElement.textContent = "Excellent! You have a strong grasp of the core concepts.";
+            feedbackElement.classList.add('feedback-green');
+        } else {
+            feedbackElement.textContent = "Good effort. We recommend reviewing the material again to solidify your understanding.";
+            feedbackElement.classList.add('feedback-orange');
+        }
+
+        quizResults.classList.add('quiz-results-visible');
+        submitButton.style.display = 'none';
+    }
+
+    window.onload = loadQuiz;
+    submitButton.addEventListener('click', submitQuiz);
+</script>
 
     <a href="empath-school.html" class="btn">Back to Empath Closing School</a>
   </div>

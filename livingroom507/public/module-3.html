@@ -66,9 +66,121 @@
         <p>The core of the Referral Engine is the 90-Day Results Check-In, and it is crucial that the Empath Closer approaches this call with an intent focused purely on the client's success. This call is emphatically not a sales pitch for a new product. Its purpose is to schedule time with a client who is already achieving phenomenal results, allowing them to verbally celebrate their win. By focusing on the tangible value the client has received, you reinforce their empowered decision and deepen loyalty. This creates a moment of genuine excitement where the client is most likely to offer referrals naturally. It is only after they confirm their enthusiasm and results that the Empath Closer transitions into the 'Who Do You Know?' script, making the referral feel like a natural extension of their gratitude, not a transactional request.</p>
     </div>
 
-    <div class="card text-center">
-        <a href="quiz-3.html" class="btn">Take the Module 3 Assessment</a>
+    <div class="card">
+        <h2>Module 3 Quiz: Impact & Scale</h2>
+        <form id="quiz-form">
+            <!-- Questions will be injected here by JavaScript -->
+        </form>
+        <button id="submit-quiz" class="btn">Submit Quiz</button>
+        <div id="quiz-results" class="card hidden">
+            <h3>Quiz Results</h3>
+            <p>Your score: <span id="score"></span></p>
+            <p id="feedback"></p>
+        </div>
     </div>
+
+<script>
+    const quizData = [
+        {
+            question: "The primary purpose of Standard Operating Procedures (SOPs) in scaling is to:",
+            options: ["Increase the founder's workload", "Ensure consistent quality and allow for effective delegation", "Eliminate the need for any human interaction", "Complicate simple tasks"],
+            answer: "Ensure consistent quality and allow for effective delegation"
+        },
+        {
+            question: "Leveraging digital assets in service delivery primarily aims to:",
+            options: ["Make the service impersonal", "Drastically reduce the manual time required from the closer", "Increase printing costs", "Replace all client communication"],
+            answer: "Drastically reduce the manual time required from the closer"
+        },
+        {
+            question: "The \"90-Day Results Check-In\" is crucial for the referral engine because it:",
+            options: ["Is a disguised sales pitch for a new product", "Reinforces the client's decision and deepens loyalty by focusing on their success", "Is a mandatory legal requirement", "Allows the closer to take a break"],
+            answer: "Reinforces the client's decision and deepens loyalty by focusing on their success"
+        },
+        {
+            question: "When should the \"Who Do You Know?\" script be deployed?",
+            options: ["Immediately after the initial sale", "Only after a client enthusiastically confirms their success during the 90-day check-in", "Before the client has even started the program", "As a cold call to past clients"],
+            answer: "Only after a client enthusiastically confirms their success during the 90-day check-in"
+        },
+        {
+            question: "Affiliate compensation for referrals serves to:",
+            options: ["Discourage clients from referring others", "Formalize the process and motivate clients to actively participate in growth", "Complicate financial tracking", "Reduce the perceived value of the service"],
+            answer: "Formalize the process and motivate clients to actively participate in growth"
+        },
+        {
+            question: "Which of the following is NOT one of the \"Core Four\" KPIs for high-level tracking?",
+            options: ["Client Acquisition Cost (CAC)", "Lifetime Value (LTV)", "Social Media Follower Count", "Closing Ratio"],
+            answer: "Social Media Follower Count"
+        },
+        {
+            question: "The purpose of a \"Weekly Scorecard\" displaying only the Core Four KPIs is to:",
+            options: ["Overwhelm the team with data", "Allow for fast, data-driven decisions on where to allocate time and capital", "Track every single minute detail of the business", "Impress investors with complex charts"],
+            answer: "Allow for fast, data-driven decisions on where to allocate time and capital"
+        },
+        {
+            question: "In the context of an exit strategy, \"Systemization is Value\" means:",
+            options: ["The founder's personal talent is the most valuable asset", "A buyer is primarily purchasing the documented processes and systems, not just the founder", "Systems are only valuable if they are extremely complex", "Only automated systems have value"],
+            answer: "A buyer is primarily purchasing the documented processes and systems, not just the founder"
+        },
+        {
+            question: "Minimizing \"Single-Point Failure\" in a business is achieved through:",
+            options: ["Making the founder responsible for everything", "Ensuring no critical business function depends solely on the founder, via delegation and system development", "Avoiding documentation of any processes", "Relying on a single, all-encompassing software solution"],
+            answer: "Ensuring no critical business function depends solely on the founder, via delegation and system development"
+        },
+        {
+            question: "Clean, verifiable records of KPIs and client success stories are important for an exit strategy because they:",
+            options: ["Are only for internal review", "Make the business attractive and ready for due diligence during a sale", "Are a waste of time to maintain", "Are primarily for marketing to new clients"],
+            answer: "Make the business attractive and ready for due diligence during a sale"
+        }
+    ];
+
+    const quizForm = document.getElementById('quiz-form');
+    const submitButton = document.getElementById('submit-quiz');
+    const quizResults = document.getElementById('quiz-results');
+    const scoreElement = document.getElementById('score');
+    const feedbackElement = document.getElementById('feedback');
+
+    function loadQuiz() {
+        let quizHtml = '';
+        quizData.forEach((q, index) => {
+            quizHtml += `<div class="quiz-question">`;
+            quizHtml += `<p><strong>${index + 1}. ${q.question}</strong></p>`;
+            q.options.forEach(option => {
+                quizHtml += `<label><input type="radio" name="question${index}" value="${option}"> ${option}</label><br>`;
+            });
+            quizHtml += `</div>`;
+        });
+        quizForm.innerHTML = quizHtml;
+    }
+
+    function submitQuiz() {
+        let score = 0;
+        quizData.forEach((q, index) => {
+            const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+            if (selectedOption && selectedOption.value === q.answer) {
+                score++;
+            }
+        });
+
+        const totalQuestions = quizData.length;
+        const percentage = (score / totalQuestions) * 100;
+
+        scoreElement.textContent = `${score} / ${totalQuestions} (${percentage.toFixed(2)}%)`;
+
+        if (percentage >= 80) {
+            feedbackElement.textContent = "Excellent! You have a strong grasp of the core concepts.";
+            feedbackElement.classList.add('feedback-green');
+        } else {
+            feedbackElement.textContent = "Good effort. We recommend reviewing the material again to solidify your understanding.";
+            feedbackElement.classList.add('feedback-orange');
+        }
+
+        quizResults.classList.add('quiz-results-visible');
+        submitButton.classList.add('hidden');
+    }
+
+    window.onload = loadQuiz;
+    submitButton.addEventListener('click', submitQuiz);
+</script>
   </div>
 </body>
 </html>

@@ -1,7 +1,12 @@
 # c:\Users\roblq\OneDrive\Documents\(websites)\New-web-updated-7\wrangler.toml
 
 name = "livingroom507newupdate-7"
+main = "workers/collaboration-room.js"
 compatibility_date = "2025-01-01"
+
+[[durable_objects.bindings]]
+name = "COLLAB_ROOM"
+class_name = "CollaborationRoom"
 
 [[d1_databases]]
 binding = "DB"
