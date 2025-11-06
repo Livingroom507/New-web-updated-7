@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Empath Closer Admin Dashboard | Oversight & Collaboration</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        /* Placeholder CSS for readability and structure */
         body { font-family: sans-serif; padding: 20px; background-color: #f4f7f9; }
         .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .stat-box { background: white; padding: 15px 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; }
         .stat-box h3 { margin-top: 0; color: #0056b3; font-size: 1.2em; }
         .profile-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .profile-table th, .profile-table td { border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 0.9em; }
-        
-        /* Collaboration Panel Styles */
         .collab-control-panel { background: #fff; padding: 20px; border-radius: 8px; margin-top: 30px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         #product-control-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .control-group { border: 1px solid #e0e0e0; padding: 10px; border-radius: 4px; }
@@ -21,6 +19,9 @@
         .control-group button { background-color: #4CAF50; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; }
         .control-group button:hover { background-color: #45a049; }
         .control-group span { margin-left: 10px; font-style: italic; color: #777; }
+        #email-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        #email-modal.active { display: flex; }
+        .modal-content { background: white; padding: 20px; border-radius: 8px; width: 500px; }
     </style>
 </head>
 <body>
@@ -42,11 +43,11 @@
     <table class="profile-table" id="closer-table">
         <thead>
             <tr>
+                <th>Select</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>M3 Score</th>
                 <th>Niche Interest</th>
-                <th>Placement Date</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -61,71 +62,138 @@
         <p>Use this panel to instantly highlight the selected product category on the client's screen (Session ID: <span id="collab-session-id">---</span>).</p>
         
         <div id="product-control-grid">
-            
-            <div class="control-group">
-                <label>1. Women's Dresses</label>
-                <button onclick="sendAdminSelection('dresses', 'Women\'s Dresses')">Confirm Selection</button>
-                <span id="admin-status-dresses">Ready</span>
-            </div>
+            <div class="control-group"><label>1. Women's Dresses</label><button onclick="sendAdminSelection('dresses', 'Women\'s Dresses')">Confirm Selection</button><span id="admin-status-dresses">Ready</span></div>
+            <div class="control-group"><label>2. T-Shirts</label><button onclick="sendAdminSelection('t-shirts', 'T-Shirts')">Confirm Selection</button><span id="admin-status-t-shirts">Ready</span></div>
+            <div class="control-group"><label>3. Activewear</label><button onclick="sendAdminSelection('activewear', 'Activewear')">Confirm Selection</button><span id="admin-status-activewear">Ready</span></div>
+            <div class="control-group"><label>4. Jewelry</label><button onclick="sendAdminSelection('jewelry', 'Jewelry')">Confirm Selection</button><span id="admin-status-jewelry">Ready</span></div>
+            <div class="control-group"><label>5. Streetwear</label><button onclick="sendAdminSelection('streetwear', 'Streetwear')">Confirm Selection</button><span id="admin-status-streetwear">Ready</span></div>
+            <div class="control-group"><label>6. Handbags/Accessories</label><button onclick="sendAdminSelection('handbags', 'Handbags')">Confirm Selection</button><span id="admin-status-handbags">Ready</span></div>
+        </div>
+    </div>
 
-            <div class="control-group">
-                <label>2. T-Shirts</label>
-                <button onclick="sendAdminSelection('t-shirts', 'T-Shirts')">Confirm Selection</button>
-                <span id="admin-status-t-shirts">Ready</span>
-            </div>
-
-            <div class="control-group">
-                <label>3. Activewear</label>
-                <button onclick="sendAdminSelection('activewear', 'Activewear')">Confirm Selection</button>
-                <span id="admin-status-activewear">Ready</span>
-            </div>
-
-            <div class="control-group">
-                <label>4. Jewelry</label>
-                <button onclick="sendAdminSelection('jewelry', 'Jewelry')">Confirm Selection</button>
-                <span id="admin-status-jewelry">Ready</span>
-            </div>
-
-            <div class="control-group">
-                <label>5. Streetwear</label>
-                <button onclick="sendAdminSelection('streetwear', 'Streetwear')">Confirm Selection</button>
-                <span id="admin-status-streetwear">Ready</span>
-            </div>
-
-            <div class="control-group">
-                <label>6. Handbags/Accessories</label>
-                <button onclick="sendAdminSelection('handbags', 'Handbags')">Confirm Selection</button>
-                <span id="admin-status-handbags">Ready</span>
-            </div>
+    <div id="email-modal">
+        <div class="modal-content">
+            <h2>Send Team Communication</h2>
+            <input type="text" id="email-subject" placeholder="Subject">
+            <textarea id="email-body" placeholder="Message" rows="8"></textarea>
+            <button class="btn" onclick="sendTeamEmail()">Send Email</button>
+            <button class="btn cancel-btn" onclick="closeEmailModal()">Cancel</button>
         </div>
     </div>
     
     <script>
-        // NOTE: These placeholder variables must be securely obtained via a login process.
-        const AUTH_TOKEN = 'YOUR_SECURE_ADMIN_KEY'; 
-        const API_ENDPOINT = '/api/admin/data'; 
+        const API_ENDPOINT = '/api/admin/data';
+        const SEND_EMAIL_ENDPOINT = '/api/admin/send-email';
         const PUSH_ENDPOINT = '/api/push-collab-update';
-        
-        // This should be dynamically set when the admin selects a client profile
-        let CURRENT_CLIENT_SESSION_ID = 'SESSION_XYZ_123'; 
-        
-        // --------------------------------------------------------
-        // 1. DASHBOARD DATA FETCHING (From a previous response)
-        // --------------------------------------------------------
-        async function fetchAdminData() {
-            try {
-                const response = await fetch(API_ENDPOINT, {
-                    headers: { 'X-Admin-Auth': AUTH_TOKEN }
-                });
-                // ... rest of the fetch logic and rendering ...
-            } catch (error) {
-                console.error("Could not load admin data:", error);
+        let authToken = '';
+        let CURRENT_CLIENT_SESSION_ID = 'SESSION_XYZ_123';
+
+        function getAuthToken() {
+            if (sessionStorage.getItem('adminAuthToken')) {
+                return sessionStorage.getItem('adminAuthToken');
+            } else {
+                const token = prompt('Please enter your Admin API Key:');
+                if (token) {
+                    sessionStorage.setItem('adminAuthToken', token);
+                    return token;
+                }
+                return null;
             }
         }
-        
-        // --------------------------------------------------------
-        // 2. LIVE COLLABORATION PUSH LOGIC (From the last response)
-        // --------------------------------------------------------
+
+        async function fetchAdminData() {
+            authToken = getAuthToken();
+            if (!authToken) {
+                document.querySelector('#closer-table tbody').innerHTML = `<tr><td colspan="6" class="error-message">Authentication token not provided.</td></tr>`;
+                return;
+            }
+
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'X-Admin-Auth': authToken }
+                });
+                if (response.status === 401) throw new Error('Authentication Failed. Please check your API Key.');
+                if (!response.ok) throw new Error('Server Error');
+                const data = await response.json();
+                renderDashboard(data);
+            } catch (error) {
+                console.error("Could not load admin data:", error);
+                document.querySelector('#closer-table tbody').innerHTML = `<tr><td colspan="6" class="error-message">Error loading data: ${error.message}</td></tr>`;
+            }
+        }
+
+        function renderDashboard(data) {
+            document.getElementById('total-closers').textContent = data.teamSize || 0;
+            document.getElementById('mastery-count').textContent = data.topPerformers.length;
+
+            const tableBody = document.querySelector('#closer-table tbody');
+            tableBody.innerHTML = '';
+
+            data.profiles.forEach(profile => {
+                const score = data.topPerformers.find(p => p.email === profile.email)?.score || 'N/A';
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td><input type="checkbox" class="email-select" value="${profile.email}"></td>
+                    <td>${profile.fullName}</td>
+                    <td>${profile.email}</td>
+                    <td>${score}</td>
+                    <td>${profile.nicheInterest}</td>
+                    <td><button class="btn" onclick="showFullProfile('${profile.email}')">Analyze</button></td>
+                `;
+            });
+        }
+
+        function showFullProfile(email) {
+            alert(`Fetching full details for ${email}... (Not yet implemented)`);
+        }
+
+        function openEmailModal() {
+            if (!authToken) {
+                alert('Please authenticate to send emails.');
+                return;
+            }
+            document.getElementById('email-modal').classList.add('active');
+        }
+
+        function closeEmailModal() {
+            document.getElementById('email-modal').classList.remove('active');
+        }
+
+        async function sendTeamEmail() {
+            const selectedEmails = Array.from(document.querySelectorAll('.email-select:checked')).map(cb => cb.value);
+            const subject = document.getElementById('email-subject').value;
+            const body = document.getElementById('email-body').value;
+
+            if (selectedEmails.length === 0 || !subject || !body) {
+                alert("Please select recipients and fill out the subject and body.");
+                return;
+            }
+
+            try {
+                const response = await fetch(SEND_EMAIL_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Admin-Auth': authToken
+                    },
+                    body: JSON.stringify({ recipientEmails: selectedEmails, subject, body })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || "Failed to send emails.");
+                }
+
+                alert(`Success! Message sent to ${selectedEmails.length} certified closers.`);
+                closeEmailModal();
+
+            } catch (error) {
+                console.error('Error sending team email:', error);
+                alert(`Error: ${error.message}. Check console for details.`);
+            }
+        }
+
         async function sendAdminSelection(categoryId, categoryName) {
             const statusElement = document.getElementById(`admin-status-${categoryId}`);
             statusElement.textContent = 'Sending...';
@@ -137,7 +205,7 @@
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
-                        'X-Admin-Auth': AUTH_TOKEN 
+                        'X-Admin-Auth': authToken 
                     },
                     body: JSON.stringify({
                         action: 'confirm_selection',
@@ -157,7 +225,6 @@
                 if (response.ok) {
                     statusElement.textContent = 'Confirmed!';
                     statusElement.style.color = '#28a745'; 
-                    // Log to the D1 table for long-term tracking
                     logClientFinalSelection(CURRENT_CLIENT_SESSION_ID, categoryId, categoryName);
                 } else {
                     statusElement.textContent = 'Push Failed';
@@ -171,17 +238,10 @@
             }
         }
 
-        // Placeholder function (needs a secure API call to D1)
         function logClientFinalSelection(sessionId, categoryId, categoryName) {
             console.log(`[D1 Log] Logging final selection for session ${sessionId}: ${categoryName}`);
         }
 
-        // Placeholder for the communication modal
-        function openEmailModal() {
-            alert('Email Modal functionality triggered.');
-        }
-
-        // Initialize dashboard on load
         fetchAdminData();
         document.getElementById('collab-session-id').textContent = CURRENT_CLIENT_SESSION_ID;
 

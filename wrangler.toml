@@ -1,5 +1,3 @@
-# c:\Users\roblq\OneDrive\Documents\(websites)\New-web-updated-7\wrangler.toml
-
 name = "livingroom507newupdate-7"
 main = "workers/collaboration-room.js"
 compatibility_date = "2025-01-01"
@@ -8,8 +6,11 @@ compatibility_date = "2025-01-01"
 name = "COLLAB_ROOM"
 class_name = "CollaborationRoom"
 
+[[migrations]]
+tag = "v1"
+new_classes = [ "CollaborationRoom" ]
+
 [[d1_databases]]
 binding = "DB"
 database_name = "livingroom507-db"
-database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14"
-migrations_dir = "db/migrations"
+database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14" # <--- IMPORTANT: Replace with your actual D1 Database ID
