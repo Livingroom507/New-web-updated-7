@@ -1,7 +1,3 @@
-import { CollaborationRoom } from '../collaboration-room.js'; 
-
-export { CollaborationRoom };
-
 import { onRequestPost as handlePushUpdate } from './api/push-collab-update.js';
 
 export default {
@@ -11,7 +7,7 @@ export default {
         if (url.pathname === '/api/push-collab-update' && request.method === 'POST') {
             return handlePushUpdate({ request, env, ctx });
         }
-        
+
         if (url.pathname.startsWith('/ws/')) {
             const parts = url.pathname.split('/');
             const sessionId = parts[2];
