@@ -18,20 +18,37 @@ export async function onRequestPost({ request, env }) {
     
     // --- 2. Data Queries (Only executes if authentication succeeds) ---
     try {
-        const teamCount = await env.DB.prepare("SELECT COUNT(email) FROM PlacementProfiles").first();
-        const topPerformers = await env.DB.prepare("SELECT user_email, score, knowledge_level FROM AssessmentResults WHERE knowledge_level = 'Mastery' LIMIT 10").all();
-        const allProfiles = await env.DB.prepare("SELECT email, fullName, salesExperience, nicheInterest FROM PlacementProfiles").all();
+        const query = `
+            SELECT 
+                PP.fullName, 
+                PP.email, 
+                PP.salesExperience, 
+                PP.nicheInterest, 
+                QR.total_score, 
+                QR.knowledge_level
+            FROM 
+                PlacementProfiles PP 
+            JOIN 
+                QuizResults QR 
+            ON 
+                PP.email = QR.email;
+        `;
+        const { results } = await env.DB.prepare(query).all();
 
-        return new Response(JSON.stringify({
-            teamSize: teamCount['COUNT(email)'],
-            topPerformers: topPerformers.results,
-            profiles: allProfiles.results
-        }), {
-            headers: { 'Content-Type': 'application/json' }
+        if (!results) {
+             return new Response(JSON.stringify({ error: "No results found." }), {
+                 status: 404, headers: { 'Content-Type': 'application/json' }
+             });
+        }
+
+        return new Response(JSON.stringify(results), {
+            status: 200, headers: { 'Content-Type': 'application/json' }
         });
 
-    } catch (error) {
-        console.error('Database query failed:', error);
-        return new Response('Server Error: Database failure.', { status: 500 });
+    } catch (e) {
+        console.error("D1 Query Error:", e.message);
+        return new Response(JSON.stringify({ error: "Database failure.", detail: e.message }), {
+            status: 500, headers: { 'Content-Type': 'application/json' }
+        });
     }
 }
