@@ -1,6 +1,4 @@
 name = "livingroom507newupdate-7"
-# We need to point to the special _worker.js file for Pages Functions
-main = "functions/_worker.js"
 compatibility_date = "2025-01-01"
 
 pages_build_output_dir = "livingroom507/public"
