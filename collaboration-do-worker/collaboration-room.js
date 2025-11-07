@@ -2,7 +2,7 @@ export class CollaborationRoom {
     constructor(state, env) {
         this.state = state;
         this.env = env;
-        this.sessions = new Set(); 
+        this.sessions = new Set();
     }
 
     async fetch(request) {
@@ -10,7 +10,7 @@ export class CollaborationRoom {
 
         if (url.pathname === '/websocket') {
             const [client, server] = new WebSocketPair();
-            await this.handleWebSocket(server); 
+            await this.handleWebSocket(server);
             return new Response(null, { status: 101, webSocket: client });
 
         } else if (url.pathname === '/push-update' && request.method === 'POST') {
@@ -31,12 +31,12 @@ export class CollaborationRoom {
 
     async handleAdminPush(request) {
         const authKey = request.headers.get('X-Admin-Auth');
-        if (authKey !== this.env.ADMIN_API_KEY) { 
+        if (authKey !== this.env.ADMIN_API_KEY) {
              return new Response('Unauthorized Push', { status: 401 });
         }
 
         const message = await request.json();
-        
+
         this.broadcast(JSON.stringify(message));
 
         return new Response('Update Broadcasted', { status: 200 });

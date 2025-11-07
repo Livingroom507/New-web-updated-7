@@ -19,7 +19,7 @@ export async function onRequestPost({ request, env }) {
     // --- 2. Data Queries (Only executes if authentication succeeds) ---
     try {
         const teamCount = await env.DB.prepare("SELECT COUNT(email) FROM PlacementProfiles").first();
-        const topPerformers = await env.DB.prepare("SELECT email, score, knowledgeLevel FROM Module3Results WHERE knowledgeLevel = 'Mastery' LIMIT 10").all();
+        const topPerformers = await env.DB.prepare("SELECT user_email, score, knowledge_level FROM AssessmentResults WHERE knowledge_level = 'Mastery' LIMIT 10").all();
         const allProfiles = await env.DB.prepare("SELECT email, fullName, salesExperience, nicheInterest FROM PlacementProfiles").all();
 
         return new Response(JSON.stringify({
