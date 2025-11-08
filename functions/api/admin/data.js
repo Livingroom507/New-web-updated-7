@@ -24,14 +24,14 @@ export async function onRequestPost({ request, env }) {
                 PP.email, 
                 PP.salesExperience, 
                 PP.nicheInterest, 
-                QR.total_score, 
-                QR.knowledge_level
+                AR.score, 
+                AR.knowledge_level
             FROM 
                 PlacementProfiles PP 
-            JOIN 
-                QuizResults QR 
+            LEFT JOIN 
+                AssessmentResults AR 
             ON 
-                PP.email = QR.email;
+                PP.email = AR.user_email;
         `;
         const { results } = await env.DB.prepare(query).all();
 
@@ -41,7 +41,13 @@ export async function onRequestPost({ request, env }) {
              });
         }
 
-        return new Response(JSON.stringify(results), {
+        const responseData = {
+            profiles: results,
+            topPerformers: results.filter(p => p.score !== null && p.score !== undefined),
+            teamSize: results.length
+        };
+
+        return new Response(JSON.stringify(responseData), {
             status: 200, headers: { 'Content-Type': 'application/json' }
         });
 
