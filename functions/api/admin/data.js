@@ -33,9 +33,9 @@ export async function onRequestPost({ request, env }) {
                 p.submissionDate,
                 m.score
             FROM 
-                PlacementProfiles p
+                placement_profiles p
             LEFT JOIN 
-                Module3Results m ON p.email = m.email;
+                module3_results m ON p.email = m.email;
         `;
         const { results } = await env.DB.prepare(query).all();
 
