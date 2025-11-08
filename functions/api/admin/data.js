@@ -20,18 +20,9 @@ export async function onRequestPost({ request, env }) {
     try {
         const query = `
             SELECT 
-                PP.fullName, 
-                PP.email, 
-                PP.salesExperience, 
-                PP.nicheInterest, 
-                AR.score, 
-                AR.knowledge_level
+                *
             FROM 
-                PlacementProfiles PP 
-            LEFT JOIN 
-                AssessmentResults AR 
-            ON 
-                PP.email = AR.user_email;
+                PlacementProfiles;
         `;
         const { results } = await env.DB.prepare(query).all();
 
@@ -52,7 +43,7 @@ export async function onRequestPost({ request, env }) {
         });
 
     } catch (e) {
-        console.error("D1 Query Error:", e.message);
+        console.error("D1 Query Error:", e);
         return new Response(JSON.stringify({ error: "Database failure.", detail: e.message }), {
             status: 500, headers: { 'Content-Type': 'application/json' }
         });
