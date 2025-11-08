@@ -114,7 +114,10 @@
                     headers: { 'X-Admin-Auth': authToken }
                 });
                 if (response.status === 401) throw new Error('Authentication Failed. Please check your API Key.');
-                if (!response.ok) throw new Error('Server Error');
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ detail: 'Server Error' }));
+                    throw new Error(errorData.detail || 'Server Error');
+                }
                 const data = await response.json();
                 renderDashboard(data);
             } catch (error) {

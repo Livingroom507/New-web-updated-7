@@ -30,16 +30,35 @@ export class CollaborationRoom {
     }
 
     async handleAdminPush(request) {
-        const authKey = request.headers.get('X-Admin-Auth');
-        if (authKey !== this.env.ADMIN_API_KEY) {
-             return new Response('Unauthorized Push', { status: 401 });
+        try {
+            console.log('Handling admin push...');
+            const authKey = request.headers.get('X-Admin-Auth');
+            console.log('Auth key:', authKey ? 'present' : 'missing');
+
+            if (authKey !== this.env.ADMIN_API_KEY) {
+                console.warn('Unauthorized push attempt.');
+                return new Response('Unauthorized Push', { status: 401 });
+            }
+
+            console.log('Auth successful. Parsing message...');
+            const message = await request.json();
+            console.log('Message parsed:', message);
+
+            this.broadcast(JSON.stringify(message));
+            console.log('Broadcast complete.');
+
+            return new Response('Update Broadcasted', { status: 200 });
+        } catch (e) {
+            console.error('Error in handleAdminPush:', e);
+            // Also log the request body if possible, as it might not be valid JSON
+            try {
+                const bodyText = await request.text();
+                console.error('Request body text:', bodyText);
+            } catch (textErr) {
+                console.error('Could not even read request body as text:', textErr);
+            }
+            return new Response('Internal Server Error in DO', { status: 500 });
         }
-
-        const message = await request.json();
-
-        this.broadcast(JSON.stringify(message));
-
-        return new Response('Update Broadcasted', { status: 200 });
     }
 
     broadcast(message) {
