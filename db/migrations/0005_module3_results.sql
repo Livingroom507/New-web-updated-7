@@ -1,4 +1,4 @@
-CREATE TABLE Module3Results (
+CREATE TABLE module3_results (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT NOT NULL,
     score INTEGER NOT NULL,
