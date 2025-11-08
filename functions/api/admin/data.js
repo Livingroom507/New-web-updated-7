@@ -20,9 +20,22 @@ export async function onRequestPost({ request, env }) {
     try {
         const query = `
             SELECT 
-                *
+                p.id,
+                p.email,
+                p.fullName,
+                p.linkedinUrl,
+                p.salesExperience,
+                p.nicheInterest,
+                p.availability,
+                p.deepPainSummary,
+                p.objectionHandlingView,
+                p.crmFamiliarity,
+                p.submissionDate,
+                m.score
             FROM 
-                PlacementProfiles;
+                PlacementProfiles p
+            LEFT JOIN 
+                Module3Results m ON p.email = m.email;
         `;
         const { results } = await env.DB.prepare(query).all();
 
