@@ -77,7 +77,9 @@
                 <label for="user-email">Your Email Address:</label>
                 <input type="email" id="user-email" name="email" required placeholder="Enter the email used for your profile">
             </div>
-            <!-- Questions will be injected here by JavaScript -->
+            <div id="quiz-questions-container">
+                <!-- Questions will be injected here by JavaScript -->
+            </div>
         </form>
         <button id="submit-quiz" class="btn">Submit Quiz</button>
         <div id="quiz-results" class="card hidden">
@@ -148,6 +150,11 @@
     const feedbackElement = document.getElementById('feedback');
 
     function loadQuiz() {
+        const questionsContainer = document.getElementById('quiz-questions-container');
+        if (!questionsContainer) {
+            console.error('Quiz questions container not found!');
+            return;
+        }
         let quizHtml = '';
         quizData.forEach((q, index) => {
             quizHtml += `<div class="quiz-question">`;
@@ -157,7 +164,7 @@
             });
             quizHtml += `</div>`;
         });
-        quizForm.innerHTML = quizHtml;
+        questionsContainer.innerHTML = quizHtml;
     }
 
     async function submitQuiz() {
