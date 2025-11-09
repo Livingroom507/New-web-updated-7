@@ -33,7 +33,7 @@ export async function onRequestPost({ request, env }) {
                 p.submissionDate,
                 m.score
             FROM 
-                placement_profiles p
+                PlacementProfiles p
             LEFT JOIN 
                 module3_results m ON p.email = m.email;
         `;
