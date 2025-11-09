@@ -1,31 +1,28 @@
 export async function onRequestPost({ request, env }) {
     try {
         // Get the data from the request body
-        const { user_email, module_number, score, total_questions, referrer_affiliate_id } = await request.json();
+        const { fullName, email, score } = await request.json();
 
         // Basic validation
-        if (!user_email || !module_number || score === undefined || !total_questions) {
+        if (!fullName || !email || score === undefined) {
             return new Response('Missing required fields.', { status: 400 });
         }
 
         // Calculate knowledge level
-        let knowledge_level;
-        const percentage = (score / total_questions) * 100;
-        if (percentage >= 90) {
-            knowledge_level = 'Mastery';
-        } else if (percentage >= 60) {
-            knowledge_level = 'Intermediate';
+        let knowledgeLevel;
+        if (score >= 80) {
+            knowledgeLevel = 'Mastery';
         } else {
-            knowledge_level = 'Needs Review';
+            knowledgeLevel = 'Needs Review';
         }
 
-        // Prepare the SQL statement to insert data into the AssessmentResults table
+        // Prepare the SQL statement to insert data into the module3_results table
         const stmt = env.DB.prepare(
-            'INSERT INTO AssessmentResults (user_email, module_number, score, total_questions, knowledge_level, referrer_affiliate_id) VALUES (?, ?, ?, ?, ?, ?)'
+            'INSERT INTO module3_results (email, score, knowledgeLevel) VALUES (?, ?, ?)'
         );
 
         // Bind the values and execute the statement
-        const result = await stmt.bind(user_email, module_number, score, total_questions, knowledge_level, referrer_affiliate_id || null).run();
+        const result = await stmt.bind(email, score, knowledgeLevel).run();
 
         // Return a success response
         return new Response(JSON.stringify({ success: true, result }), {
