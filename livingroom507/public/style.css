@@ -64,7 +64,8 @@ nav ul li a:hover { color: var(--secondary-color); /* Hover color from menuBtn *
 .calculator-container { background-color: var(--background-color); padding: 25px; border-radius: 8px; margin-top: 20px; }
 .form-group { margin-bottom: 15px; }
 .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-.form-group input { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid var(--light-gray); box-sizing: border-box; }
+.form-group input[type="text"],
+.form-group input[type="email"] { width: 100%; padding: 10px; border-radius: 4px; border: 1px solid var(--light-gray); box-sizing: border-box; }
 .result-box { margin-top: 20px; padding: 15px; background-color: lighten(var(--primary-color), 40%); /* Adjusted from #eafaf1 */ border: 1px solid darken(var(--primary-color), 10%); /* Adjusted from #58d68d */ border-radius: 4px; font-weight: bold; color: var(--primary-color); /* Adjusted from #1e8449 */ }
 /* HR and Email Sections */
 .hr-section, .email-preview { border: 1px solid var(--light-gray); padding: 20px; border-radius: 8px; margin-top: 20px; }
