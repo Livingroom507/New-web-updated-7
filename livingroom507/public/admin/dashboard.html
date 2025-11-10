@@ -22,6 +22,8 @@
         #email-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
         #email-modal.active { display: flex; }
         .modal-content { background: white; padding: 20px; border-radius: 8px; width: 500px; }
+        #profile-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
+        .profile-modal-content { background: #fff; padding: 30px; border-radius: 10px; width: 600px; max-width: 90%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
@@ -69,6 +71,11 @@
             <div class="control-group"><label>5. Streetwear</label><button onclick="sendAdminSelection('streetwear', 'Streetwear')">Confirm Selection</button><span id="admin-status-streetwear">Ready</span></div>
             <div class="control-group"><label>6. Handbags/Accessories</label><button onclick="sendAdminSelection('handbags', 'Handbags')">Confirm Selection</button><span id="admin-status-handbags">Ready</span></div>
         </div>
+    </div>
+
+    <div id="profile-modal" onclick="this.style.display='none'">
+        <div id="profile-modal-content" onclick="event.stopPropagation()">
+            </div>
     </div>
 
     <div id="email-modal">
@@ -148,7 +155,57 @@
         }
 
         function showFullProfile(email) {
-            alert(`Fetching full details for ${email}... (Not yet implemented)`);
+            fetchFullDetails(email);
+        }
+
+        async function fetchFullDetails(email) {
+            const modal = document.getElementById('profile-modal');
+            modal.style.display = 'flex';
+            const content = document.getElementById('profile-modal-content');
+            content.innerHTML = `<p>Fetching full details for ${email}...</p>`;
+
+            try {
+                const response = await fetch(`/api/admin/profile-details?email=${email}`, {
+                    method: 'GET',
+                    headers: { 'X-Admin-Auth': authToken }
+                });
+                
+                if (!response.ok) throw new Error('Failed to fetch profile details.');
+                
+                const data = await response.json();
+                
+                renderProfileModal(data); 
+
+            } catch (error) {
+                console.error("Error fetching details:", error);
+                renderProfileModal({ error: error.message });
+            }
+        }
+
+        function renderProfileModal(data) {
+            const content = document.getElementById('profile-modal-content');
+            if (data.error) {
+                content.innerHTML = `<p class="error-message">Error: ${data.error}</p>`;
+                return;
+            }
+
+            content.innerHTML = `
+                <h2>${data.fullName}</h2>
+                <p><strong>Email:</strong> ${data.email}</p>
+                <p><strong>LinkedIn:</strong> <a href="${data.linkedinUrl}" target="_blank">${data.linkedinUrl}</a></p>
+                <p><strong>Niche Interest:</strong> ${data.nicheInterest}</p>
+                <hr>
+                <h3>Qualitative Analysis</h3>
+                <p><strong>Deep Pain Summary:</strong> ${data.deepPainSummary}</p>
+                <p><strong>Objection Handling View:</strong> ${data.objectionHandlingView}</p>
+                <hr>
+                <h3>Performance Scores</h3>
+                <p><strong>Module 1 Score:</strong> ${data.module1_score}</p>
+                <p><strong>Module 2 Score:</strong> ${data.module2_score}</p>
+                <p><strong>Module 3 Score:</strong> ${data.module3_score}</p>
+                <p><strong>Total Score:</strong> ${data.total_score}</p>
+                <p><strong>Knowledge Level:</strong> ${data.knowledge_level}</p>
+            `;
         }
 
         function openEmailModal() {

@@ -1,42 +1,35 @@
-export async function onRequestGet({ env, request }) {
+
+export async function onRequestGet(context) {
+  const { request, env } = context;
+  const url = new URL(request.url);
+  const email = url.searchParams.get('email');
+
+  if (!email) {
+    return new Response('Email query parameter is required', { status: 400 });
+  }
+
   try {
-    const url = new URL(request.url);
-    const affiliateId = url.searchParams.get('affiliate_id');
+    const referralsQuery = `
+      SELECT 
+          r.id,
+          r.name,
+          r.email,
+          r.status,
+          r.created_at
+      FROM 
+          Referrals r
+      WHERE 
+          r.referred_by = ?;
+    `;
 
-    let res;
-    if (affiliateId) {
-      res = await env.DB.prepare(`
-        SELECT r.id,
-               r.created_at AS date,
-               COALESCE(u.name, r.referred_email) AS referred_user,
-               r.plan_name AS plan_chosen,
-               r.commission,
-               r.status
-        FROM referrals r
-        LEFT JOIN users u ON u.id = r.referred_user_id
-        WHERE r.affiliate_id = ?
-        ORDER BY r.created_at DESC
-        LIMIT 500;
-      `).bind(affiliateId).all();
-    } else {
-      res = await env.DB.prepare(`
-        SELECT r.id,
-               r.created_at AS date,
-               COALESCE(u.name, r.referred_email) AS referred_user,
-               r.plan_name AS plan_chosen,
-               r.commission,
-               r.status
-        FROM referrals r
-        LEFT JOIN users u ON u.id = r.referred_user_id
-        ORDER BY r.created_at DESC
-        LIMIT 500;
-      `).all();
-    }
+    const ps = env.DB.prepare(referralsQuery).bind(email);
+    const { results } = await ps.all();
 
-    const rows = res && res.results ? res.results : res;
-    return new Response(JSON.stringify(rows || []), { headers: { "Content-Type": "application/json" }});
-  } catch (e) {
-    console.error(e);
-    return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { "Content-Type": "application/json" }});
+    return new Response(JSON.stringify(results), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error('Error fetching referrals:', error);
+    return new Response('Internal Server Error', { status: 500 });
   }
 }
