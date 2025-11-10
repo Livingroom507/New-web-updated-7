@@ -175,37 +175,59 @@
                 const data = await response.json();
                 console.log(data);
                 
-                renderProfileModal(data); 
+                renderProfileDetails(data); 
 
             } catch (error) {
                 console.error("Error fetching details:", error);
-                renderProfileModal({ error: error.message });
+                renderProfileDetails({ error: error.message });
             }
         }
 
-        function renderProfileModal(data) {
-            const content = document.getElementById('profile-modal-content');
-            if (data.error) {
-                content.innerHTML = `<p class="error-message">Error: ${data.error}</p>`;
+        function renderProfileDetails(profile) {
+            // The modal's content div has the ID 'profile-modal-content'
+            const modalContent = document.getElementById('profile-modal-content');
+
+            if (profile.error) {
+                modalContent.innerHTML = `<p class="error-message">Error: ${profile.error}</p>`;
                 return;
             }
 
-            content.innerHTML = `
-                <h2>${data.fullName}</h2>
-                <p><strong>Email:</strong> ${data.email}</p>
-                <p><strong>LinkedIn:</strong> <a href="${data.linkedinUrl}" target="_blank">${data.linkedinUrl}</a></p>
-                <p><strong>Niche Interest:</strong> ${data.nicheInterest}</p>
-                <hr>
-                <h3>Qualitative Analysis</h3>
-                <p><strong>Deep Pain Summary:</strong> ${data.deepPainSummary}</p>
-                <p><strong>Objection Handling View:</strong> ${data.objectionHandlingView}</p>
-                <hr>
-                <h3>Performance Scores</h3>
-                <p><strong>Module 1 Score:</strong> ${data.module1_score}</p>
-                <p><strong>Module 2 Score:</strong> ${data.module2_score}</p>
-                <p><strong>Module 3 Score:</strong> ${data.module3_score}</p>
-                <p><strong>Total Score:</strong> ${data.total_score}</p>
-                <p><strong>Knowledge Level:</strong> ${data.knowledge_level}</p>
+            // You can see the full list of available fields in your console output!
+            const { 
+                fullName, email, nicheInterest, linkedinUrl, salesExperience, availability, 
+                deepPainSummary, objectionHandlingView, crmFamiliarity, submissionDate,
+                module3_score // Adjusted to match your object field name
+                // Add other fields if you introduce the consolidated score table
+            } = profile;
+
+            // Build the HTML content to be displayed in the modal
+            modalContent.innerHTML = `
+                <span class="close-button" onclick="document.getElementById('profile-modal').style.display='none'">&times;</span>
+                <h2>${fullName}'s Full Profile Analysis</h2>
+                
+                <div class="profile-details-grid">
+                    <div class="detail-section">
+                        <h3>Contact & Base Info</h3>
+                        <p><strong>Email:</strong> ${email}</p>
+                        <p><strong>LinkedIn:</strong> <a href="${linkedinUrl}" target="_blank">View Profile</a></p>
+                        <p><strong>Niche Interest:</strong> ${nicheInterest}</p>
+                        <p><strong>Sales Experience:</strong> ${salesExperience} years</p>
+                    </div>
+
+                    <div class="detail-section score-section">
+                        <h3>Assessment Scores</h3>
+                        <p class="big-score"><strong>Module 3 Score:</strong> ${module3_score || 'N/A'}</p>
+                    </div>
+                </div>
+                
+                <div class="qualitative-section">
+                    <h3>Qualitative Assessments</h3>
+                    <h4>Deep Pain Summary View</h4>
+                    <blockquote class="summary-box">${deepPainSummary || 'No data provided.'}</blockquote>
+                    
+                    <h4>Objection Handling View</h4>
+                    <blockquote class="summary-box">${objectionHandlingView || 'No data provided.'}</blockquote>
+                </div>
             `;
         }
 
