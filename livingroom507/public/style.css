@@ -156,6 +156,11 @@ footer { background-color: var(--primary-color); color: var(--barber-shop-white)
 .client-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
 .client-card { background-color: var(--background-color); text-align: center; padding: 15px; font-weight: bold; border-radius: 5px; transition: background-color 0.3s, color 0.3s; }
 .client-card:hover { background-color: var(--secondary-color); color: var(--barber-shop-white); }
+
+.client-card a {
+    text-decoration: none;
+    color: inherit;
+}
 .client-card-link { text-decoration: none; color: inherit; }
 .investment-list { list-style: none; padding: 0; column-count: 2; }
 .investment-list li { padding-left: 30px; position: relative; margin-bottom: 10px; font-size: 1.1em; }

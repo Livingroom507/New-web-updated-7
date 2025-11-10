@@ -65,3 +65,7 @@ body { font-family: sans-serif; padding: 20px; background-color: #f4f7f9; }
     text-decoration: none;
     cursor: pointer;
 }
+#team-summary {
+    display: flex;
+    gap: 20px;
+}

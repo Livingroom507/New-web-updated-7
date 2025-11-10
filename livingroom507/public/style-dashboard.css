@@ -546,3 +546,7 @@
     border: 1px solid #ffeeba;
     margin-bottom: 20px;
 }
+
+.page-title .fa-check-circle {
+    color: green;
+}
