@@ -32,6 +32,6 @@ export async function onRequestGet(context) {
     }
   } catch (error) {
     console.error('Error fetching profile details:', error);
-    return new Response('Internal Server Error', { status: 500 });
+    return new Response(`Internal Server Error: ${error.message}`, { status: 500 });
   }
 }
