@@ -9,10 +9,17 @@ export async function onRequestGet(context) {
   }
 
   try {
-    const query = `SELECT p.*, m.score AS module3_score // <-- Change: Select 'score' column and alias it
-      FROM PlacementProfiles p
-      LEFT JOIN module3_results m ON p.email = m.email // <-- Change: Use the existing table name
-      WHERE p.email = ?;`;
+    const query = `
+      SELECT 
+          p.*, 
+          m.module1_score, m.module2_score, m.module3_score, m.total_score, m.knowledge_level
+      FROM 
+          PlacementProfiles p
+      LEFT JOIN 
+          QuizResults m ON p.email = m.email
+      WHERE 
+          p.email = ?;
+    `;
     const ps = env.DB.prepare(query).bind(email);
     const result = await ps.first();
 
