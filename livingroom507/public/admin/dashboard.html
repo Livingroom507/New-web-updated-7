@@ -173,6 +173,7 @@
                 if (!response.ok) throw new Error('Failed to fetch profile details.');
                 
                 const data = await response.json();
+                console.log(data);
                 
                 renderProfileModal(data); 
 
