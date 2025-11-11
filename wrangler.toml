@@ -17,3 +17,8 @@ migrations_dir = "db/migrations"
 # For local development with `wrangler pages dev`, they can be empty.
 database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14"
 preview_database_id = ""
+
+[[durable_objects.bindings]]
+name = "COLLAB_ROOM"
+class_name = "CollaborationRoom"
+script_name = "livingroom507-collab-do"

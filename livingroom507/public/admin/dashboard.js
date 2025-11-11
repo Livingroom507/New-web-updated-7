@@ -44,13 +44,18 @@ async function fetchAdminData() {
 
 function renderDashboard(data) {
     document.getElementById('total-closers').textContent = data.teamSize || 0;
-    document.getElementById('mastery-count').textContent = data.topPerformers.length;
+    document.getElementById('mastery-count').textContent = (data.topPerformers ? data.topPerformers.length : 0);
 
     const tableBody = document.querySelector('#closer-table tbody');
     tableBody.innerHTML = '';
 
+    if (!data || !data.profiles) {
+        console.warn("No profiles data available.");
+        return;
+    }
+
     data.profiles.forEach(profile => {
-        const score = data.topPerformers.find(p => p.email === profile.email)?.score || 'N/A';
+        const score = (data.topPerformers && data.topPerformers.find(p => p.email === profile.email)?.score) || 'N/A';
         const row = tableBody.insertRow();
         row.innerHTML = `
             <td><input type="checkbox" class="email-select" value="${profile.email}"></td>
@@ -233,5 +238,7 @@ function logClientFinalSelection(sessionId, categoryId, categoryName) {
     console.log(`[D1 Log] Logging final selection for session ${sessionId}: ${categoryName}`);
 }
 
-fetchAdminData();
-document.getElementById('collab-session-id').textContent = CURRENT_CLIENT_SESSION_ID;
+document.addEventListener('DOMContentLoaded', () => {
+    fetchAdminData();
+    document.getElementById('collab-session-id').textContent = CURRENT_CLIENT_SESSION_ID;
+});
