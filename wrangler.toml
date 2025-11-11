@@ -26,6 +26,3 @@ class_name = "CollaborationRoom"
 script_name = "livingroom507-collab-do"
 # Root wrangler.toml
 
-[[migrations]]
-tag = "v1"
-new_classes = [ "CollaborationRoom" ]
