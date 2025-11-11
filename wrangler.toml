@@ -18,6 +18,14 @@ migrations_dir = "db/migrations"
 database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14"
 preview_database_id = ""
 
+# Root wrangler.toml
+
 [[durable_objects.bindings]]
 name = "COLLAB_ROOM"
 class_name = "CollaborationRoom"
+script_name = "livingroom507-collab-do"
+# Root wrangler.toml
+
+[[migrations]]
+tag = "v1"
+new_classes = [ "CollaborationRoom" ]
