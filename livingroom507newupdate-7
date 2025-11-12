@@ -1,0 +1,6 @@
+// Dummy script to satisfy the Cloudflare Pages Deployment Validator (Error 8000109).
+export default {
+    fetch(request, env) {
+        return new Response("OK", { status: 200 });
+    },
+};
