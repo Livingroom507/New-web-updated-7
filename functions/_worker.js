@@ -1,3 +1,4 @@
+import { CollaborationRoom } from './collaboration-room.js';
 import { onRequestPost as handlePushUpdate } from './api/push-collab-update.js';
 
 export default {
@@ -23,3 +24,5 @@ export default {
         return env.ASSETS.fetch(request);
     },
 };
+
+export { CollaborationRoom };
