@@ -1,0 +1,18 @@
+# do-worker/wrangler.toml
+name = "livingroom507-do-final-worker"
+main = "index.js"
+compatibility_date = "2025-01-01"
+
+[durable_objects]
+bindings = [
+  { name = "COLLAB_ROOM", class_name = "CollaborationRoom" }
+]
+
+[[migrations]]
+tag = "v1"
+new_classes = [ "CollaborationRoom" ]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "livingroom507-db"
+database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14"
