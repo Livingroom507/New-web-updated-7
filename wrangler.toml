@@ -23,4 +23,8 @@ preview_database_id = ""
 [[durable_objects.bindings]]
 name = "COLLAB_ROOM"
 class_name = "CollaborationRoom"
+script_name = "livingroom507newupdate-7"
 
+[[migrations]]
+tag = "v1"
+new_classes = [ "CollaborationRoom" ]
