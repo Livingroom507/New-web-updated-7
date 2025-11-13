@@ -1,7 +1,7 @@
 const API_ENDPOINT = '/api/admin/data';
 const SEND_EMAIL_ENDPOINT = '/api/admin/send-email';
 const PUSH_ENDPOINT = '/api/push-collab-update';
-let authToken = '';
+
 let CURRENT_CLIENT_SESSION_ID = 'SESSION_XYZ_123';
 
 function getAuthToken() {
@@ -18,7 +18,7 @@ function getAuthToken() {
 }
 
 async function fetchAdminData() {
-    authToken = getAuthToken();
+    const authToken = getAuthToken();
     if (!authToken) {
         document.querySelector('#closer-table tbody').innerHTML = `<tr><td colspan="6" class="error-message">Authentication token not provided.</td></tr>`;
         return;
@@ -73,6 +73,11 @@ function showFullProfile(email) {
 }
 
 async function fetchFullDetails(email) {
+    const authToken = getAuthToken();
+    if (!authToken) {
+        alert('Admin authentication is required to view details.');
+        return;
+    }
     const modal = document.getElementById('profile-detail-modal');
     modal.style.display = 'block'; // SHOW THE GREY OVERLAY
     const content = document.getElementById('modal-content');
@@ -145,6 +150,7 @@ function renderProfileDetails(profile) {
 }
 
 function openEmailModal() {
+    const authToken = getAuthToken();
     if (!authToken) {
         alert('Please authenticate to send emails.');
         return;
@@ -157,6 +163,11 @@ function closeEmailModal() {
 }
 
 async function sendTeamEmail() {
+    const authToken = getAuthToken();
+    if (!authToken) {
+        alert('Please authenticate to send emails.');
+        return;
+    }
     const selectedEmails = Array.from(document.querySelectorAll('.email-select:checked')).map(cb => cb.value);
     const subject = document.getElementById('email-subject').value;
     const body = document.getElementById('email-body').value;
@@ -191,6 +202,14 @@ async function sendTeamEmail() {
 }
 
 async function sendAdminSelection(categoryId, categoryName) {
+    // 1. Force the token to be retrieved (prompts user if not in session storage)
+    const token = getAuthToken(); 
+
+    if (!token) {
+        alert('Admin authentication is required to send the update.');
+        return; // Stop execution if the user cancels the prompt
+    }
+
     const statusElement = document.getElementById(`admin-status-${categoryId}`);
     statusElement.textContent = 'Sending...';
 
@@ -201,7 +220,7 @@ async function sendAdminSelection(categoryId, categoryName) {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
-                'X-Admin-Auth': authToken 
+                'X-Admin-Auth': token // <-- **FIXED: Now uses the fresh token**
             },
             body: JSON.stringify({
                 action: 'confirm_selection',
@@ -214,10 +233,12 @@ async function sendAdminSelection(categoryId, categoryName) {
 
         if (response.status === 401) {
             statusElement.textContent = 'Auth Error';
-            alert('Admin Authentication Failed.');
+            // User likely entered a wrong key, so clear it to force a re-prompt
+            sessionStorage.removeItem('adminAuthToken'); 
+            alert('Admin Authentication Failed. Please reload and re-enter the correct API Key.');
             return;
         }
-
+        
         if (response.ok) {
             statusElement.textContent = 'Confirmed!';
             statusElement.style.color = '#28a745'; 
