@@ -1,35 +1,53 @@
+// (A) Define the API Endpoint
 const API_ENDPOINT = '/api/admin/data';
+const COLLAB_PUSH_ENDPOINT = '/api/push-collab-update'; // Use your correct Pages Function proxy endpoint
 const SEND_EMAIL_ENDPOINT = '/api/admin/send-email';
-const PUSH_ENDPOINT = '/api/push-collab-update';
 
 let CURRENT_CLIENT_SESSION_ID = 'SESSION_XYZ_123';
 
+// 1. Function to handle prompting and storing the key
 function getAuthToken() {
-    if (sessionStorage.getItem('adminAuthToken')) {
-        return sessionStorage.getItem('adminAuthToken');
-    } else {
-        const token = prompt('Please enter your Admin API Key:');
+    // Try to retrieve existing token
+    let token = sessionStorage.getItem('adminAuthToken');
+
+    if (!token) {
+        // If not found, prompt the user
+        token = prompt('Please enter your Admin API Key:');
+        
+        // If user enters a key, store it
         if (token) {
             sessionStorage.setItem('adminAuthToken', token);
-            return token;
+        } else {
+            // CRUCIAL: If user cancels or enters empty, show the failure alert ONCE.
+            alert('Admin Authentication failed. Please reload and re-enter the correct API Key.');
         }
-        return null;
     }
+    // Return the token (or null/undefined if prompt was cancelled)
+    return token; 
 }
 
-async function fetchAdminData() {
-    const authToken = getAuthToken();
-    if (!authToken) {
-        document.querySelector('#closer-table tbody').innerHTML = `<tr><td colspan="6" class="error-message">Authentication token not provided.</td></tr>`;
-        return;
-    }
+// 2. Global Initialization
+// *** This must run immediately when the script loads ***
+const authToken = getAuthToken();
+// Optional: If the token is null, stop further initialization (e.g., loading data)
+if (!authToken) {
+    // You might call a function here to hide the content or display a locked message
+    console.error("Authentication failed. Stopping dashboard initialization.");
+}
 
+
+async function fetchAdminData(validAuthToken) {
     try {
         const response = await fetch(API_ENDPOINT, {
             method: 'POST',
-            headers: { 'X-Admin-Auth': authToken }
+            headers: {
+                'Authorization': `Bearer ${validAuthToken}` // Use the passed-in valid token
+            }
         });
-        if (response.status === 401) throw new Error('Authentication Failed. Please check your API Key.');
+        if (response.status === 401) {
+            sessionStorage.removeItem('adminAuthToken'); // CRITICAL: Clear the bad token
+            throw new Error('Authentication Failed. Please reload and re-enter the correct API Key.');
+        }
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ detail: 'Server Error' }));
             throw new Error(errorData.detail || 'Server Error');
@@ -73,7 +91,6 @@ function showFullProfile(email) {
 }
 
 async function fetchFullDetails(email) {
-    const authToken = getAuthToken();
     if (!authToken) {
         alert('Admin authentication is required to view details.');
         return;
@@ -86,15 +103,15 @@ async function fetchFullDetails(email) {
     try {
         const response = await fetch(`/api/admin/profile-details?email=${email}`, {
             method: 'GET',
-            headers: { 'X-Admin-Auth': authToken }
+            headers: { 'Authorization': `Bearer ${authToken}` }
         });
-        
+
         if (!response.ok) throw new Error('Failed to fetch profile details.');
-        
+
         const data = await response.json();
         console.log(data);
-        
-        renderProfileDetails(data); 
+
+        renderProfileDetails(data);
 
     } catch (error) {
         console.error("Error fetching details:", error);
@@ -110,19 +127,16 @@ function renderProfileDetails(profile) {
         return;
     }
 
-    // You can see the full list of available fields in your console output!
-    const { 
-        fullName, email, nicheInterest, linkedinUrl, salesExperience, availability, 
+    const {
+        fullName, email, nicheInterest, linkedinUrl, salesExperience, availability,
         deepPainSummary, objectionHandlingView, crmFamiliarity, submissionDate,
-        module3_score // Adjusted to match your object field name
-        // Add other fields if you introduce the consolidated score table
+        module3_score
     } = profile;
 
-    // Build the HTML content to be displayed in the modal
     modalContent.innerHTML = `
         <span class="close-button" onclick="document.getElementById('profile-detail-modal').style.display='none'">&times;</span>
         <h2>${fullName}'s Full Profile Analysis</h2>
-        
+
         <div class="profile-details-grid">
             <div class="detail-section">
                 <h3>Contact & Base Info</h3>
@@ -137,12 +151,12 @@ function renderProfileDetails(profile) {
                 <p class="big-score"><strong>Module 3 Score:</strong> ${module3_score || 'N/A'}</p>
             </div>
         </div>
-        
+
         <div class="qualitative-section">
             <h3>Qualitative Assessments</h3>
             <h4>Deep Pain Summary View</h4>
             <blockquote class="summary-box">${deepPainSummary || 'No data provided.'}</blockquote>
-            
+
             <h4>Objection Handling View</h4>
             <blockquote class="summary-box">${objectionHandlingView || 'No data provided.'}</blockquote>
         </div>
@@ -150,7 +164,6 @@ function renderProfileDetails(profile) {
 }
 
 function openEmailModal() {
-    const authToken = getAuthToken();
     if (!authToken) {
         alert('Please authenticate to send emails.');
         return;
@@ -163,7 +176,6 @@ function closeEmailModal() {
 }
 
 async function sendTeamEmail() {
-    const authToken = getAuthToken();
     if (!authToken) {
         alert('Please authenticate to send emails.');
         return;
@@ -182,7 +194,7 @@ async function sendTeamEmail() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Admin-Auth': authToken
+                'Authorization': `Bearer ${authToken}`
             },
             body: JSON.stringify({ recipientEmails: selectedEmails, subject, body })
         });
@@ -201,47 +213,44 @@ async function sendTeamEmail() {
     }
 }
 
+// 3. Ensure action functions use the GLOBAL token and check for failure
 async function sendAdminSelection(categoryId, categoryName) {
-    // 1. Force the token to be retrieved (prompts user if not in session storage)
-    const token = getAuthToken(); 
-
-    if (!token) {
-        alert('Admin authentication is required to send the update.');
-        return; // Stop execution if the user cancels the prompt
+    // Stop immediately if the global token failed to initialize
+    if (!authToken) {
+        alert('Cannot send update. Authentication failed on page load.');
+        return; 
     }
-
+    
     const statusElement = document.getElementById(`admin-status-${categoryId}`);
     statusElement.textContent = 'Sending...';
 
-    const clientUpdateMessage = `✅ Focus confirmed: ${categoryName}`;
-
     try {
-        const response = await fetch(`${PUSH_ENDPOINT}?sessionId=${CURRENT_CLIENT_SESSION_ID}`, {
+        // ... proceed with the fetch request using the global authToken ...
+        const response = await fetch(`${COLLAB_PUSH_ENDPOINT}?sessionId=${CURRENT_CLIENT_SESSION_ID}`, {
             method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'X-Admin-Auth': token // <-- **FIXED: Now uses the fresh token**
+            headers: {
+                // Use the GLOBAL token populated on load
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 action: 'confirm_selection',
-                category: categoryId,
-                categoryName: categoryName,
-                message: clientUpdateMessage,
-                color: 'green'
-            })
+                category_id: categoryId,
+                category_name: categoryName
+            }),
         });
-
+        
+        // ... check response.ok and handle success/failure
         if (response.status === 401) {
             statusElement.textContent = 'Auth Error';
-            // User likely entered a wrong key, so clear it to force a re-prompt
-            sessionStorage.removeItem('adminAuthToken'); 
+            sessionStorage.removeItem('adminAuthToken');
             alert('Admin Authentication Failed. Please reload and re-enter the correct API Key.');
             return;
         }
-        
+
         if (response.ok) {
             statusElement.textContent = 'Confirmed!';
-            statusElement.style.color = '#28a745'; 
+            statusElement.style.color = '#28a745';
             logClientFinalSelection(CURRENT_CLIENT_SESSION_ID, categoryId, categoryName);
         } else {
             statusElement.textContent = 'Push Failed';
@@ -255,11 +264,23 @@ async function sendAdminSelection(categoryId, categoryName) {
     }
 }
 
+
 function logClientFinalSelection(sessionId, categoryId, categoryName) {
     console.log(`[D1 Log] Logging final selection for session ${sessionId}: ${categoryName}`);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    fetchAdminData();
-    document.getElementById('collab-session-id').textContent = CURRENT_CLIENT_SESSION_ID;
+    if (authToken) {
+        document.getElementById('collab-session-id').textContent = CURRENT_CLIENT_SESSION_ID;
+        initializeAdminDashboard();
+    }
 });
+
+async function initializeAdminDashboard() {
+    if (authToken) {
+        await fetchAdminData(authToken);
+    } else {
+        document.querySelector('#closer-table tbody').innerHTML =
+            `<tr><td colspan="6" class="error-message">Admin Key required. Please refresh and enter the key.</td></tr>`;
+    }
+}

@@ -30,9 +30,15 @@ export class CollaborationRoom {
     }
 
     async handleAdminPush(request) {
-        const authKey = request.headers.get('X-Admin-Auth');
-        if (authKey !== this.env.ADMIN_API_KEY) {
-             return new Response('Unauthorized Push', { status: 401 });
+        // Look for the standard Authorization header
+        const authHeader = request.headers.get('Authorization'); 
+        
+        // Extract the key part (remove 'Bearer ')
+        const authKey = authHeader ? authHeader.replace('Bearer ', '') : null;
+
+        if (!authKey || authKey !== this.env.ADMIN_API_KEY) { 
+            // This is the correct 401 response if the key is missing or wrong
+            return new Response('Unauthorized Push', { status: 401 }); 
         }
 
         const message = await request.json();
