@@ -10,7 +10,7 @@ bindings = [
 
 [[migrations]]
 tag = "v1"
-new_classes = [ "CollaborationRoom" ]
+new_sqlite_classes = [ "CollaborationRoom" ]
 
 [[d1_databases]]
 binding = "DB"
