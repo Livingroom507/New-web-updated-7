@@ -3,6 +3,9 @@ name = "livingroom507-do-final-worker"
 main = "index.js"
 compatibility_date = "2025-01-01"
 
+[vars] # <-- ADD THIS SECTION
+ADMIN_API_KEY = "j45c22b1a76b8496250912e861022d02312efdb-ba8a60cd-9" # <-- ADD THIS LINE
+
 [durable_objects]
 bindings = [
   { name = "COLLAB_ROOM", class_name = "CollaborationRoom" }
