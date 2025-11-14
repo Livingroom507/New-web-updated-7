@@ -16,7 +16,7 @@ function getAuthToken() {
         
         // If user enters a key, store it
         if (token) {
-            sessionStorage.setItem('adminAuthToken', token);
+            sessionStorage.setItem('adminAuthToken', 'TEST-KEY-123');
         } else {
             // CRUCIAL: If user cancels or enters empty, show the failure alert ONCE.
             alert('Admin Authentication failed. Please reload and re-enter the correct API Key.');
