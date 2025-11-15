@@ -1,37 +1,65 @@
 // /functions/api/admin/data.js (with Security Logic)
 
-// Define the required header name for the token
-const AUTH_HEADER_NAME = 'X-Admin-Auth';
-
 export async function onRequestPost({ request, env }) {
     // 1. **Authentication Check**
-    const adminKey = request.headers.get(AUTH_HEADER_NAME);
+    const authHeader = request.headers.get('Authorization');
 
-    // Compare the key from the request header against the secret key in the environment variables
-    if (!adminKey || adminKey !== env.ADMIN_API_KEY) {
-        // Log the failed attempt (optional)
-        console.warn('Unauthorized access attempt to admin endpoint.'); 
-        
-        // Return a standard 401 Unauthorized response
-        return new Response('Unauthorized Access', { status: 401 });
+    // 1. Check if the header exists and starts with "Bearer "
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return Response.json({ success: false, detail: 'Missing or malformed Authorization header' }, { status: 401 });
+    }
+
+    // 2. Extract the actual token by removing the "Bearer " prefix (7 characters long)
+    const token = authHeader.substring(7);
+
+    // 3. Compare the extracted token with the environment variable
+    if (token !== env.ADMIN_API_KEY) {
+        return Response.json({ success: false, detail: 'Invalid API Key' }, { status: 401 });
     }
     
     // --- 2. Data Queries (Only executes if authentication succeeds) ---
     try {
-        const teamCount = await env.DB.prepare("SELECT COUNT(email) FROM PlacementProfiles").first();
-        const topPerformers = await env.DB.prepare("SELECT user_email, score, knowledge_level FROM AssessmentResults WHERE knowledge_level = 'Mastery' LIMIT 10").all();
-        const allProfiles = await env.DB.prepare("SELECT email, fullName, salesExperience, nicheInterest FROM PlacementProfiles").all();
+        const query = `
+            SELECT 
+                p.id,
+                p.email,
+                p.fullName,
+                p.linkedinUrl,
+                p.salesExperience,
+                p.nicheInterest,
+                p.availability,
+                p.deepPainSummary,
+                p.objectionHandlingView,
+                p.crmFamiliarity,
+                p.submissionDate,
+                m.score
+            FROM 
+                PlacementProfiles p
+            LEFT JOIN 
+                module3_results m ON p.email = m.email;
+        `;
+        const { results } = await env.DB.prepare(query).all();
 
-        return new Response(JSON.stringify({
-            teamSize: teamCount['COUNT(email)'],
-            topPerformers: topPerformers.results,
-            profiles: allProfiles.results
-        }), {
-            headers: { 'Content-Type': 'application/json' }
+        if (!results) {
+             return new Response(JSON.stringify({ error: "No results found." }), {
+                 status: 404, headers: { 'Content-Type': 'application/json' }
+             });
+        }
+
+        const responseData = {
+            profiles: results,
+            topPerformers: results.filter(p => p.score !== null && p.score !== undefined),
+            teamSize: results.length
+        };
+
+        return new Response(JSON.stringify(responseData), {
+            status: 200, headers: { 'Content-Type': 'application/json' }
         });
 
-    } catch (error) {
-        console.error('Database query failed:', error);
-        return new Response('Server Error: Database failure.', { status: 500 });
+    } catch (e) {
+        console.error("D1 Query Error:", e);
+        return new Response(JSON.stringify({ error: "Database failure.", detail: e.message }), {
+            status: 500, headers: { 'Content-Type': 'application/json' }
+        });
     }
 }

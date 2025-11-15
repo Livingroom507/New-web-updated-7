@@ -1,23 +1,27 @@
+let affiliateEmail = '';
+
 async function fetchJSON(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error('Network error');
   return await res.json();
 }
 
-async function loadOverview() {
-  const data = await fetchJSON('/api/affiliate/overview');
-  document.getElementById('kpi-referrals').textContent = data.totalReferrals || '0';
-  document.getElementById('kpi-plan').textContent = data.currentPlan || '--';
-  document.getElementById('kpi-rewards').textContent = `$${(data.compoundedRewards || 0).toFixed(2)}`;
+async function loadOverview(email) {
+  const data = await fetchJSON(`/api/affiliate/overview?email=${email}`);
+  document.getElementById('kpi-referrals').textContent = data.referral_count || '0';
+  document.getElementById('kpi-total-earnings').textContent = `$${(data.total_earnings || 0).toFixed(2)}`;
 }
 
-async function loadPlanDetails() {
-  const data = await fetchJSON('/api/affiliate/plan');
+async function loadPlanDetails(email) {
+  const data = await fetchJSON(`/api/affiliate/plan?email=${email}`);
+  document.getElementById('kpi-plan').textContent = data.name || '--';
   document.getElementById('plan-details').innerHTML = `
-    <p><strong>Role:</strong> ${data.role}</p>
-    <p><strong>Plan:</strong> ${data.plan_name}</p>
-    <p><strong>Monthly Cost:</strong> $${data.monthly_cost.toFixed(2)}</p>
-    <p><strong>Yearly Capital:</strong> $${data.yearly_capital.toFixed(2)}</p>
+    <p><strong>Plan:</strong> ${data.name}</p>
+    <p><strong>Commission Rate:</strong> ${data.commission_rate * 100}%</p>
+    <p><strong>Features:</strong></p>
+    <ul>
+      ${data.features.map(feature => `<li>${feature}</li>`).join('')}
+    </ul>
   `;
 }
 
@@ -89,31 +93,29 @@ function setupSettingsForm() {
     });
 }
 
-async function loadEarnings() {
-  //TODO: a dynamic affiliate id should be used instead of a hardcoded one
-  const data = await fetchJSON('/api/affiliate/earnings?affiliate_id=1');
-  document.getElementById('kpi-total-earnings').textContent = `$${data.totalEarnings || '0.00'}`;
+async function loadEarnings(email) {
+  const data = await fetchJSON(`/api/affiliate/earnings?email=${email}`);
+  document.getElementById('kpi-total-earnings').textContent = `$${data.total_earnings || '0.00'}`;
 
+  // This part needs to be adjusted based on the actual data structure for earnings breakdown
   const tbody = document.getElementById('earnings-table').querySelector('tbody');
-  tbody.innerHTML = data.earningsBreakdown.map(item => {
-    return `<tr>
-        <td>${item.referred_user_id}</td>
-        <td>${item.plan}</td>
-        <td>$${item.subscription_commission}</td>
-        <td>$${item.purchase_commission}</td>
-        <td>$${item.total_commission}</td>
-      </tr>`;
-  }).join('');
+  tbody.innerHTML = `<tr><td colspan="5">Earnings breakdown not yet implemented in this view.</td></tr>`;
 }
 
 async function initDashboard() {
+  affiliateEmail = prompt('Please enter your affiliate email:');
+  if (!affiliateEmail) {
+    alert('Affiliate email is required to load the dashboard.');
+    return;
+  }
+
   try {
-    await loadOverview();
-    await loadPlanDetails();
+    await loadOverview(affiliateEmail);
+    await loadPlanDetails(affiliateEmail);
     await loadPlanFinancials();
-    await loadTable('/api/affiliate/referrals', 'referrals-table', 
-      ['date','referred_user','plan_chosen','commission','status']);
-    await loadEarnings();
+    await loadTable(`/api/affiliate/referrals?email=${affiliateEmail}`, 'referrals-table', 
+      ['created_at','name','email','status']);
+    await loadEarnings(affiliateEmail);
   } catch(err) {
     console.error('Dashboard loading error:', err);
   }
@@ -124,4 +126,3 @@ document.addEventListener('DOMContentLoaded', () => {
     setupDropdown();
     setupSettingsForm();
 });
-

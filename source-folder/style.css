@@ -171,3 +171,9 @@ footer { background-color: var(--primary-color); color: var(--barber-shop-white)
     .flyer-header { flex-direction: column; text-align: center; }
     .why-choose-us-grid { grid-template-columns: 1fr; }
 }
+
+#form-message {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+}

@@ -69,7 +69,17 @@
     <div class="card">
         <h2>Module 3 Quiz: Impact & Scale</h2>
         <form id="quiz-form">
-            <!-- Questions will be injected here by JavaScript -->
+            <div class="form-group">
+                <label for="user-name">Your Full Name:</label>
+                <input type="text" id="user-name" name="fullName" required>
+            </div>
+            <div class="form-group">
+                <label for="user-email">Your Email Address:</label>
+                <input type="email" id="user-email" name="email" required placeholder="Enter the email used for your profile">
+            </div>
+            <div id="quiz-questions-container">
+                <!-- Questions will be injected here by JavaScript -->
+            </div>
         </form>
         <button id="submit-quiz" class="btn">Submit Quiz</button>
         <div id="quiz-results" class="card hidden">
@@ -78,7 +88,7 @@
             <p id="feedback"></p>
         </div>
     </div>
-
+o
 <script>
     const quizData = [
         {
@@ -140,6 +150,11 @@
     const feedbackElement = document.getElementById('feedback');
 
     function loadQuiz() {
+        const questionsContainer = document.getElementById('quiz-questions-container');
+        if (!questionsContainer) {
+            console.error('Quiz questions container not found!');
+            return;
+        }
         let quizHtml = '';
         quizData.forEach((q, index) => {
             quizHtml += `<div class="quiz-question">`;
@@ -149,10 +164,18 @@
             });
             quizHtml += `</div>`;
         });
-        quizForm.innerHTML = quizHtml;
+        questionsContainer.innerHTML = quizHtml;
     }
 
-    function submitQuiz() {
+    async function submitQuiz() {
+        const userName = document.getElementById('user-name').value;
+        const userEmail = document.getElementById('user-email').value;
+
+        if (!userName || !userEmail) {
+            alert('Please enter your name and email address.');
+            return;
+        }
+
         let score = 0;
         quizData.forEach((q, index) => {
             const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
@@ -176,6 +199,28 @@
 
         quizResults.classList.add('quiz-results-visible');
         submitButton.classList.add('hidden');
+
+        try {
+            const response = await fetch('/api/submit-quiz', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    fullName: userName,
+                    email: userEmail,
+                    score: percentage,
+                }),
+            });
+
+            if (response.ok) {
+                console.log('Quiz results submitted successfully.');
+            } else {
+                console.error('Failed to submit quiz results.');
+            }
+        } catch (error) {
+            console.error('Error submitting quiz results:', error);
+        }
     }
 
     window.onload = loadQuiz;
