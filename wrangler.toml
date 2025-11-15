@@ -5,7 +5,7 @@ pages_build_output_dir = "livingroom507/public"
 
 # Environment variables for the Pages Functions
 [vars]
-ADMIN_API_KEY = "j45c22b1a76b8496250912e861022d02312efdb-ba8a60cd-9" # IMPORTANT: Replace with a strong, unique key!
+ADMIN_API_KEY = "TEST-KEY-123"
 DO_WORKER_URL = "https://livingroom507-do-final-worker.roblq123.workers.dev"
 
 [[d1_databases]]
