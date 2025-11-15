@@ -47,18 +47,10 @@ async function getSubscription(email, env) {
     .all();
 
     if (results.length === 0) {
-        // If no record exists, default them to 'Client' and create a new entry
-        const tier = 'Client';
-        const date = new Date().toISOString();
-        await env.DB.prepare(
-            `INSERT INTO user_subscriptions (user_email, subscription_tier, tier_start_date) VALUES (?, ?, ?)`
-        )
-        .bind(email, tier, date)
-        .run();
-
+        // If no record exists, return the default 'Client' tier without writing to the DB
         return Response.json({ 
             success: true, 
-            subscription: { user_email: email, subscription_tier: tier, tier_start_date: date }
+            subscription: { user_email: email, subscription_tier: 'Client', tier_start_date: null }
         });
     }
 
