@@ -12,7 +12,7 @@ DO_WORKER_URL = "https://livingroom507-do-final-worker.roblq123.workers.dev"
 [[d1_databases]]
 binding = "DB"
 database_name = "livingroom507-db"
-database_id = "YOUR_D1_DATABASE_ID_HERE" # You MUST replace this with your actual D1 ID
+database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14" # You MUST replace this with your actual D1 ID
 
 # Root wrangler.toml
 
