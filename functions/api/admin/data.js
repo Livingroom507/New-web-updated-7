@@ -1,19 +1,26 @@
 // /functions/api/admin/data.js (with Security Logic)
 
-// Define the required header name for the token
-const AUTH_HEADER_NAME = 'X-Admin-Auth';
-
 export async function onRequestPost({ request, env }) {
     // 1. **Authentication Check**
-    const adminKey = request.headers.get(AUTH_HEADER_NAME);
+    const authHeader = request.headers.get('Authorization');
 
-    // Compare the key from the request header against the secret key in the environment variables
-    if (!adminKey || adminKey !== env.ADMIN_API_KEY) {
-        // Log the failed attempt (optional)
-        console.warn('Unauthorized access attempt to admin endpoint.'); 
-        
-        // Return a standard 401 Unauthorized response
-        return new Response('Unauthorized Access', { status: 401 });
+    // 1. Check if the header exists and starts with "Bearer "
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return new Response(JSON.stringify({ success: false, detail: 'Missing or malformed Authorization header' }), { 
+            status: 401,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    // 2. Extract the actual token by removing the "Bearer " prefix (7 characters long)
+    const token = authHeader.substring(7);
+
+    // 3. Compare the extracted token with the environment variable
+    if (token !== env.ADMIN_API_KEY) {
+        return new Response(JSON.stringify({ success: false, detail: 'Invalid API Key' }), { 
+            status: 401,
+            headers: { 'Content-Type': 'application/json' }
+        });
     }
     
     // --- 2. Data Queries (Only executes if authentication succeeds) ---
