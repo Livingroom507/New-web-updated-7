@@ -1,4 +1,4 @@
-name = "livingroom507newupdate-7"
+name = "new-web-updated-7"
 compatibility_date = "2025-01-01"
 
 pages_build_output_dir = "livingroom507/public"
@@ -8,16 +8,11 @@ pages_build_output_dir = "livingroom507/public"
 ADMIN_API_KEY = "TEST-KEY-123"
 DO_WORKER_URL = "https://livingroom507-do-final-worker.roblq123.workers.dev"
 
+# This section tells your Pages Functions where to find the database called 'DB'
 [[d1_databases]]
 binding = "DB"
 database_name = "livingroom507-db"
-migrations_dir = "db/migrations"
-# These IDs are required for production deployments.
-# You will need to replace YOUR_DATABASE_ID with the actual ID
-# from your Cloudflare dashboard when you are ready to deploy.
-# For local development with `wrangler pages dev`, they can be empty.
-database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14"
-preview_database_id = ""
+database_id = "YOUR_D1_DATABASE_ID_HERE" # You MUST replace this with your actual D1 ID
 
 # Root wrangler.toml
 
