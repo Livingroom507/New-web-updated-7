@@ -92,6 +92,57 @@ function showFullProfile(email) {
     fetchFullDetails(email);
 }
 
+// Function to fetch the user's current subscription tier
+async function fetchSubscriptionStatus(email) {
+    if (!authToken) return { subscription_tier: 'Client' }; // Default if not authenticated
+    
+    try {
+        const response = await fetch(`/api/admin/subscriptions?email=${email}`, {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch subscription status.');
+
+        const data = await response.json();
+        return data.subscription || { subscription_tier: 'Client' }; // Return tier object
+    } catch (error) {
+        console.error("Error fetching subscription status:", error);
+        return { subscription_tier: 'Error' };
+    }
+}
+
+// Function to update the user's subscription tier
+async function updateSubscriptionTier(email, newTier) {
+    if (!authToken) {
+        alert('Authentication required to update tier.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/admin/subscriptions?email=${email}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
+            },
+            body: JSON.stringify({ newTier })
+        });
+
+        if (response.status === 401) throw new Error('Authentication Failed.');
+        if (!response.ok) throw new Error('Failed to update subscription tier.');
+
+        const data = await response.json();
+        alert(data.message);
+        // Re-fetch and re-render the modal content to show the new tier
+        fetchFullDetails(email);
+
+    } catch (error) {
+        console.error("Error updating subscription tier:", error);
+        alert(`Failed to update tier: ${error.message}`);
+    }
+}
+
 async function fetchFullDetails(email) {
     if (!authToken) {
         alert('Admin authentication is required to view details.');
@@ -103,17 +154,22 @@ async function fetchFullDetails(email) {
     content.innerHTML = `<p>Fetching full details for ${email}...</p>`;
 
     try {
-        const response = await fetch(`/api/admin/profile-details?email=${email}`, {
+        // 1. Fetch main profile data
+        const profileResponse = await fetch(`/api/admin/profile-details?email=${email}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
-
-        if (!response.ok) throw new Error('Failed to fetch profile details.');
-
-        const data = await response.json();
-        console.log(data);
-
-        renderProfileDetails(data);
+        if (!profileResponse.ok) throw new Error('Failed to fetch profile details.');
+        
+        const profileData = await profileResponse.json();
+        
+        // 2. Fetch subscription data
+        const subscriptionData = await fetchSubscriptionStatus(email); // <-- NEW CALL
+        
+        // Combine all data for rendering
+        const combinedData = { ...profileData, ...subscriptionData }; // <-- COMBINE
+        
+        renderProfileDetails(combinedData);
 
     } catch (error) {
         console.error("Error fetching details:", error);
@@ -132,7 +188,7 @@ function renderProfileDetails(profile) {
     const {
         fullName, email, nicheInterest, linkedinUrl, salesExperience, availability,
         deepPainSummary, objectionHandlingView, crmFamiliarity, submissionDate,
-        module3_score
+        module3_score, subscription_tier // <-- NEW: pull subscription_tier
     } = profile;
 
     modalContent.innerHTML = `
@@ -143,26 +199,38 @@ function renderProfileDetails(profile) {
             <div class="detail-section">
                 <h3>Contact & Base Info</h3>
                 <p><strong>Email:</strong> ${email}</p>
-                <p><strong>LinkedIn:</strong> <a href="${linkedinUrl}" target="_blank">View Profile</a></p>
-                <p><strong>Niche Interest:</strong> ${nicheInterest}</p>
                 <p><strong>Sales Experience:</strong> ${salesExperience} years</p>
             </div>
 
+            <div class="detail-section tier-control-section">
+                <h3>Subscription & Progression</h3>
+                <p><strong>Current Tier:</strong> <span id="current-tier">${subscription_tier || 'Client'}</span></p>
+                
+                <div class="tier-update-controls">
+                    <select id="new-tier-select" aria-label="Select new subscription tier">
+                        <option value="Client">Client</option>
+                        <option value="Affiliate">Affiliate</option>
+                        <option value="Closer">Closer</option>
+                        <option value="Mastery">Mastery</option>
+                        <option value="Panama Ready">Panama Ready</option>
+                    </select>
+                    <button class="btn btn-update-tier" 
+                            onclick="updateSubscriptionTier('${email}', document.getElementById('new-tier-select').value)">
+                        Update Tier
+                    </button>
+                </div>
+                </div>
+            
             <div class="detail-section score-section">
-                <h3>Assessment Scores</h3>
-                <p class="big-score"><strong>Module 3 Score:</strong> ${module3_score || 'N/A'}</p>
-            </div>
+                </div>
         </div>
-
-        <div class="qualitative-section">
-            <h3>Qualitative Assessments</h3>
-            <h4>Deep Pain Summary View</h4>
-            <blockquote class="summary-box">${deepPainSummary || 'No data provided.'}</blockquote>
-
-            <h4>Objection Handling View</h4>
-            <blockquote class="summary-box">${objectionHandlingView || 'No data provided.'}</blockquote>
-        </div>
-    `;
+        `;
+    
+    // Optional: Pre-select the current tier in the dropdown
+    const selectElement = document.getElementById('new-tier-select');
+    if (selectElement && subscription_tier) {
+        selectElement.value = subscription_tier;
+    }
 }
 
 function openEmailModal() {
