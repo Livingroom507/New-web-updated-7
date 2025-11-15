@@ -181,27 +181,36 @@ function renderProfileDetails(profile) {
     const modalContent = document.getElementById('modal-content');
 
     if (profile.error) {
-        modalContent.innerHTML = `<p class="error-message">Error: ${profile.error}</p>`;
+        modalContent.innerHTML = `<span class="close-button" onclick="document.getElementById('profile-detail-modal').style.display='none'">&times;</span>
+                                  <h2>Error</h2><p>Could not load profile details: ${profile.error}</p>`;
         return;
     }
 
     const {
         fullName, email, nicheInterest, linkedinUrl, salesExperience, availability,
         deepPainSummary, objectionHandlingView, crmFamiliarity, submissionDate,
-        module3_score, subscription_tier // <-- NEW: pull subscription_tier
+        module3_score, subscription_tier // All necessary data fields
     } = profile;
+
+    // --- Utility function to determine availability display ---
+    const formatAvailability = (avail) => {
+        if (!avail) return 'N/A';
+        // Assuming availability might be stored as an array or comma-separated string if multiple are possible
+        return Array.isArray(avail) ? avail.join(', ') : avail;
+    };
+    
+    // --- Determine Niche display ---
+    const formatNiche = (niche) => {
+        // Assuming niche is just a single string or 'Other'
+        return niche || 'Not specified';
+    };
 
     modalContent.innerHTML = `
         <span class="close-button" onclick="document.getElementById('profile-detail-modal').style.display='none'">&times;</span>
-        <h2>${fullName}'s Full Profile Analysis</h2>
+        <h2>${fullName}'s Full Profile Analysis 📊</h2>
 
         <div class="profile-details-grid">
-            <div class="detail-section">
-                <h3>Contact & Base Info</h3>
-                <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Sales Experience:</strong> ${salesExperience} years</p>
-            </div>
-
+            
             <div class="detail-section tier-control-section">
                 <h3>Subscription & Progression</h3>
                 <p><strong>Current Tier:</strong> <span id="current-tier">${subscription_tier || 'Client'}</span></p>
@@ -219,14 +228,36 @@ function renderProfileDetails(profile) {
                         Update Tier
                     </button>
                 </div>
-                </div>
+            </div>
             
+            <div class="detail-section">
+                <h3>Contact & Base Info</h3>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>LinkedIn Profile:</strong> <a href="${linkedinUrl}" target="_blank">${linkedinUrl ? 'View Profile' : 'N/A'}</a></p>
+                <p><strong>Sales Experience:</strong> ${salesExperience || 'N/A'} years</p>
+                <p><strong>Availability:</strong> ${formatAvailability(availability)}</p>
+                <p><strong>Desired Niche:</strong> ${formatNiche(nicheInterest)}</p>
+                <p><strong>CRM Familiarity:</strong> ${crmFamiliarity || 'N/A'}</p>
+            </div>
+
             <div class="detail-section score-section">
-                </div>
+                <h3>Assessment Scores</h3>
+                <p class="big-score"><strong>Module 3 Score:</strong> ${module3_score || 'N/A'}</p>
+                <p>Submitted on: ${new Date(submissionDate).toLocaleDateString()}</p>
+            </div>
         </div>
-        `;
+
+        <div class="qualitative-section">
+            <h3>Qualitative Assessments</h3>
+            <h4>Deep Pain Summary View</h4>
+            <blockquote class="summary-box">${deepPainSummary || 'No data provided.'}</blockquote>
+
+            <h4>Objection Handling Philosophy</h4>
+            <blockquote class="summary-box">${objectionHandlingView || 'No data provided.'}</blockquote>
+        </div>
+    `;
     
-    // Optional: Pre-select the current tier in the dropdown
+    // Pre-select the current tier in the dropdown
     const selectElement = document.getElementById('new-tier-select');
     if (selectElement && subscription_tier) {
         selectElement.value = subscription_tier;
