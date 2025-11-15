@@ -6,10 +6,7 @@ export async function onRequestPost({ request, env }) {
 
     // 1. Check if the header exists and starts with "Bearer "
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return new Response(JSON.stringify({ success: false, detail: 'Missing or malformed Authorization header' }), { 
-            status: 401,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        return Response.json({ success: false, detail: 'Missing or malformed Authorization header' }, { status: 401 });
     }
 
     // 2. Extract the actual token by removing the "Bearer " prefix (7 characters long)
@@ -17,10 +14,7 @@ export async function onRequestPost({ request, env }) {
 
     // 3. Compare the extracted token with the environment variable
     if (token !== env.ADMIN_API_KEY) {
-        return new Response(JSON.stringify({ success: false, detail: 'Invalid API Key' }), { 
-            status: 401,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        return Response.json({ success: false, detail: 'Invalid API Key' }, { status: 401 });
     }
     
     // --- 2. Data Queries (Only executes if authentication succeeds) ---
