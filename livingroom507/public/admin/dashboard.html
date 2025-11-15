@@ -41,46 +41,17 @@
 
     ---
 
-    <div class="collaboration-panel">
-        <h3>Live Collaboration: Dropshipping Niche 🤝</h3>
-        <p>Use this panel to instantly highlight the selected product category on the client's screen (Session ID: <strong id="collab-session-id">SESSION_XYZ_123</strong>).</p>
-
-        <div class="category-grid">
-            <div class="category-item">
-                <p>1. Women's Dresses</p>
-                <button class="btn btn-confirm" onclick="sendAdminSelection(1, 'Women\'s Dresses')">Confirm Selection</button>
-                <span id="admin-status-1" class="status-ready">Ready</span>
-            </div>
-
-            <div class="category-item">
-                <p>2. T-Shirts</p>
-                <button class="btn btn-confirm" onclick="sendAdminSelection(2, 'T-Shirts')">Confirm Selection</button>
-                <span id="admin-status-2" class="status-ready">Ready</span>
-            </div>
-
-            <div class="category-item">
-                <p>3. Activewear</p>
-                <button class="btn btn-confirm" onclick="sendAdminSelection(3, 'Activewear')">Confirm Selection</button>
-                <span id="admin-status-3" class="status-ready">Ready</span>
-            </div>
-
-            <div class="category-item">
-                <p>4. Jewelry</p>
-                <button class="btn btn-confirm" onclick="sendAdminSelection(4, 'Jewelry')">Confirm Selection</button>
-                <span id="admin-status-4" class="status-ready">Ready</span>
-            </div>
-
-            <div class="category-item">
-                <p>5. Streetwear</p>
-                <button class="btn btn-confirm" onclick="sendAdminSelection(5, 'Streetwear')">Confirm Selection</button>
-                <span id="admin-status-5" class="status-ready">Ready</span>
-            </div>
-
-            <div class="category-item">
-                <p>6. Handbags/Accessories</p>
-                <button class="btn btn-confirm" onclick="sendAdminSelection(6, 'Handbags/Accessories')">Confirm Selection</button>
-                <span id="admin-status-6" class="status-ready">Ready</span>
-            </div>
+    <div class="collab-control-panel">
+        <h2>Live Collaboration: Dropshipping Niche 🤝</h2>
+        <p>Use this panel to instantly highlight the selected product category on the client's screen (Session ID: <span id="collab-session-id">---</span>).</p>
+        
+        <div id="product-control-grid">
+            <div class="control-group"><label>1. Women's Dresses</label><button onclick="sendAdminSelection('dresses', 'Women\'s Dresses')">Confirm Selection</button><span id="admin-status-dresses">Ready</span></div>
+            <div class="control-group"><label>2. T-Shirts</label><button onclick="sendAdminSelection('t-shirts', 'T-Shirts')">Confirm Selection</button><span id="admin-status-t-shirts">Ready</span></div>
+            <div class="control-group"><label>3. Activewear</label><button onclick="sendAdminSelection('activewear', 'Activewear')">Confirm Selection</button><span id="admin-status-activewear">Ready</span></div>
+            <div class="control-group"><label>4. Jewelry</label><button onclick="sendAdminSelection('jewelry', 'Jewelry')">Confirm Selection</button><span id="admin-status-jewelry">Ready</span></div>
+            <div class="control-group"><label>5. Streetwear</label><button onclick="sendAdminSelection('streetwear', 'Streetwear')">Confirm Selection</button><span id="admin-status-streetwear">Ready</span></div>
+            <div class="control-group"><label>6. Handbags/Accessories</label><button onclick="sendAdminSelection('handbags', 'Handbags')">Confirm Selection</button><span id="admin-status-handbags">Ready</span></div>
         </div>
     </div>
 
