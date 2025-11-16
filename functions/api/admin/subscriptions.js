@@ -80,19 +80,30 @@ async function updateSubscription(request, email, env) {
     .bind(email)
     .first();
 
-    if (!existing) {
-        // If they don't exist, insert a new record
-        await env.DB.prepare(
-            `INSERT INTO user_subscriptions (user_email, subscription_tier, tier_start_date) VALUES (?, ?, ?)`
-        )
-        .bind(email, newTier, currentDate)
-        .run();
-    } else {
+    if (existing) {
         // If they exist, update the record
         await env.DB.prepare(
             `UPDATE user_subscriptions SET subscription_tier = ?, tier_start_date = ? WHERE user_email = ?`
         )
         .bind(newTier, currentDate, email)
+        .run();
+    } else {
+        // If they don't exist, get user_id from users table
+        const user = await env.DB.prepare(
+            `SELECT id FROM users WHERE email = ?`
+        )
+        .bind(email)
+        .first();
+
+        if (!user) {
+            return Response.json({ success: false, detail: 'User not found for subscription creation.' }, { status: 404 });
+        }
+        
+        // Insert a new record
+        await env.DB.prepare(
+            `INSERT INTO user_subscriptions (user_id, user_email, subscription_tier, tier_start_date) VALUES (?, ?, ?, ?)`
+        )
+        .bind(user.id, email, newTier, currentDate)
         .run();
     }
 
