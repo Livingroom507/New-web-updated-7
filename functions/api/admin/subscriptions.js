@@ -83,9 +83,9 @@ async function updateSubscription(request, email, env) {
     if (existing) {
         // If they exist, update the record
         await env.DB.prepare(
-            `UPDATE user_subscriptions SET subscription_tier = ?, tier_update_date = ? WHERE user_email = ?`
+            `UPDATE user_subscriptions SET subscription_tier = ? WHERE user_email = ?`
         )
-        .bind(newTier, currentDate, email)
+        .bind(newTier, email)
         .run();
     } else {
         // If they don't exist, get user_id from users table
