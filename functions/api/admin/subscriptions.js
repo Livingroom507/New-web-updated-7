@@ -101,9 +101,9 @@ async function updateSubscription(request, email, env) {
         
         // Insert a new record
         await env.DB.prepare(
-            `INSERT INTO user_subscriptions (user_id, user_email, subscription_tier) VALUES (?, ?, ?)`
+            `INSERT INTO user_subscriptions (user_id, user_email, subscription_tier, tier_start_date) VALUES (?, ?, ?, ?)`
         )
-        .bind(user.id, email, newTier)
+        .bind(user.id, email, newTier, new Date().toISOString())
         .run();
     }
 
