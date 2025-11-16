@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
     -- Foreign Key to link back to the main user profile table (assuming it exists)
-    user_email TEXT NOT NULL UNIQUE, 
+    user_email TEXT NOT NULL UNIQUE,
 
     -- Current level of involvement (The Subscription Tier)
     -- Options: 'Client', 'Affiliate', 'Closer', 'Mastery', 'Panama Ready'
@@ -20,6 +20,6 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
     -- Optional: Any unique identifier for their current training cohort or group
     cohort_id TEXT,
 
-    -- Constraint to ensure emails are valid foreign keys (if you have a main 'users' table)
-    FOREIGN KEY (user_email) REFERENCES profiles(email) 
+    -- CONSTRAINT CORRECTION: Reference the existing PlacementProfiles table
+    FOREIGN KEY (user_email) REFERENCES PlacementProfiles(email)
 );
