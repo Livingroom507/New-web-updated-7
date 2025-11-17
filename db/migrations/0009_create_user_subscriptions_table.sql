@@ -21,5 +21,5 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
     cohort_id TEXT,
 
     -- CONSTRAINT CORRECTION: Reference the existing PlacementProfiles table
-    FOREIGN KEY (user_email) REFERENCES PlacementProfiles(email)
+    
 );
