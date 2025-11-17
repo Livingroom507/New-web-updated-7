@@ -1,128 +1,156 @@
-let affiliateEmail = '';
+// affiliate-dashboard.js
 
-async function fetchJSON(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('Network error');
-  return await res.json();
-}
+// --- 1. Utility Functions ---
 
-async function loadOverview(email) {
-  const data = await fetchJSON(`/api/affiliate/overview?email=${email}`);
-  document.getElementById('kpi-referrals').textContent = data.referral_count || '0';
-  document.getElementById('kpi-total-earnings').textContent = `$${(data.total_earnings || 0).toFixed(2)}`;
-}
-
-async function loadPlanDetails(email) {
-  const data = await fetchJSON(`/api/affiliate/plan?email=${email}`);
-  document.getElementById('kpi-plan').textContent = data.name || '--';
-  document.getElementById('plan-details').innerHTML = `
-    <p><strong>Plan:</strong> ${data.name}</p>
-    <p><strong>Commission Rate:</strong> ${data.commission_rate * 100}%</p>
-    <p><strong>Features:</strong></p>
-    <ul>
-      ${data.features.map(feature => `<li>${feature}</li>`).join('')}
-    </ul>
-  `;
-}
-
-async function loadTable(url, tableId, columns) {
-  const data = await fetchJSON(url);
-  const tbody = document.getElementById(tableId).querySelector('tbody');
-  tbody.innerHTML = data.map(item => {
-    return `<tr>${columns.map(col => `<td>${item[col]}</td>`).join('')}</tr>`;
-  }).join('');
-}
-
-async function loadPlanFinancials() {
-  // In the future, this would be: const plans = await fetchJSON('/api/plans');
-  // For now, we use the mock data loaded in plans.html
-  const plans = MOCK_API.plans;
-  const tbody = document.querySelector('#plans-table tbody');
-  if (!tbody) return;
-
-  tbody.innerHTML = plans.map(p => `
-    <tr>
-      <td>${p.role}</td>
-      <td>${p.plan_name}</td>
-      <td>$${p.monthly_cost.toFixed(2)}</td>
-      <td>$${p.break_even_flow.toFixed(2)}</td>
-      <td>$${p.network_earnings.toFixed(2)}</td>
-      <td>$${p.yearly_capital.toFixed(2)}</td>
-    </tr>
-  `).join('');
-}
-
-function setupDropdown() {
-    const trigger = document.getElementById('user-profile-trigger');
-    const menu = document.getElementById('user-dropdown-menu');
-
-    if (!trigger || !menu) return;
-
-    trigger.addEventListener('click', (event) => {
-        event.stopPropagation(); // Prevents the window click event from firing immediately
-        menu.classList.toggle('hidden');
-    });
-
-    // Close dropdown if clicking outside
-    window.addEventListener('click', () => {
-        if (!menu.classList.contains('hidden')) {
-            menu.classList.add('hidden');
+/**
+ * Fetches data from a given endpoint.
+ * @param {string} endpoint - The API path (e.g., '/api/affiliate/profile').
+ * @param {string} email - The user's email for authorization/data filtering.
+ * @returns {Promise<Object>} The JSON response data.
+ */
+async function fetchData(endpoint, email) {
+    // NOTE: In a production app, the email would be extracted securely from a session/token.
+    const url = `${endpoint}?email=${email}`;
+    
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            // Throw error to be caught by the caller
+            throw new Error(`Failed to fetch ${endpoint}: ${response.statusText}`);
         }
+        return response.json();
+    } catch (error) {
+        console.error(`Error fetching data from ${endpoint}:`, error);
+        // Display a fallback message on the dashboard
+        document.getElementById('plan-details').innerHTML = `<p class="error-msg">Error loading data. Check console.</p>`;
+        return null; 
+    }
+}
+
+// --- 2. Dashboard Population Functions ---
+
+/**
+ * Populates user details and plan financials (Overview & My Plan sections).
+ */
+async function loadProfileAndPlan(email) {
+    const data = await fetchData('/api/affiliate/profile', email);
+    if (!data) return;
+
+    const { user, subscription, kpis } = data;
+
+    // 1. Update Header and Overview KPIs
+    document.querySelector('.user-name').textContent = user.name || 'Affiliate User';
+    document.querySelector('.user-role').textContent = subscription.currentTier;
+    document.getElementById('kpi-plan').textContent = subscription.currentTier;
+    
+    document.getElementById('kpi-referrals').textContent = kpis.totalReferrals;
+    document.getElementById('kpi-total-earnings').textContent = `$${kpis.totalEarnings.toFixed(2)}` || '$0.00';
+    document.getElementById('kpi-rewards').textContent = 'N/A'; // Assuming this is calculated elsewhere
+
+    // 2. Populate My Plan Details section
+    const planDetailsDiv = document.getElementById('plan-details');
+    if (subscription.financials) {
+        planDetailsDiv.innerHTML = `
+            <p><strong>Tier:</strong> ${subscription.financials.plan_name}</p>
+            <p><strong>Commission Rate:</strong> ${subscription.financials.commission_rate * 100}%</p>
+            <p><strong>Description:</strong> ${subscription.financials.description || 'No description available.'}</p>
+        `;
+    } else {
+        planDetailsDiv.innerHTML = '<p>Subscription details not found.</p>';
+    }
+
+    // 3. Populate Plan Financials Table (Training Lab)
+    // NOTE: This assumes you have data for ALL plans in your 'plans' table.
+    // We will need a separate endpoint to fetch ALL plans later, but for now we use the current plan data.
+    const plansTableBody = document.querySelector('#plans-table tbody');
+    plansTableBody.innerHTML = `
+        <tr>
+            <td>${subscription.financials.role_type || 'N/A'}</td>
+            <td>${subscription.financials.plan_name || 'N/A'}</td>
+            <td>$${subscription.financials.monthly_cost || '0'}</td>
+            <td>$${subscription.financials.breakeven_flow || '0'}</td>
+            <td>${subscription.financials.network_earnings_rate || 'N/A'}</td>
+            <td>$${subscription.financials.yearly_capital || '0'}</td>
+        </tr>
+    `;
+}
+
+/**
+ * Populates the Referrals and Earnings tables.
+ */
+async function loadEarningsAndReferrals(email) {
+    const data = await fetchData('/api/affiliate/earnings', email);
+    if (!data) return;
+
+    const { referrals, totalEarnings } = data;
+
+    // Update the Overview KPI with the real calculated total earnings
+    document.getElementById('kpi-total-earnings').textContent = `$${totalEarnings}`;
+    document.getElementById('kpi-referrals').textContent = referrals.length;
+
+
+    // 1. Populate Referrals Table
+    const referralsTableBody = document.querySelector('#referrals-table tbody');
+    referralsTableBody.innerHTML = ''; // Clear previous content
+    
+    if (referrals.length === 0) {
+        referralsTableBody.innerHTML = '<tr><td colspan="5">No referrals found yet. Get closing!</td></tr>';
+    } else {
+        referrals.forEach(ref => {
+            const row = referralsTableBody.insertRow();
+            row.innerHTML = `
+                <td>${new Date(ref.date).toLocaleDateString()}</td>
+                <td>${ref.referredUser}</td>
+                <td>${ref.planChosen}</td>
+                <td>$${ref.commissionEarned}</td>
+                <td>${ref.status}</td>
+            `;
+        });
+    }
+
+    // 2. Populate Earnings Table (simple summary, matching the structure of the referrals data)
+    const earningsTableBody = document.querySelector('#earnings-table tbody');
+    earningsTableBody.innerHTML = ''; // Clear previous content
+    
+    if (referrals.length === 0) {
+        earningsTableBody.innerHTML = '<tr><td colspan="5">No earnings to display.</td></tr>';
+    } else {
+        // Since earnings are calculated in the referrals loop, we map the results for the earnings table
+        referrals.forEach(ref => {
+            const row = earningsTableBody.insertRow();
+            row.innerHTML = `
+                <td>${ref.referredUser}</td>
+                <td>${ref.planChosen}</td>
+                <td>$${ref.commissionEarned}</td>
+                <td>N/A</td> <td>$${ref.commissionEarned}</td>
+            `;
+        });
+    }
+}
+
+
+// --- 3. Initialization ---
+
+/**
+ * Main function to run when the page loads.
+ */
+function initDashboard() {
+    // IMPORTANT: Replace this with the logic to get the logged-in affiliate's email.
+    // For testing, we use the email of the 'Affiliate One' user.
+    const affiliateEmail = 'affiliate@livingroom507.com'; 
+
+    // Load data from both core endpoints concurrently
+    loadProfileAndPlan(affiliateEmail);
+    loadEarningsAndReferrals(affiliateEmail);
+
+    // Initial event listener for the dropdown menu
+    document.getElementById('user-profile-trigger').addEventListener('click', function() {
+        const dropdown = document.getElementById('user-dropdown-menu');
+        dropdown.classList.toggle('hidden');
     });
 
-    menu.addEventListener('click', (event) => {
-        event.stopPropagation(); // Prevents window click from closing menu if clicking inside
-    });
+    // Optionally load training hub data here (requires another function, similar to above)
 }
 
-function setupSettingsForm() {
-    const avatarInput = document.getElementById('setting-avatar');
-    const avatarPreview = document.getElementById('avatar-preview');
-
-    if (!avatarInput || !avatarPreview) return;
-
-    avatarInput.addEventListener('change', () => {
-        const file = avatarInput.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                avatarPreview.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-}
-
-async function loadEarnings(email) {
-  const data = await fetchJSON(`/api/affiliate/earnings?email=${email}`);
-  document.getElementById('kpi-total-earnings').textContent = `$${data.total_earnings || '0.00'}`;
-
-  // This part needs to be adjusted based on the actual data structure for earnings breakdown
-  const tbody = document.getElementById('earnings-table').querySelector('tbody');
-  tbody.innerHTML = `<tr><td colspan="5">Earnings breakdown not yet implemented in this view.</td></tr>`;
-}
-
-async function initDashboard() {
-  affiliateEmail = prompt('Please enter your affiliate email:');
-  if (!affiliateEmail) {
-    alert('Affiliate email is required to load the dashboard.');
-    return;
-  }
-
-  try {
-    await loadOverview(affiliateEmail);
-    await loadPlanDetails(affiliateEmail);
-    await loadPlanFinancials();
-    await loadTable(`/api/affiliate/referrals?email=${affiliateEmail}`, 'referrals-table', 
-      ['created_at','name','email','status']);
-    await loadEarnings(affiliateEmail);
-  } catch(err) {
-    console.error('Dashboard loading error:', err);
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    initDashboard();
-    setupDropdown();
-    setupSettingsForm();
-});
+// Start the dashboard loading process when the DOM is ready
+document.addEventListener('DOMContentLoaded', initDashboard);
