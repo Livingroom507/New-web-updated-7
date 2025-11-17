@@ -1,5 +1,4 @@
--- Table: user_subscriptions
--CREATE TABLE IF NOT EXISTS user_subscriptions (
+CREATE TABLE IF NOT EXISTS user_subscriptions (
     -- Primary Key
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     
@@ -15,4 +14,5 @@
     -- Optional columns
     panama_eligibility_date TEXT, 
     cohort_id TEXT
+);
 );
