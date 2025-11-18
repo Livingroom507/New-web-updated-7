@@ -133,7 +133,7 @@ async function loadEarningsAndReferrals(email) {
  */
 function initDashboard() {
     // We use the corrected test email, assuming the role fix was applied in D1
-    const affiliateEmail = 'affiliate@livingroom507.com'; 
+    const affiliateEmail = 'roblq123@gmail.com';
 
     // Load data from core endpoints concurrently
     loadProfileAndPlan(affiliateEmail);
