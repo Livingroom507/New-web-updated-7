@@ -58,19 +58,21 @@ async function loadProfileAndPlan(email) {
         planDetailsDiv.innerHTML = '<p>Subscription details not found.</p>';
     }
 
-    // 3. Populate Plan Financials Table (Training Lab) - Simplified using current plan data
+    // 3. Populate Plan Financials Table (Training Lab)
     const plansTableBody = document.querySelector('#plans-table tbody');
-    if (plansTableBody) {
+    if (plansTableBody && subscription.financials) {
         plansTableBody.innerHTML = `
             <tr>
-                <td>${subscription.financials.role_type || 'N/A'}</td>
-                <td>${subscription.financials.plan_name || 'N/A'}</td>
-                <td>$${subscription.financials.monthly_cost || '0'}</td>
-                <td>$${subscription.financials.breakeven_flow || '0'}</td>
-                <td>${subscription.financials.network_earnings_rate || 'N/A'}</td>
-                <td>$${subscription.financials.yearly_capital || '0'}</td>
+                <td>${subscription.financials.role_type ?? 'N/A'}</td>
+                <td>${subscription.financials.plan_name ?? 'N/A'}</td>
+                <td>$${subscription.financials.monthly_cost ?? '0'}</td>
+                <td>$${subscription.financials.breakeven_flow ?? '0'}</td>
+                <td>${subscription.financials.network_earnings_rate ?? 'N/A'}</td>
+                <td>$${subscription.financials.yearly_capital ?? '0'}</td>
             </tr>
         `;
+    } else if (plansTableBody) {
+        plansTableBody.innerHTML = '<tr><td colspan="6">Plan Financials Missing</td></tr>';
     }
 }
 
