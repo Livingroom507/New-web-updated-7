@@ -30,17 +30,18 @@ export async function onRequestGet(context) {
         const referralsStmt = env.DB.prepare(`
             SELECT
                 r.id,
-                r.referred_user_email,
-                r.plan_id,
-                r.referral_date,
+                r.user_email AS referredUserEmail,
+                p.plan_name AS planChosen,
+                r.created_at AS date,
                 r.status,
-                p.plan_name,
-                p.commission_rate
+                p.purchase_earning * 100 AS commissionEarned, -- Using purchase_earning as commission base
+                r.purchase_amount
             FROM referrals r
-            JOIN plans p ON r.plan_id = p.id
+            INNER JOIN plans p ON r.plan_id = p.plan_name -- Assuming plan_id in referrals maps to plan_name in plans
             WHERE r.affiliate_id = ?
-            ORDER BY r.referral_date DESC
+            ORDER BY r.created_at DESC
         `);
+        
         const referralsResult = await referralsStmt.bind(affiliateId).all();
 
         // 3. Process data and calculate totals
