@@ -30,46 +30,35 @@ export async function onRequestGet(context) {
         const referralsStmt = env.DB.prepare(`
             SELECT
                 r.id,
-                r.user_email AS referredUserEmail,
-                p.plan_name AS planChosen,
+                r.referred_email AS referredUserEmail,
+                r.plan_name AS planChosen,
                 r.created_at AS date,
                 r.status,
-                p.purchase_earning * 100 AS commissionEarned, -- Using purchase_earning as commission base
-                r.purchase_amount
+                r.commission AS totalCommission,     -- Use the existing 'commission' column
+                p.purchase_unit,                     -- For display/calculation
+                p.purchase_earning                   -- For display/calculation
             FROM referrals r
-            INNER JOIN plans p ON r.plan_id = p.plan_name -- Assuming plan_id in referrals maps to plan_name in plans
+            INNER JOIN plans p ON r.plan_name = p.plan_name
             WHERE r.affiliate_id = ?
             ORDER BY r.created_at DESC
         `);
         
         const referralsResult = await referralsStmt.bind(affiliateId).all();
 
-        // 3. Process data and calculate totals
+        // 3. Calculate total earnings from the results
         let totalEarnings = 0;
-        const processedReferrals = referralsResult.results.map(ref => {
-            // Assuming 'commission_rate' is a percentage (e.g., 0.15 for 15%)
-            // You would typically get the sale price from a 'transactions' or 'plans' table.
-            // For this example, we'll use a placeholder price and apply the rate.
-            const planPrice = 2000; // Placeholder value for a high-ticket plan
-            const commission = (ref.commission_rate * planPrice).toFixed(2);
-
-            totalEarnings += parseFloat(commission);
-
-            return {
-                id: ref.id,
-                date: ref.referral_date,
-                referredUser: ref.referred_user_email,
-                planChosen: ref.plan_name,
-                commissionEarned: commission,
-                status: ref.status,
-            };
-        });
+        if (referralsResult.results) {
+            referralsResult.results.forEach(ref => {
+                // Sum up the commission from each referral
+                totalEarnings += ref.totalCommission || 0;
+            });
+        }
 
         // 4. Return referral list and total earnings
         const earningsData = {
             totalEarnings: totalEarnings.toFixed(2),
-            totalReferrals: processedReferrals.length,
-            referrals: processedReferrals,
+            totalReferrals: referralsResult.results ? referralsResult.results.length : 0,
+            referrals: referralsResult.results || [],
         };
 
         return new Response(JSON.stringify(earningsData), {
