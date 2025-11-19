@@ -3,6 +3,8 @@
 export async function onRequestGet(context) {
     const { env, request } = context;
     const url = new URL(request.url);
+    // NOTE: This assumes email is passed as a query parameter (e.g., ?email=user@example.com).
+    // In a real production environment, this should come from the secure session/cookie.
     const email = url.searchParams.get('email');
 
     if (!email) {
@@ -13,17 +15,19 @@ export async function onRequestGet(context) {
     }
 
     try {
-        // Fetch all user, profile, and plan data in a single query
+        // Fetch user, profile, and critical plan financial data (purchase_unit/earning)
         const userStmt = env.DB.prepare(`
             SELECT
                 u.email,
                 u.full_name AS fullName,
                 u.plan_name AS currentPlanName,
                 u.paypal_email AS paypalEmail,
-                u.profile_picture_url AS profilePictureUrl, // NEW
-                u.public_bio AS publicBio,                   // NEW
+                u.profile_picture_url AS profilePictureUrl,
+                u.public_bio AS publicBio, 
                 p.commission_rate AS commissionRate,
-                p.description
+                p.description,
+                p.purchase_unit AS purchaseUnit,      -- ADDED FINANCIAL DATA
+                p.purchase_earning AS purchaseEarning -- ADDED FINANCIAL DATA
             FROM users u
             INNER JOIN plans p ON u.plan_name = p.plan_name
             WHERE u.email = ?
@@ -31,12 +35,13 @@ export async function onRequestGet(context) {
         const userResult = await userStmt.bind(email).first();
 
         if (!userResult) {
-            return new Response(JSON.stringify({ error: 'User not found.' }), {
+            return new Response(JSON.stringify({ error: 'User not found or plan data missing.' }), {
                 status: 404,
                 headers: { 'Content-Type': 'application/json' },
             });
         }
 
+        // Returns all selected fields, including the new profile and financial data
         return new Response(JSON.stringify(userResult), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
@@ -80,12 +85,12 @@ export async function onRequestPost(context) {
         const updateResult = await updateStmt.bind(
             fullName,
             paypalEmail,
-            publicBio, // Bind the publicBio value
+            publicBio, 
             email
         ).run();
 
         if (updateResult.meta.changes === 0) {
-             return new Response(JSON.stringify({ error: 'Profile not found or no changes made.' }), {
+              return new Response(JSON.stringify({ error: 'Profile not found or no changes made.' }), {
                 status: 404,
                 headers: { 'Content-Type': 'application/json' },
             });
@@ -113,40 +118,4 @@ export async function onRequest(context) {
     }
 
     return new Response('Method Not Allowed', { status: 405 });
-}
-                p.plan_name,
-                p.commission_rate,
-                p.description
-            FROM users u
-            LEFT JOIN user_subscriptions us ON u.email = us.user_email
-            LEFT JOIN plans p ON us.subscription_tier = p.plan_name
-            WHERE u.email = ?
-        `);
-        const profileResult = await profileStmt.bind(email).first();
-
-        if (!profileResult) {
-            return new Response(JSON.stringify({ error: 'User not found.' }), {
-                status: 404,
-                headers: { 'Content-Type': 'application/json' },
-            });
-        }
-
-        // Combine all data into a single profile object
-        const profileData = {
-            ...profileResult,
-            currentTier: profileResult.plan_name || 'Client', // Default to 'Client' if no subscription
-        };
-
-        return new Response(JSON.stringify(profileData), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-        });
-
-    } catch (error) {
-        console.error('Affiliate Profile Fetch Error:', error);
-        return new Response(JSON.stringify({ error: 'Internal Server Error fetching affiliate profile.' }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' },
-        });
-    }
 }

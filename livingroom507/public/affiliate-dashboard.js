@@ -1,153 +1,129 @@
-// livingroom507/public/affiliate-dashboard.js
+document.addEventListener('DOMContentLoaded', () => {
+    // In a real app, user email would come from an authentication context
+    const currentUserEmail = 'roblq123@gmail.com'; 
 
-// --- 1. Utility Functions ---
+    const profileForm = document.getElementById('profile-update-form');
 
-/**
- * Fetches data from a given endpoint.
- * @param {string} endpoint - The API path (e.g., '/api/affiliate/profile').
- * @param {string} email - The user's email for authorization/data filtering.
- * @returns {Promise<Object>} The JSON response data.
- */
-async function fetchData(endpoint, email) {
-    const url = `${endpoint}?email=${email}`;
-    
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            // Throw error to be caught by the caller
-            throw new Error(`Failed to fetch ${endpoint}: ${response.status} (${response.statusText})`);
+    /**
+     * Fetches profile data from the API and populates the dashboard.
+     */
+    async function loadProfileData() {
+        if (!currentUserEmail) return;
+
+       try {
+            const profileData = await (await fetch(`/api/affiliate/profile?email=${currentUserEmail}`)).json();
+            
+            // ----------------------------------------------------
+            // 1. UPDATE CORE PROFILE FIELDS (including new fields)
+            // ----------------------------------------------------
+            document.getElementById('full-name').value = profileData.fullName || '';
+            document.getElementById('profile-email').textContent = profileData.email || 'N/A';
+            document.getElementById('paypal-email').value = profileData.paypalEmail || '';
+
+            // NEW: Load Advocate Profile Data
+            document.getElementById('advocate-avatar').src = profileData.profilePictureUrl || '/default-avatar.png';
+            document.getElementById('public-bio').value = profileData.publicBio || ''; // For the form textarea
+            document.getElementById('advocate-bio-display').textContent = profileData.publicBio || 'No public bio set.'; // For the public display
+
+            // ----------------------------------------------------
+            // 2. FINANCIAL MECHANICS (Custom Commission Logic)
+            // ----------------------------------------------------
+            const purchaseUnit = profileData.purchase_unit || 0; // e.g., 70.53
+            const purchaseEarning = profileData.purchase_earning || 0; // e.g., 152.16
+
+            // Calculate the number of purchase units in the $89.95 example
+            const exampleSalePrice = 89.95; 
+            let unitsPerExampleSale = 0;
+            let commissionPerExampleSale = 0;
+            if (purchaseUnit > 0) {
+                unitsPerExampleSale = (exampleSalePrice / purchaseUnit);
+                commissionPerExampleSale = unitsPerExampleSale * purchaseEarning;
+            }
+            
+            // Dynamic Commission Explanation (e.g., "$14.61 per each purchase of $89.95")
+            const commissionLogicElement = document.getElementById('commission-logic');
+            if (purchaseUnit > 0 && purchaseEarning > 0) {
+                commissionLogicElement.innerHTML = `
+                    Your commission is calculated based on <strong>Purchase Units</strong> within a sale.<br>
+                    For your <strong>${profileData.currentPlanName}</strong> plan, each Purchase Unit is <strong>$${purchaseUnit.toFixed(2)}</strong> and earns you <strong>$${purchaseEarning.toFixed(2)}</strong> commission.<br>
+                    If a customer purchases an item valued at <strong>$${exampleSalePrice.toFixed(2)}</strong>, you earn <strong>$${commissionPerExampleSale.toFixed(2)}</strong> in commission.
+                `;
+            } else {
+                commissionLogicElement.textContent = 'Financial metrics for this plan are not yet defined.';
+            }
+
+
+        } catch (error) {
+            console.error('Error loading profile data:', error);
+            alert('Could not load your profile data.');
         }
-        return response.json();
-    } catch (error) {
-        console.error(`Error fetching data from ${endpoint}:`, error);
-        // Display a general fallback message on the dashboard
-        document.getElementById('plan-details').innerHTML = `<p class="error-msg">Error loading data. Check console.</p>`;
-        return null; 
-    }
-}
-
-// --- 2. Dashboard Population Functions ---
-
-/**
- * Populates user details and plan financials (Overview & My Plan sections).
- */
-async function loadProfileAndPlan(email) {
-    const data = await fetchData('/api/affiliate/profile', email);
-    if (!data) return;
-
-    const { user, subscription, kpis } = data;
-
-    // 1. Update Header and Overview KPIs
-    document.querySelector('.user-name').textContent = user.name || 'Affiliate User';
-    document.querySelector('.user-role').textContent = subscription.currentTier;
-    document.getElementById('kpi-plan').textContent = subscription.currentTier;
-    
-    document.getElementById('kpi-referrals').textContent = kpis.totalReferrals || '0';
-    document.getElementById('kpi-total-earnings').textContent = `$${(kpis.totalEarnings || 0).toFixed(2)}`;
-    document.getElementById('kpi-rewards').textContent = 'N/A'; // Placeholder
-
-    // 2. Populate My Plan Details section
-    const planDetailsDiv = document.getElementById('plan-details');
-    if (subscription.financials) {
-        planDetailsDiv.innerHTML = `
-            <p><strong>Tier:</strong> ${subscription.financials.plan_name}</p>
-            <p><strong>Commission Rate:</strong> ${subscription.financials.commission_rate * 100}%</p>
-            <p><strong>Description:</strong> ${subscription.financials.description || 'No description available.'}</p>
-        `;
-    } else {
-        planDetailsDiv.innerHTML = '<p>Subscription details not found.</p>';
     }
 
-    // 3. Populate Plan Financials Table (Training Lab)
-    const plansTableBody = document.querySelector('#plans-table tbody');
-    if (plansTableBody && subscription.financials) {
-        plansTableBody.innerHTML = `
-            <tr>
-                <td>${subscription.financials.role_type ?? 'N/A'}</td>
-                <td>${subscription.financials.plan_name ?? 'N/A'}</td>
-                <td>$${subscription.financials.monthly_cost ?? '0'}</td>
-                <td>$${subscription.financials.breakeven_flow ?? '0'}</td>
-                <td>${subscription.financials.network_earnings_rate ?? 'N/A'}</td>
-                <td>$${subscription.financials.yearly_capital ?? '0'}</td>
-            </tr>
-        `;
-    } else if (plansTableBody) {
-        plansTableBody.innerHTML = '<tr><td colspan="6">Plan Financials Missing</td></tr>';
+    /**
+     * Handles the submission of the profile update form.
+     */
+    async function updateProfile(event) {
+        event.preventDefault();
+        const saveButton = document.getElementById('save-changes-button');
+        saveButton.disabled = true;
+        saveButton.textContent = 'Saving...';
+
+        // Collect all fields from the form
+        const fullName = document.getElementById('full-name').value;
+        const email = document.getElementById('profile-email').textContent; // Get email from display
+        const paypalEmail = document.getElementById('paypal-email').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-new-password').value;
+        const publicBio = document.getElementById('public-bio').value; // NEW: Get the public bio value
+
+        if (newPassword !== confirmPassword) {
+            alert("New password and confirmation do not match.");
+            saveButton.disabled = false;
+            saveButton.textContent = 'Save Changes';
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/affiliate/profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    fullName,
+                    email, // Required for WHERE clause in Worker
+                    paypalEmail,
+                    publicBio, // NEW: Include in the payload
+                    newPassword // Only used if a password change is intended
+                }),
+            });
+
+            const result = await response.json();
+            
+            if (response.ok) {
+                alert('Profile updated successfully!');
+                // Reload the profile to ensure the display shows the updated values
+                await loadProfileData();
+            } else {
+                alert(`Error updating profile: ${result.message || result.error}`);
+            }
+
+        } catch (error) {
+            console.error('Update profile failed:', error);
+            alert('An unexpected error occurred during profile update.');
+        } finally {
+            saveButton.disabled = false;
+            saveButton.textContent = 'Save Changes';
+        }
     }
-}
 
-/**
- * Populates the Referrals and Earnings tables.
- */
-async function loadEarningsAndReferrals(email) {
-    const data = await fetchData('/api/affiliate/earnings', email);
-    if (!data) return;
-
-    const { referrals, totalEarnings } = data;
-
-    // Update the Overview KPI with the real calculated total earnings
-    document.getElementById('kpi-total-earnings').textContent = `$${totalEarnings}`;
-    document.getElementById('kpi-referrals').textContent = referrals.length;
-
-    // 1. Populate Referrals Table
-    const referralsTableBody = document.querySelector('#referrals-table tbody');
-    referralsTableBody.innerHTML = ''; 
-    
-    if (referrals.length === 0) {
-        referralsTableBody.innerHTML = '<tr><td colspan="5">No referrals found yet.</td></tr>';
-    } else {
-        referrals.forEach(ref => {
-            const row = referralsTableBody.insertRow();
-            row.innerHTML = `
-                <td>${new Date(ref.date).toLocaleDateString()}</td>
-                <td>${ref.referredUser}</td>
-                <td>${ref.planChosen}</td>
-                <td>$${ref.commissionEarned}</td>
-                <td>${ref.status}</td>
-            `;
-        });
+    // Attach event listener to the form
+    if (profileForm) {
+        profileForm.addEventListener('submit', updateProfile);
     }
 
-    // 2. Populate Earnings Table 
-    const earningsTableBody = document.querySelector('#earnings-table tbody');
-    earningsTableBody.innerHTML = ''; 
-    
-    if (referrals.length === 0) {
-        earningsTableBody.innerHTML = '<tr><td colspan="5">No earnings to display.</td></tr>';
-    } else {
-        referrals.forEach(ref => {
-            const row = earningsTableBody.insertRow();
-            row.innerHTML = `
-                <td>${ref.referredUser}</td>
-                <td>${ref.planChosen}</td>
-                <td>$${ref.commissionEarned}</td>
-                <td>N/A</td> 
-                <td>$${ref.commissionEarned}</td>
-            `;
-        });
-    }
-}
-
-// --- 3. Initialization ---
-
-/**
- * Main function to run when the page loads.
- */
-function initDashboard() {
-    // We use the corrected test email, assuming the role fix was applied in D1
-    const affiliateEmail = 'roblq123@gmail.com';
-
-    // Load data from core endpoints concurrently
-    loadProfileAndPlan(affiliateEmail);
-    loadEarningsAndReferrals(affiliateEmail);
-    // You would call loadTrainingHub here later
-
-    // Initial event listener for the dropdown menu
-    document.getElementById('user-profile-trigger')?.addEventListener('click', function() {
-        const dropdown = document.getElementById('user-dropdown-menu');
-        dropdown?.classList.toggle('hidden');
-    });
-}
-
-// Start the dashboard loading process when the DOM is ready
-document.addEventListener('DOMContentLoaded', initDashboard);
+    // Initial data load
+    loadProfileData();
+    // You would also call a function here to load earnings data
+    // loadEarningsData(currentUserEmail); 
+});
