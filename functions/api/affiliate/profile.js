@@ -3,9 +3,8 @@
 export async function onRequestGet(context) {
     const { env, request } = context;
     const url = new URL(request.url);
-    // NOTE: This assumes email is passed as a query parameter (e.g., ?email=user@example.com).
-    // In a real production environment, this should come from the secure session/cookie.
-    const email = url.searchParams.get('email');
+    // NOTE: Replace TEST_USER_EMAIL with actual authentication/session logic later
+    const email = url.searchParams.get('email') || 'roblq123@gmail.com'; // Use the test email from your frontend
 
     if (!email) {
         return new Response(JSON.stringify({ error: 'Email parameter is required.' }), {
@@ -15,7 +14,7 @@ export async function onRequestGet(context) {
     }
 
     try {
-        // Fetch user, profile, and critical plan financial data (purchase_unit/earning)
+        // --- CRITICAL FIX: Changed from INNER JOIN to LEFT JOIN for robustness ---
         const userStmt = env.DB.prepare(`
             SELECT
                 u.email,
@@ -26,22 +25,22 @@ export async function onRequestGet(context) {
                 u.public_bio AS publicBio, 
                 p.commission_rate AS commissionRate,
                 p.description,
-                p.purchase_unit AS purchaseUnit,      -- ADDED FINANCIAL DATA
-                p.purchase_earning AS purchaseEarning -- ADDED FINANCIAL DATA
+                p.purchase_unit AS purchaseUnit,
+                p.purchase_earning AS purchaseEarning
             FROM users u
-            INNER JOIN plans p ON u.plan_name = p.plan_name
+            LEFT JOIN plans p ON u.plan_name = p.plan_name
             WHERE u.email = ?
         `);
         const userResult = await userStmt.bind(email).first();
 
-        if (!userResult) {
-            return new Response(JSON.stringify({ error: 'User not found or plan data missing.' }), {
+        if (!userResult || !userResult.email) {
+            // This now returns a 404 if the user doesn't exist, instead of crashing.
+            return new Response(JSON.stringify({ error: 'User not found or plan data invalid.' }), {
                 status: 404,
                 headers: { 'Content-Type': 'application/json' },
             });
         }
 
-        // Returns all selected fields, including the new profile and financial data
         return new Response(JSON.stringify(userResult), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
@@ -49,7 +48,11 @@ export async function onRequestGet(context) {
 
     } catch (error) {
         console.error('Affiliate Profile Fetch Error:', error);
-        return new Response(JSON.stringify({ error: 'Internal Server Error fetching affiliate profile.' }), {
+        // --- ENHANCEMENT: Returns the internal error message for debugging ---
+        return new Response(JSON.stringify({ 
+            error: 'Internal Server Error fetching affiliate profile. The worker code crashed.',
+            details: error.message || 'Unknown error. Check Cloudflare Worker logs for D1 connection details.'
+        }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },
         });
@@ -63,7 +66,6 @@ export async function onRequestPost(context) {
         const requestBody = await request.json();
         const { fullName, email, paypalEmail, publicBio } = requestBody;
 
-        // Basic validation
         if (!email) {
             return new Response(JSON.stringify({ error: 'Email is required for authentication.' }), {
                 status: 400,
@@ -71,7 +73,6 @@ export async function onRequestPost(context) {
             });
         }
 
-        // Update the SQL statement to include the new columns
         const updateStmt = env.DB.prepare(`
             UPDATE users
             SET
@@ -81,7 +82,6 @@ export async function onRequestPost(context) {
             WHERE email = ?
         `);
 
-        // Update the bind variables in the execute call
         const updateResult = await updateStmt.bind(
             fullName,
             paypalEmail,

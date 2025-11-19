@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // ----------------------------------------------------
             // 2. FINANCIAL MECHANICS (Custom Commission Logic)
             // ----------------------------------------------------
-            const purchaseUnit = profileData.purchase_unit || 0; // e.g., 70.53
-            const purchaseEarning = profileData.purchase_earning || 0; // e.g., 152.16
+            const purchaseUnit = profileData.purchaseUnit || 0;      // FIXED: Used camelCase
+            const purchaseEarning = profileData.purchaseEarning || 0; // FIXED: Used camelCase
 
             // Calculate the number of purchase units in the $89.95 example
             const exampleSalePrice = 89.95; 
