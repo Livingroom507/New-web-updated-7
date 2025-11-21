@@ -28,13 +28,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const advocateAvatarEl = document.getElementById('advocate-avatar');
             const publicBioEl = document.getElementById('public-bio');
             const advocateBioDisplayEl = document.getElementById('advocate-bio-display');
+            const navUserNameEl = document.getElementById('nav-user-name');
+            const navAvatarEl = document.getElementById('nav-avatar');
 
             if (fullNameEl) fullNameEl.value = profileData.fullName || '';
             if (profileEmailEl) profileEmailEl.textContent = profileData.email || 'N/A';
             if (paypalEmailEl) paypalEmailEl.value = profileData.paypalEmail || '';
-            if (advocateAvatarEl) advocateAvatarEl.src = profileData.profilePictureUrl || '/default-avatar.png';
             if (publicBioEl) publicBioEl.value = profileData.publicBio || '';
             if (advocateBioDisplayEl) advocateBioDisplayEl.textContent = profileData.publicBio || 'No public bio set.';
+
+            // Update avatar images (both in settings and top nav)
+            const avatarUrl = profileData.profilePictureUrl || '/default-avatar.png';
+            if (advocateAvatarEl) advocateAvatarEl.src = avatarUrl;
+            if (navAvatarEl) navAvatarEl.src = avatarUrl;
+
+            // Update user name in top nav
+            if (navUserNameEl) navUserNameEl.textContent = profileData.fullName || 'User';
 
             // ----------------------------------------------------
             // 2. FINANCIAL MECHANICS (Custom Commission Logic)
