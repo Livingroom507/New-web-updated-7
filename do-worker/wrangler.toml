@@ -19,3 +19,4 @@ new_sqlite_classes = [ "CollaborationRoom" ]
 binding = "DB"
 database_name = "livingroom507-db"
 database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14"
+migrations_dir = "db/migrations"
