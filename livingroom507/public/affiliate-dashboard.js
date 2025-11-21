@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentUserEmail = 'roblq123@gmail.com';
     const avatarUploadInput = document.getElementById('avatar-upload');
 
+    const userProfileToggle = document.getElementById('user-profile-toggle');
+    const dropdownMenu = document.getElementById('dropdown-menu');
     const profileForm = document.getElementById('profile-update-form');
 
     /**
@@ -192,6 +194,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (avatarUploadInput) {
         avatarUploadInput.addEventListener('change', handleAvatarUpload);
     }
+
+    // --- NEW: Add event listener for the dropdown menu ---
+    if (userProfileToggle) {
+        userProfileToggle.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('hidden');
+        });
+    }
+
+    // Close dropdown if clicking outside of it
+    document.addEventListener('click', (event) => {
+        if (!userProfileToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
 
     // Initial data load
     loadProfileData();
