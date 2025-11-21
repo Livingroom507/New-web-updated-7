@@ -1,4 +1,38 @@
+// 1. Function to handle prompting and storing the key
+function getAuthToken() {
+    // Try to retrieve existing token
+    let token = sessionStorage.getItem('adminAuthToken');
+
+    if (!token) {
+        // If not found, prompt the user
+        token = prompt('Please enter your Admin API Key:');
+        
+        // If user enters a key, store it
+        if (token) {
+            sessionStorage.setItem('adminAuthToken', token);
+        } else {
+            // CRUCIAL: If user cancels or enters empty, show the failure alert ONCE.
+            alert('Admin Authentication failed. Please reload and re-enter the correct API Key.');
+        }
+    }
+    // Return the token (or null/undefined if prompt was cancelled)
+    return token; 
+}
+
+// 2. Global Initialization
+// *** This must run immediately when the script loads ***
+const authToken = getAuthToken();
+// Optional: If the token is null, stop further initialization (e.g., loading data)
+if (!authToken) {
+    // You might call a function here to hide the content or display a locked message
+    console.error("Authentication failed. Stopping dashboard initialization.");
+}
+
 async function loadPlans() {
+    // Stop immediately if the global token failed to initialize
+    if (!authToken) {
+        return; 
+    }
     const plansGrid = document.getElementById('plans-grid');
     if (!plansGrid) return;
 
@@ -46,6 +80,10 @@ async function loadPlans() {
 }
 
 async function loadNetworkGoal() {
+    // Stop immediately if the global token failed to initialize
+    if (!authToken) {
+        return; 
+    }
     const networkGoalSpan = document.getElementById('network-goal');
     if (!networkGoalSpan) return;
 
@@ -60,6 +98,8 @@ async function loadNetworkGoal() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadPlans();
-    loadNetworkGoal();
+    if (authToken) {
+        loadPlans();
+        loadNetworkGoal();
+    }
 });

@@ -1,210 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Affiliate Dashboard | LIVINGROOM507-MOC</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- Adding Font Awesome for Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet" href="style-dashboard.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affiliate Dashboard</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-<body class="dashboard-layout">
-  <header class="top-nav">
-    <div class="brand-title"><LIVINGROOM507-MOC></LIVINGROOM507-MOC>Affiliate Dashboard</div>
-    <div class="user-profile-container">
-      <div class="user-profile" id="user-profile-trigger">
-        <div class="user-info">
-          <span class="user-name">Affiliate Name</span>
-          <span class="user-role">Current Plan</span>
+<body>
+    <div class="dashboard-container">
+        <!-- Top Navigation Bar -->
+        <header class="top-nav">
+            <div class="brand-title">Your Dashboard</div>
+            <div class="user-profile-container">
+                <div class="user-profile" id="user-profile-toggle">
+                    <div class="user-info">
+                        <span class="user-name" id="nav-user-name">Loading...</span>
+                        <span class="user-role">Affiliate</span>
+                    </div>
+                    <img src="/default-avatar.png" alt="User Avatar" class="avatar" id="nav-avatar">
+                </div>
+                <div class="dropdown-menu hidden" id="dropdown-menu">
+                    <a href="#" class="dropdown-item">Profile</a>
+                    <a href="#" class="dropdown-item">Logout</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- This layout wrapper is required for the sidebar and main content to work -->
+        <div class="dashboard-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav>
+                    <ul>
+                        <li><a href="/affiliate-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="#"><i class="fas fa-users"></i> Referrals</a></li>
+                        <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                    </ul>
+                </nav>
+            </aside>
+            
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <h1>Your Affiliate Dashboard</h1>
+
+                <!-- Advocate Profile Display Section -->
+                <div class="profile-section card">
+                    <h2>Advocate Profile</h2>
+                    <div id="advocate-profile-display">
+                        <!-- The avatar is in the settings, but we can show the bio here -->
+                        <p id="advocate-bio-display">Loading bio...</p>
+                    </div>
+                </div>
+
+                <!-- Account Settings Section -->
+                <div class="settings-section card">
+                    <h2>Account Settings</h2>
+                    <form id="profile-update-form">
+                        <!-- Avatar Upload -->
+                        <div class="avatar-upload-container">
+                            <img id="advocate-avatar" class="avatar-preview" src="/default-avatar.png" alt="Advocate Avatar">
+                            <div>
+                                <label for="avatar-upload">Update Profile Picture</label>
+                                <input type="file" id="avatar-upload" name="avatarUpload" accept="image/*">
+                                <small>PNG, JPG, GIF up to 2MB.</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <p><strong>Email:</strong> <span id="profile-email"></span></p>
+                            <label for="full-name">Full Name</label>
+                            <input type="text" id="full-name" name="fullName" required autocomplete="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="paypal-email">PayPal Email</label>
+                            <input type="email" id="paypal-email" name="paypalEmail" required autocomplete="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="public-bio">Public Bio</label>
+                            <textarea id="public-bio" name="publicBio" placeholder="Your public bio for the leaderboard and team recognition..." maxlength="500"></textarea>
+                        </div>
+                        <hr class="form-divider">
+                        <div class="form-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" name="newPassword" placeholder="Leave blank to keep current password" minlength="8" autocomplete="new-password">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-new-password">Confirm New Password</label>
+                            <input type="password" id="confirm-new-password" name="confirmNewPassword" autocomplete="new-password">
+                        </div>
+                        <button type="submit" id="save-changes-button">Save Changes</button>
+                    </form>
+                </div>
+
+                <!-- Financial Mechanics Section -->
+                <div class="financials-section card">
+                    <h3>Commission Structure (Current Plan)</h3>
+                    <p id="commission-logic">Loading financial details...</p>
+                </div>
+            </main>
         </div>
-        <img src="avatar.png" alt="User avatar" class="avatar">
-      </div>
-      <div class="dropdown-menu hidden" id="user-dropdown-menu">
-        <a href="#settings" class="dropdown-item">Account Settings</a>
-        <a href="index.html" class="dropdown-item">Logout</a>
-      </div>
     </div>
-  </header>
-
-  <aside class="sidebar">
-    <nav>
-      <ul>
-        <li><a href="index.html"><i class="fas fa-home"></i> Back to Home</a></li>
-        <li><a href="#overview">Dashboard</a></li>
-        <li><a href="#plan-financials">Plan Financials</a></li>
-        <li><a href="#plan">My Plan</a></li>
-        <li><a href="#referrals">Referrals</a></li>
-        <li><a href="#earnings">Earnings</a></li>
-        <li><a href="#training">Training Hub</a></li>
-        <li><a href="#settings">Settings</a></li>
-      </ul>
-    </nav>
-  </aside>
-
-  <main class="main-content">
-    <!-- Overview Section -->
-    <section id="overview" class="card">
-      <h2>Overview</h2>
-      <div class="kpi-cards">
-        <div class="kpi-card">
-          <div class="label">Total Referrals</div>
-          <div class="value" id="kpi-referrals">--</div>
-        </div>
-        <div class="kpi-card">
-          <div class="label">Current Plan</div>
-          <div class="value" id="kpi-plan">--</div>
-        </div>
-        <div class="kpi-card">
-          <div class="label">Total Earnings</div>
-          <div class="value" id="kpi-total-earnings">--</div>
-        </div>
-        <div class="kpi-card">
-          <div class="label">Compounded Rewards</div>
-          <div class="value" id="kpi-rewards">--</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- My Plan Section -->
-    <section id="plan" class="card">
-      <h2>My Plan Details</h2>
-      <div id="plan-details">Loading plan…</div>
-      <a href="plans.html" class="btn plan-change-btn">View/Change Plan</a>
-    </section>
-
-    <!-- Graph / Trend Section -->
-    <section id="trends" class="card">
-        <h2>Performance Trends</h2>
-        <div class="chart-container">
-            <!-- A canvas element for a chart library like Chart.js -->
-            <canvas id="performance-chart"></canvas>
-        </div>
-    </section>
-
-    <!-- Plan Financials Section (Training Lab) -->
-    <section id="plan-financials" class="card">
-      <h2>Membership Plans & Roles (Training Lab)</h2>
-      <p>Explore the available plans and their financial structures within the Livingroom507 community.</p>
-      <div class="table-responsive">
-        <table id="plans-table" class="table">
-          <thead>
-            <tr>
-              <th>Role</th>
-              <th>Plan</th>
-              <th>Monthly Cost</th>
-              <th>Break-Even Flow</th>
-              <th>Network Earnings</th>
-              <th>Yearly Capital</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Populated by affiliate-dashboard.js -->
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Referrals Section -->
-    <section id="referrals" class="card">
-      <h2>My Referrals</h2>
-      <div class="table-responsive">
-        <table class="table" id="referrals-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Referred User</th>
-              <th>Plan Chosen</th>
-              <th>Commission Earned</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- populated by JS -->
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Earnings Section -->
-    <section id="earnings" class="card">
-      <h2>My Earnings</h2>
-      <div class="table-responsive">
-        <table class="table" id="earnings-table">
-          <thead>
-            <tr>
-              <th>Referred User ID</th>
-              <th>Plan</th>
-              <th>Subscription Commission</th>
-              <th>Purchase Commission</th>
-              <th>Total Commission</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- populated by JS -->
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Training Hub Section -->
-    <section id="training" class="card">
-      <h2>Training Hub</h2>
-      <p>Check out the latest videos and resources to boost your referrals. (Leaderboard coming soon!)</p>
-      <div class="training-grid" id="training-list">
-        <!-- Training items will be populated by JS -->
-      </div>
-    </section>
-
-    <!-- Settings Section -->
-    <section id="settings" class="card">
-      <h2>Account Settings</h2>
-      <form id="account-settings-form">
-        <div class="avatar-upload-container">
-          <img src="avatar.png" alt="Current Avatar" class="avatar-preview" id="avatar-preview">
-          <div>
-            <label for="setting-avatar">Update Profile Picture</label>
-            <input type="file" id="setting-avatar" accept="image/*">
-            <small>Recommended: Square image (e.g., 200x200px)</small>
-          </div>
-        </div>
-        <hr class="form-divider">
-        <div class="form-group">
-          <label for="setting-name">Full Name</label>
-          <input type="text" id="setting-name" value="Affiliate Name" placeholder="Enter your full name">
-        </div>
-        <div class="form-group">
-          <label for="setting-email">Email Address</label>
-          <input type="email" id="setting-email" value="affiliate@example.com" placeholder="Enter your email">
-        </div>
-        <div class="form-group">
-          <label for="setting-bio">Public Bio</label>
-          <textarea id="setting-bio" rows="4" placeholder="Tell us a little about yourself..."></textarea>
-        </div>
-        <hr class="form-divider">
-        <div class="form-group">
-          <label for="setting-paypal">PayPal Email (for Payouts)</label>
-          <input type="email" id="setting-paypal" placeholder="Enter your PayPal email">
-        </div>
-        <hr class="form-divider">
-        <div class="form-group">
-          <label for="setting-password">New Password</label>
-          <input type="password" id="setting-password" placeholder="Enter a new password">
-        </div>
-        <div class="form-group">
-          <label for="setting-password-confirm">Confirm New Password</label>
-          <input type="password" id="setting-password-confirm" placeholder="Confirm your new password">
-        </div>
-        <button type="submit" class="btn">Save Changes</button>
-      </form>
-    </section>
-  </main>
-
-  <!--
-    The mock-api.js file is needed for the affiliate dashboard to load its data.
-    It's also used by plans.html.
-  -->
-  <script src="mock-api.js"></script>
-  <script src="affiliate-dashboard.js"></script>
+    <script src="/affiliate-dashboard.js"></script>
 </body>
 </html>

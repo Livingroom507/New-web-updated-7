@@ -1,51 +1,50 @@
-export async function onRequestGet({ env, request }) {
+
+export async function onRequestGet(context) {
+  const { request, env } = context;
+  const url = new URL(request.url);
+  const email = url.searchParams.get('email');
+
+  if (!email) {
+    return new Response('Email query parameter is required', { status: 400 });
+  }
+
   try {
-    const url = new URL(request.url);
-    const affiliateId = url.searchParams.get('affiliate_id');
+    const referralsQuery = `
+      SELECT 
+          COUNT(*) as referral_count
+      FROM 
+          Referrals r
+      WHERE 
+          r.referred_by = ?;
+    `;
 
-    if (affiliateId) {
-      const row = await env.DB.prepare(`
-        SELECT
-          (SELECT COUNT(*) FROM referrals r WHERE r.affiliate_id = ?) AS totalReferrals,
-          COALESCE((SELECT SUM(commission) FROM referrals r WHERE r.affiliate_id = ? AND r.status = 'paid'), 0.0) AS totalEarnings,
-          COALESCE(p.plan_name, '') AS currentPlan,
-          0.0 AS compoundedRewards
-        FROM users u
-        LEFT JOIN subscriptions s ON s.user_id = u.id
-        LEFT JOIN plans p ON p.plan_name = s.plan_name
-        WHERE u.id = ?
-        LIMIT 1;
-      `).bind(affiliateId, affiliateId, affiliateId).first();
+    const earningsQuery = `
+      SELECT 
+          SUM(e.amount) as total_earnings
+      FROM 
+          Earnings e
+      WHERE 
+          e.affiliate_email = ?;
+    `;
 
-      return new Response(JSON.stringify(row || {
-        totalReferrals: 0,
-        totalEarnings: 0,
-        currentPlan: '',
-        compoundedRewards: 0
-      }), { headers: { "Content-Type": "application/json" } });
-    }
+    const referralsPs = env.DB.prepare(referralsQuery).bind(email);
+    const earningsPs = env.DB.prepare(earningsQuery).bind(email);
 
-    // fallback: read aggregate from affiliate_metrics / subscriptions
-    const row = await env.DB.prepare(`
-      SELECT am.customers_referred AS totalReferrals,
-             am.total_earnings AS totalEarnings,
-             COALESCE(p.plan_name, '') AS currentPlan,
-             0.0 AS compoundedRewards
-      FROM affiliate_metrics am
-      LEFT JOIN users u ON u.id = am.affiliate_id
-      LEFT JOIN subscriptions s ON s.user_id = u.id
-      LEFT JOIN plans p ON p.plan_name = s.plan_name
-      LIMIT 1;
-    `).first();
+    const [referralsResult, earningsResult] = await Promise.all([
+      referralsPs.first(),
+      earningsPs.first(),
+    ]);
 
-    return new Response(JSON.stringify(row || {
-      totalReferrals: 0,
-      totalEarnings: 0,
-      currentPlan: '',
-      compoundedRewards: 0
-    }), { headers: { "Content-Type": "application/json" } });
-  } catch (e) {
-    console.error(e);
-    return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { "Content-Type": "application/json" } });
+    const overview = {
+      referral_count: referralsResult.referral_count,
+      total_earnings: earningsResult.total_earnings || 0,
+    };
+
+    return new Response(JSON.stringify(overview), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error('Error fetching overview:', error);
+    return new Response('Internal Server Error', { status: 500 });
   }
 }

@@ -1,0 +1,19 @@
+/* Define root variables for consistent theming */
+:root {
+    --primary-color: #4a90e2; /* Example primary color */
+}
+
+.advocate-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* This makes the image circular */
+    object-fit: cover; /* Ensures the image covers the area without distortion */
+    border: 3px solid var(--primary-color); /* Optional: add a nice border */
+}
+
+#advocate-profile-display {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}

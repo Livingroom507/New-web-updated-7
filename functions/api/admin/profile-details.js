@@ -9,20 +9,18 @@ export async function onRequestGet(context) {
   }
 
   try {
-    const planQuery = `
+    const query = `
       SELECT 
-          p.name,
-          p.commission_rate,
-          p.features
+          p.*, 
+          m.score AS module3_score
       FROM 
-          AffiliatePlans p
-      JOIN
-          Affiliates a ON p.id = a.plan_id
+          PlacementProfiles p
+      LEFT JOIN 
+          module3_results m ON p.email = m.email
       WHERE 
-          a.email = ?;
+          p.email = ?;
     `;
-
-    const ps = env.DB.prepare(planQuery).bind(email);
+    const ps = env.DB.prepare(query).bind(email);
     const result = await ps.first();
 
     if (result) {
@@ -30,10 +28,10 @@ export async function onRequestGet(context) {
         headers: { 'Content-Type': 'application/json' },
       });
     } else {
-      return new Response('Plan not found for this affiliate', { status: 404 });
+      return new Response('Profile not found', { status: 404 });
     }
   } catch (error) {
-    console.error('Error fetching affiliate plan:', error);
-    return new Response('Internal Server Error', { status: 500 });
+    console.error('Error fetching profile details:', error);
+    return new Response(`Internal Server Error: ${error.message}`, { status: 500 });
   }
 }
