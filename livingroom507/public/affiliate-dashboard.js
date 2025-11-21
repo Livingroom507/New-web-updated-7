@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // In a real app, user email would come from an authentication context
-    const currentUserEmail = 'roblq123@gmail.com'; 
+    const currentUserEmail = 'roblq123@gmail.com';
 
     const profileForm = document.getElementById('profile-update-form');
 
@@ -11,19 +11,29 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!currentUserEmail) return;
 
        try {
-            const profileData = await (await fetch(`/api/affiliate/profile?email=${currentUserEmail}`)).json();
-            
+            const response = await fetch(`/api/affiliate/profile?email=${currentUserEmail}`);
+            if (!response.ok) {
+                // Handle API errors gracefully (like the 500 error)
+                throw new Error(`Network response was not ok: ${response.statusText} (Status: ${response.status})`);
+            }
+            const profileData = await response.json();
+
             // ----------------------------------------------------
             // 1. UPDATE CORE PROFILE FIELDS (including new fields)
             // ----------------------------------------------------
-            document.getElementById('full-name').value = profileData.fullName || '';
-            document.getElementById('profile-email').textContent = profileData.email || 'N/A';
-            document.getElementById('paypal-email').value = profileData.paypalEmail || '';
+            const fullNameEl = document.getElementById('full-name');
+            const profileEmailEl = document.getElementById('profile-email');
+            const paypalEmailEl = document.getElementById('paypal-email');
+            const advocateAvatarEl = document.getElementById('advocate-avatar');
+            const publicBioEl = document.getElementById('public-bio');
+            const advocateBioDisplayEl = document.getElementById('advocate-bio-display');
 
-            // NEW: Load Advocate Profile Data
-            document.getElementById('advocate-avatar').src = profileData.profilePictureUrl || '/default-avatar.png';
-            document.getElementById('public-bio').value = profileData.publicBio || ''; // For the form textarea
-            document.getElementById('advocate-bio-display').textContent = profileData.publicBio || 'No public bio set.'; // For the public display
+            if (fullNameEl) fullNameEl.value = profileData.fullName || '';
+            if (profileEmailEl) profileEmailEl.textContent = profileData.email || 'N/A';
+            if (paypalEmailEl) paypalEmailEl.value = profileData.paypalEmail || '';
+            if (advocateAvatarEl) advocateAvatarEl.src = profileData.profilePictureUrl || '/default-avatar.png';
+            if (publicBioEl) publicBioEl.value = profileData.publicBio || '';
+            if (advocateBioDisplayEl) advocateBioDisplayEl.textContent = profileData.publicBio || 'No public bio set.';
 
             // ----------------------------------------------------
             // 2. FINANCIAL MECHANICS (Custom Commission Logic)
@@ -32,14 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const purchaseEarning = profileData.purchaseEarning || 0; // FIXED: Used camelCase
 
             // Calculate the number of purchase units in the $89.95 example
-            const exampleSalePrice = 89.95; 
+            const exampleSalePrice = 89.95;
             let unitsPerExampleSale = 0;
             let commissionPerExampleSale = 0;
             if (purchaseUnit > 0) {
                 unitsPerExampleSale = (exampleSalePrice / purchaseUnit);
                 commissionPerExampleSale = unitsPerExampleSale * purchaseEarning;
             }
-            
+
             // Dynamic Commission Explanation (e.g., "$14.61 per each purchase of $89.95")
             const commissionLogicElement = document.getElementById('commission-logic');
             if (purchaseUnit > 0 && purchaseEarning > 0) {
@@ -48,14 +58,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     For your <strong>${profileData.currentPlanName}</strong> plan, each Purchase Unit is <strong>$${purchaseUnit.toFixed(2)}</strong> and earns you <strong>$${purchaseEarning.toFixed(2)}</strong> commission.<br>
                     If a customer purchases an item valued at <strong>$${exampleSalePrice.toFixed(2)}</strong>, you earn <strong>$${commissionPerExampleSale.toFixed(2)}</strong> in commission.
                 `;
-            } else {
+            } else if (commissionLogicElement) {
                 commissionLogicElement.textContent = 'Financial metrics for this plan are not yet defined.';
             }
 
 
         } catch (error) {
             console.error('Error loading profile data:', error);
-            alert('Could not load your profile data.');
+            // Provide a more informative error to the user
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) mainContent.innerHTML = `<h1>Error</h1><p>Could not load your profile data. The server may be experiencing issues. Please try again later.</p><p><small>Details: ${error.message}</small></p>`;
         }
     }
 
@@ -69,13 +81,19 @@ document.addEventListener('DOMContentLoaded', () => {
         saveButton.textContent = 'Saving...';
 
         // Collect all fields from the form
-        const fullName = document.getElementById('full-name').value;
-        const email = document.getElementById('profile-email').textContent; // Get email from display
-        const paypalEmail = document.getElementById('paypal-email').value;
-        const newPassword = document.getElementById('new-password').value;
-        const confirmPassword = document.getElementById('confirm-new-password').value;
-        const publicBio = document.getElementById('public-bio').value; // NEW: Get the public bio value
+        const fullName = document.getElementById('full-name')?.value;
+        const email = document.getElementById('profile-email')?.textContent; // Get email from display
+        const paypalEmail = document.getElementById('paypal-email')?.value;
+        const newPassword = document.getElementById('new-password')?.value;
+        const confirmPassword = document.getElementById('confirm-new-password')?.value;
+        const publicBio = document.getElementById('public-bio')?.value;
 
+        if (!email) {
+            alert("Could not find user email. Cannot update profile.");
+            saveButton.disabled = false;
+            saveButton.textContent = 'Save Changes';
+            return;
+        }
         if (newPassword !== confirmPassword) {
             alert("New password and confirmation do not match.");
             saveButton.disabled = false;
@@ -99,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const result = await response.json();
-            
+
             if (response.ok) {
                 alert('Profile updated successfully!');
                 // Reload the profile to ensure the display shows the updated values
