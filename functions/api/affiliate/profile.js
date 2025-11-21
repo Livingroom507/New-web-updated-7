@@ -107,12 +107,12 @@ export async function onRequestPost(context) {
         // We can't reliably use updateResult.meta.changes === 0 here,
         // as submitting the same data is not an error.
         // A better check would be to re-fetch the user, but for now we'll assume success.
-        /* if (updateResult.meta.changes === 0) {
+        /* if (updateResult.meta.changes === 0) { // This check is disabled for now
             return new Response(JSON.stringify({ error: 'Profile not found or no changes made.' }), {
                 status: 404,
                 headers: { 'Content-Type': 'application/json' },
             });
-        }
+        } */
 
         return new Response(JSON.stringify({ success: true, message: 'Profile updated successfully.' }), {
             status: 200,
