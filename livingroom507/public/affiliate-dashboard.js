@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // In a real app, user email would come from an authentication context
     const currentUserEmail = 'roblq123@gmail.com';
+    const avatarUploadInput = document.getElementById('avatar-upload');
 
     const profileForm = document.getElementById('profile-update-form');
 
@@ -135,9 +136,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    /**
+     * Handles the avatar image upload.
+     */
+    async function handleAvatarUpload() {
+        const file = avatarUploadInput.files[0];
+        if (!file) return;
+
+        // Basic validation
+        if (file.size > 2 * 1024 * 1024) { // 2MB limit
+            alert('File is too large. Please select an image under 2MB.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('email', currentUserEmail);
+
+        try {
+            const response = await fetch('/api/affiliate/upload-avatar', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('Profile picture updated successfully!');
+                // Update the avatar images on the page
+                document.getElementById('advocate-avatar').src = result.imageUrl;
+                document.getElementById('nav-avatar').src = result.imageUrl;
+            } else {
+                alert(`Error uploading image: ${result.error}`);
+            }
+        } catch (error) {
+            console.error('Avatar upload failed:', error);
+            alert('An unexpected error occurred during image upload.');
+        }
+    }
+
     // Attach event listener to the form
     if (profileForm) {
         profileForm.addEventListener('submit', updateProfile);
+    }
+
+    if (avatarUploadInput) {
+        avatarUploadInput.addEventListener('change', handleAvatarUpload);
     }
 
     // Initial data load

@@ -18,17 +18,17 @@ export async function onRequestGet(context) {
         const userStmt = env.DB.prepare(`
             SELECT
                 u.email,
-                u.name AS fullName,
-                'BASIC' AS currentPlanName, -- Placeholder: See note below
-                NULL AS paypalEmail, -- Placeholder: Column does not exist
+                u.full_name AS fullName,
+                u.plan_name AS currentPlanName,
+                u.paypal_email AS paypalEmail,
                 u.profile_picture_url AS profilePictureUrl,
-                u.public_bio AS publicBio, 
+                u.public_bio AS publicBio,
                 p.commission_rate AS commissionRate,
                 p.description,
                 p.purchase_unit AS purchaseUnit,
                 p.purchase_earning AS purchaseEarning
-            FROM users AS u
-            LEFT JOIN plans AS p ON p.plan_name = 'BASIC' -- Placeholder: Joining on a fixed plan
+            FROM users u
+            LEFT JOIN plans p ON u.plan_name = p.plan_name
             WHERE u.email = ?
         `);
         const userResult = await userStmt.bind(email).first();
@@ -64,7 +64,7 @@ export async function onRequestPost(context) {
 
     try {
         const requestBody = await request.json();
-        const { fullName, email, publicBio } = requestBody; // Removed paypalEmail
+        const { fullName, email, paypalEmail, publicBio } = requestBody;
 
         if (!email) {
             return new Response(JSON.stringify({ error: 'Email is required for authentication.' }), {
@@ -76,14 +76,16 @@ export async function onRequestPost(context) {
         const updateStmt = env.DB.prepare(`
             UPDATE users
             SET
-                name = ?,
+                full_name = ?,
+                paypal_email = ?,
                 public_bio = ?
             WHERE email = ?
         `);
 
         const updateResult = await updateStmt.bind(
             fullName,
-            publicBio, 
+            paypalEmail,
+            publicBio,
             email
         ).run();
 
