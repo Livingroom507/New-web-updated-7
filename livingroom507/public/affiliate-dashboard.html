@@ -8,14 +8,75 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <h1>Your Affiliate Dashboard</h1>
+        <!-- This layout wrapper is required for the sidebar and main content to work -->
+        <div class="dashboard-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav>
+                    <ul>
+                        <!-- NOTE: These links are placeholders. Update hrefs as needed. -->
+                        <li><a href="/affiliate-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="#"><i class="fas fa-users"></i> Referrals</a></li>
+                        <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                    </ul>
+                </nav>
+            </aside>
 
-        <!-- Advocate Profile Section -->
-        <div class="profile-section card">
-            <h2>Advocate Profile</h2>
-            <div id="advocate-profile-display">
-                <img id="advocate-avatar" class="advocate-avatar" src="/default-avatar.png" alt="Advocate Avatar">
-                <p id="advocate-bio-display">No public bio set.</p>
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <h1>Your Affiliate Dashboard</h1>
+
+                <!-- Advocate Profile Section -->
+                <div class="profile-section card">
+                    <h2>Advocate Profile</h2>
+                    <div id="advocate-profile-display">
+                        <img id="advocate-avatar" class="advocate-avatar" src="/default-avatar.png" alt="Advocate Avatar">
+                        <p id="advocate-bio-display">No public bio set.</p>
+                    </div>
+                </div>
+
+                <!-- Account Settings Section -->
+                <div class="settings-section card">
+                    <h2>Account Settings</h2>
+                    <form id="profile-update-form">
+                        <div class="form-group">
+                            <p><strong>Email:</strong> <span id="profile-email"></span></p>
+                            <label for="full-name">Full Name</label>
+                            <input type="text" id="full-name" name="fullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="paypal-email">PayPal Email</label>
+                            <input type="email" id="paypal-email" name="paypalEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="public-bio">Public Bio</label>
+                            <textarea id="public-bio" name="publicBio" placeholder="Your public bio for the leaderboard and team recognition..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" name="newPassword" placeholder="Leave blank to keep current password">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-new-password">Confirm New Password</label>
+                            <input type="password" id="confirm-new-password" name="confirmNewPassword">
+                        </div>
+                        <button type="submit" id="save-changes-button">Save Changes</button>
+                    </form>
+                </div>
+
+                <!-- Financial Mechanics Section -->
+                <div class="financials-section card">
+                    <h3>Commission Structure (Current Plan)</h3>
+                    <p id="commission-logic"></p>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- Added for icons -->
+    <script src="affiliate-dashboard.js"></script>
+</body>
+</html>
             </div>
         </div>
 
