@@ -12,7 +12,8 @@ DO_WORKER_URL = "https://livingroom507-do-final-worker.roblq123.workers.dev"
 [[d1_databases]]
 binding = "DB"
 database_name = "livingroom507-db"
-
+migrations_dir = "db/migrations"  # <--- ADD THIS LINE
+database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14" # <--- MUST INCLUDE YOUR ID!
 
 # Root wrangler.toml
 
