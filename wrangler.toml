@@ -1,21 +1,22 @@
-name = "livingroom507newupdate-7"
-# We need to point to the special _worker.js file for Pages Functions
-main = "functions/_worker.js"
+name = "new-web-updated-7"
 compatibility_date = "2025-01-01"
 
 pages_build_output_dir = "livingroom507/public"
 
 # Environment variables for the Pages Functions
 [vars]
-ADMIN_API_KEY = "j45c22b1a76b8496250912e861022d02312efdb-ba8a60cd-9" # IMPORTANT: Replace with a strong, unique key!
+ADMIN_API_KEY = "TEST-KEY-123"
+DO_WORKER_URL = "https://livingroom507-do-final-worker.roblq123.workers.dev"
 
+# This section tells your Pages Functions where to find the database called 'DB'
 [[d1_databases]]
 binding = "DB"
 database_name = "livingroom507-db"
-migrations_dir = "db/migrations"
-# These IDs are required for production deployments.
-# You will need to replace YOUR_DATABASE_ID with the actual ID
-# from your Cloudflare dashboard when you are ready to deploy.
-# For local development with `wrangler pages dev`, they can be empty.
-database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14"
-preview_database_id = ""
+migrations_dir = "db/migrations"  # <--- ADD THIS LINE
+
+# Root wrangler.toml
+
+[[durable_objects.bindings]]
+name = "COLLAB_ROOM"
+class_name = "CollaborationRoom"
+script_name = "livingroom507-do-final-worker"

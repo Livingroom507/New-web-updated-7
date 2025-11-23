@@ -1,40 +1,57 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const orderSummaryDiv = document.getElementById('order-summary');
-    const payWithPaypalBtn = document.getElementById('pay-with-paypal-btn');
+// c:\Users\roblq\OneDrive\Documents\(websites)\New-web-updated-7\livingroom507\public\checkout.js
 
-    // Retrieve the selected plan from localStorage
+document.addEventListener('DOMContentLoaded', () => {
+    const payWithPaypalBtn = document.getElementById('pay-with-paypal-btn');
     const selectedPlan = JSON.parse(localStorage.getItem('selectedPlan'));
 
-    if (selectedPlan) {
-        orderSummaryDiv.innerHTML = `
-            <h3>Order Summary: ${selectedPlan.name}</h3>
-            <p><strong>Price:</strong> ${selectedPlan.monthlyPrice} / month</p>
-            <p><strong>Network Earnings:</strong> ${selectedPlan.networkEarnings}</p>
-            <p><strong>Description:</strong></p>
-            <ul>
-                ${selectedPlan.description.map(item => `<li>${item}</li>`).join('')}
-            </ul>
-        `;
-    } else {
-        orderSummaryDiv.innerHTML = '<p>No plan selected. Please <a href="plans.html">go back</a> and choose a plan.</p>';
-        payWithPaypalBtn.disabled = true;
+    if (!payWithPaypalBtn) {
+        return;
+    }
+    
+    // --- Purchase Confirmation API Function ---
+    async function handlePurchaseConfirmation(userEmail, planName) {
+        try {
+            const response = await fetch('/api/affiliate/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userEmail, planName }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Subscription failed on the server.');
+            }
+
+            // Success: Notify user and redirect
+            alert(`Success! You are now subscribed to ${planName}.`);
+            localStorage.removeItem('selectedPlan'); // Clean up local storage
+            window.location.href = 'affiliate-dashboard.html'; // Redirect to the dashboard
+
+        } catch (error) {
+            console.error('Purchase Error:', error);
+            // Re-enable button on failure
+            payWithPaypalBtn.disabled = false;
+            alert('Purchase failed: ' + error.message);
+        }
     }
 
-    payWithPaypalBtn.addEventListener('click', () => {
-        if (!selectedPlan) {
+    // --- Event Listener ---
+    payWithPaypalBtn.addEventListener('click', async () => {
+        
+        if (!selectedPlan || !selectedPlan.name) {
             alert('Please select a plan first.');
             return;
         }
-        // In a real application, this would make an AJAX call to your backend (Cloudflare Worker)
-        // Your backend would then interact with PayPal's API to create an order/subscription.
-        // PayPal would return a redirect URL, and your frontend would navigate to it.
-        alert(`Simulating PayPal checkout for ${selectedPlan.name} (${selectedPlan.monthlyPrice}/month).\n\n` +
-              `In a real scenario, you would now be redirected to PayPal to complete the payment.`);
 
-        // For now, we'll just simulate success and redirect after a short delay
-        setTimeout(() => {
-            localStorage.removeItem('selectedPlan'); // Clear selected plan
-            window.location.href = 'affiliate-dashboard.html'; // Redirect to dashboard
-        }, 2000); // Simulate network delay
+        // Disable button immediately to prevent double-clicks
+        payWithPaypalBtn.disabled = true;
+
+        // CRITICAL: Use the D1-verified test user email
+        const currentUserEmail = 'roblq123@gmail.com'; 
+
+        // Call the asynchronous function and await its result
+        await handlePurchaseConfirmation(currentUserEmail, selectedPlan.name);
     });
 });

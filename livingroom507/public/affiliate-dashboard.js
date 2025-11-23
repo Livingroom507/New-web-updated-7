@@ -1,127 +1,216 @@
-async function fetchJSON(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('Network error');
-  return await res.json();
-}
-
-async function loadOverview() {
-  const data = await fetchJSON('/api/affiliate/overview');
-  document.getElementById('kpi-referrals').textContent = data.totalReferrals || '0';
-  document.getElementById('kpi-plan').textContent = data.currentPlan || '--';
-  document.getElementById('kpi-rewards').textContent = `$${(data.compoundedRewards || 0).toFixed(2)}`;
-}
-
-async function loadPlanDetails() {
-  const data = await fetchJSON('/api/affiliate/plan');
-  document.getElementById('plan-details').innerHTML = `
-    <p><strong>Role:</strong> ${data.role}</p>
-    <p><strong>Plan:</strong> ${data.plan_name}</p>
-    <p><strong>Monthly Cost:</strong> $${data.monthly_cost.toFixed(2)}</p>
-    <p><strong>Yearly Capital:</strong> $${data.yearly_capital.toFixed(2)}</p>
-  `;
-}
-
-async function loadTable(url, tableId, columns) {
-  const data = await fetchJSON(url);
-  const tbody = document.getElementById(tableId).querySelector('tbody');
-  tbody.innerHTML = data.map(item => {
-    return `<tr>${columns.map(col => `<td>${item[col]}</td>`).join('')}</tr>`;
-  }).join('');
-}
-
-async function loadPlanFinancials() {
-  // In the future, this would be: const plans = await fetchJSON('/api/plans');
-  // For now, we use the mock data loaded in plans.html
-  const plans = MOCK_API.plans;
-  const tbody = document.querySelector('#plans-table tbody');
-  if (!tbody) return;
-
-  tbody.innerHTML = plans.map(p => `
-    <tr>
-      <td>${p.role}</td>
-      <td>${p.plan_name}</td>
-      <td>$${p.monthly_cost.toFixed(2)}</td>
-      <td>$${p.break_even_flow.toFixed(2)}</td>
-      <td>$${p.network_earnings.toFixed(2)}</td>
-      <td>$${p.yearly_capital.toFixed(2)}</td>
-    </tr>
-  `).join('');
-}
-
-function setupDropdown() {
-    const trigger = document.getElementById('user-profile-trigger');
-    const menu = document.getElementById('user-dropdown-menu');
-
-    if (!trigger || !menu) return;
-
-    trigger.addEventListener('click', (event) => {
-        event.stopPropagation(); // Prevents the window click event from firing immediately
-        menu.classList.toggle('hidden');
-    });
-
-    // Close dropdown if clicking outside
-    window.addEventListener('click', () => {
-        if (!menu.classList.contains('hidden')) {
-            menu.classList.add('hidden');
-        }
-    });
-
-    menu.addEventListener('click', (event) => {
-        event.stopPropagation(); // Prevents window click from closing menu if clicking inside
-    });
-}
-
-function setupSettingsForm() {
-    const avatarInput = document.getElementById('setting-avatar');
-    const avatarPreview = document.getElementById('avatar-preview');
-
-    if (!avatarInput || !avatarPreview) return;
-
-    avatarInput.addEventListener('change', () => {
-        const file = avatarInput.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                avatarPreview.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-}
-
-async function loadEarnings() {
-  //TODO: a dynamic affiliate id should be used instead of a hardcoded one
-  const data = await fetchJSON('/api/affiliate/earnings?affiliate_id=1');
-  document.getElementById('kpi-total-earnings').textContent = `$${data.totalEarnings || '0.00'}`;
-
-  const tbody = document.getElementById('earnings-table').querySelector('tbody');
-  tbody.innerHTML = data.earningsBreakdown.map(item => {
-    return `<tr>
-        <td>${item.referred_user_id}</td>
-        <td>${item.plan}</td>
-        <td>$${item.subscription_commission}</td>
-        <td>$${item.purchase_commission}</td>
-        <td>$${item.total_commission}</td>
-      </tr>`;
-  }).join('');
-}
-
-async function initDashboard() {
-  try {
-    await loadOverview();
-    await loadPlanDetails();
-    await loadPlanFinancials();
-    await loadTable('/api/affiliate/referrals', 'referrals-table', 
-      ['date','referred_user','plan_chosen','commission','status']);
-    await loadEarnings();
-  } catch(err) {
-    console.error('Dashboard loading error:', err);
-  }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-    initDashboard();
-    setupDropdown();
-    setupSettingsForm();
-});
+    // In a real app, user email would come from an authentication context
+    const currentUserEmail = 'roblq123@gmail.com';
+    const avatarUploadInput = document.getElementById('avatar-upload');
 
+    const userProfileToggle = document.getElementById('user-profile-toggle');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    const profileForm = document.getElementById('profile-update-form');
+
+    /**
+     * Fetches profile data from the API and populates the dashboard.
+     */
+    async function loadProfileData() {
+        if (!currentUserEmail) return;
+
+       try {
+            const response = await fetch(`/api/affiliate/profile?email=${currentUserEmail}`);
+            if (!response.ok) {
+                // Handle API errors gracefully (like the 500 error)
+                throw new Error(`Network response was not ok: ${response.statusText} (Status: ${response.status})`);
+            }
+            const profileData = await response.json();
+
+            // ----------------------------------------------------
+            // 1. UPDATE CORE PROFILE FIELDS (including new fields)
+            // ----------------------------------------------------
+            const fullNameEl = document.getElementById('full-name');
+            const profileEmailEl = document.getElementById('profile-email');
+            const paypalEmailEl = document.getElementById('paypal-email');
+            const advocateAvatarEl = document.getElementById('advocate-avatar');
+            const publicBioEl = document.getElementById('public-bio');
+            const advocateBioDisplayEl = document.getElementById('advocate-bio-display');
+            const navUserNameEl = document.getElementById('nav-user-name');
+            const navAvatarEl = document.getElementById('nav-avatar');
+
+            if (fullNameEl) fullNameEl.value = profileData.fullName || '';
+            if (profileEmailEl) profileEmailEl.textContent = profileData.email || 'N/A';
+            if (paypalEmailEl) paypalEmailEl.value = profileData.paypalEmail || '';
+            if (publicBioEl) publicBioEl.value = profileData.publicBio || '';
+            if (advocateBioDisplayEl) advocateBioDisplayEl.textContent = profileData.publicBio || 'No public bio set.';
+
+            // Update avatar images (both in settings and top nav)
+            const avatarUrl = profileData.profilePictureUrl || '/default-avatar.png';
+            if (advocateAvatarEl) advocateAvatarEl.src = avatarUrl;
+            if (navAvatarEl) navAvatarEl.src = avatarUrl;
+
+            // Update user name in top nav
+            if (navUserNameEl) navUserNameEl.textContent = profileData.fullName || 'User';
+
+            // ----------------------------------------------------
+            // 2. FINANCIAL MECHANICS (Custom Commission Logic)
+            // ----------------------------------------------------
+            const purchaseUnit = profileData.purchaseUnit || 0;
+            const purchaseEarning = profileData.purchaseEarning || 0;
+
+            // Calculate the number of purchase units in the $89.95 example
+            const exampleSalePrice = 89.95;
+            let unitsPerExampleSale = 0;
+            let commissionPerExampleSale = 0;
+            if (purchaseUnit > 0) {
+                unitsPerExampleSale = (exampleSalePrice / purchaseUnit);
+                commissionPerExampleSale = unitsPerExampleSale * purchaseEarning;
+            }
+
+            // Dynamic Commission Explanation (e.g., "$14.61 per each purchase of $89.95")
+            const commissionLogicElement = document.getElementById('commission-logic');
+            if (purchaseUnit > 0 && purchaseEarning > 0) {
+                commissionLogicElement.innerHTML = `
+                    Your commission is calculated based on <strong>Purchase Units</strong> within a sale.<br>
+                    For your <strong>${profileData.currentPlanName}</strong> plan, each Purchase Unit is <strong>$${purchaseUnit.toFixed(2)}</strong> and earns you <strong>$${purchaseEarning.toFixed(2)}</strong> commission.<br>
+                    If a customer purchases an item valued at <strong>$${exampleSalePrice.toFixed(2)}</strong>, you earn <strong>$${commissionPerExampleSale.toFixed(2)}</strong> in commission.
+                `;
+            } else if (commissionLogicElement) {
+                commissionLogicElement.textContent = 'Financial metrics for this plan are not yet defined.';
+            }
+
+
+        } catch (error) {
+            console.error('Error loading profile data:', error);
+            // Provide a more informative error to the user
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) mainContent.innerHTML = `<h1>Error</h1><p>Could not load your profile data. The server may be experiencing issues. Please try again later.</p><p><small>Details: ${error.message}</small></p>`;
+        }
+    }
+
+    /**
+     * Handles the submission of the profile update form.
+     */
+    async function updateProfile(event) {
+        event.preventDefault();
+        const saveButton = document.getElementById('save-changes-button');
+        saveButton.disabled = true;
+        saveButton.textContent = 'Saving...';
+
+        // Collect all fields from the form
+        const fullName = document.getElementById('full-name')?.value;
+        const email = document.getElementById('profile-email')?.textContent; // Get email from display
+        const paypalEmail = document.getElementById('paypal-email')?.value;
+        const newPassword = document.getElementById('new-password')?.value;
+        const confirmPassword = document.getElementById('confirm-new-password')?.value;
+        const publicBio = document.getElementById('public-bio')?.value;
+
+        if (!email) {
+            alert("Could not find user email. Cannot update profile.");
+            saveButton.disabled = false;
+            saveButton.textContent = 'Save Changes';
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            alert("New password and confirmation do not match.");
+            saveButton.disabled = false;
+            saveButton.textContent = 'Save Changes';
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/affiliate/profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    fullName,
+                    email, // Required for WHERE clause in Worker
+                    paypalEmail,
+                    publicBio, // NEW: Include in the payload
+                    newPassword // Only used if a password change is intended
+                }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('Profile updated successfully!');
+                // Reload the profile to ensure the display shows the updated values
+                await loadProfileData();
+            } else {
+                alert(`Error updating profile: ${result.message || result.error}`);
+            }
+
+        } catch (error) {
+            console.error('Update profile failed:', error);
+            alert('An unexpected error occurred during profile update.');
+        } finally {
+            saveButton.disabled = false;
+            saveButton.textContent = 'Save Changes';
+        }
+    }
+
+    /**
+     * Handles the avatar image upload.
+     */
+    async function handleAvatarUpload() {
+        const file = avatarUploadInput.files[0];
+        if (!file) return;
+
+        // Basic validation
+        if (file.size > 2 * 1024 * 1024) { // 2MB limit
+            alert('File is too large. Please select an image under 2MB.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('email', currentUserEmail);
+
+        try {
+            const response = await fetch('/api/affiliate/upload-avatar', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('Profile picture updated successfully!');
+                // Update the avatar images on the page
+                document.getElementById('advocate-avatar').src = result.imageUrl;
+                document.getElementById('nav-avatar').src = result.imageUrl;
+            } else {
+                alert(`Error uploading image: ${result.error}`);
+            }
+        } catch (error) {
+            console.error('Avatar upload failed:', error);
+            alert('An unexpected error occurred during image upload.');
+        }
+    }
+
+    // Attach event listener to the form
+    if (profileForm) {
+        profileForm.addEventListener('submit', updateProfile);
+    }
+
+    if (avatarUploadInput) {
+        avatarUploadInput.addEventListener('change', handleAvatarUpload);
+    }
+
+    // --- NEW: Add event listener for the dropdown menu ---
+    if (userProfileToggle) {
+        userProfileToggle.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('hidden');
+        });
+    }
+
+    // Close dropdown if clicking outside of it
+    document.addEventListener('click', (event) => {
+        if (!userProfileToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
+
+    // Initial data load
+    loadProfileData();
+    // You would also call a function here to load earnings data
+    // loadEarningsData(currentUserEmail); 
+});

@@ -1,0 +1,22 @@
+# do-worker/wrangler.toml
+name = "livingroom507-do-final-worker"
+main = "index.js"
+compatibility_date = "2025-01-01"
+
+[vars] # <-- ADD THIS SECTION
+ADMIN_API_KEY = "j45c22b1a76b8496250912e861022d02312efdb-ba8a60cd-9" # <-- ADD THIS LINE
+
+[durable_objects]
+bindings = [
+  { name = "COLLAB_ROOM", class_name = "CollaborationRoom" }
+]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = [ "CollaborationRoom" ]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "livingroom507-db"
+database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14"
+migrations_dir = "db/migrations"
