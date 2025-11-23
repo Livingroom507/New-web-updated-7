@@ -14,21 +14,23 @@ export async function onRequestGet(context) {
     }
 
     try {
+        // --- DEBUGGING: Check if the D1 binding exists ---
+        if (!env.DB) {
+            return new Response(JSON.stringify({ 
+                error: 'Database binding not found. Check your wrangler.toml configuration.',
+                details: 'The `env.DB` object is undefined in the Pages Function context.'
+            }), {
+                status: 500,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
         // --- CRITICAL FIX: Changed from INNER JOIN to LEFT JOIN for robustness ---
+        // TEMPORARY TEST QUERY
         const userStmt = env.DB.prepare(`
             SELECT
                 u.email,
-                u.full_name AS fullName,
-                u.plan_name AS currentPlanName,
-                u.paypal_email AS paypalEmail,
-                u.profile_picture_url AS profilePictureUrl,
-                u.public_bio AS publicBio,
-                p.commission_rate AS commissionRate,
-                p.description,
-                p.purchase_unit AS purchaseUnit,
-                p.purchase_earning AS purchaseEarning
+                u.full_name AS fullName
             FROM users u
-            LEFT JOIN plans p ON u.plan_name = p.plan_name
             WHERE u.email = ?
         `);
         const userResult = await userStmt.bind(email).first();
@@ -48,10 +50,11 @@ export async function onRequestGet(context) {
 
     } catch (error) {
         console.error('Affiliate Profile Fetch Error:', error);
-        // --- ENHANCEMENT: Returns the internal error message for debugging ---
+        // --- ENHANCEMENT: Return detailed D1 error from the 'cause' property ---
         return new Response(JSON.stringify({ 
             error: 'Internal Server Error fetching affiliate profile. The worker code crashed.',
-            details: error.message || 'Unknown error. Check Cloudflare Worker logs for D1 connection details.'
+            details: error.message,
+            cause: error.cause ? error.cause.message : 'No specific cause available. Check SQL syntax and table/column names.'
         }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },
@@ -101,9 +104,11 @@ export async function onRequestPost(context) {
 
     } catch (error) {
         console.error('Affiliate Profile Update Error:', error);
-        return new Response(JSON.stringify({
+        // --- ENHANCEMENT: Return detailed D1 error from the 'cause' property ---
+        return new Response(JSON.stringify({ 
             error: 'Internal Server Error updating affiliate profile.',
-            details: error.message
+            details: error.message,
+            cause: error.cause ? error.cause.message : 'No specific cause available. Check SQL syntax and table/column names.'
         }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },
