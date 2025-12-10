@@ -17,16 +17,16 @@ export default async function (context) {
 
     if (request.method === 'GET') {
       const url = new URL(request.url);
-      // NOTE: Replace TEST_USER_EMAIL with actual authentication/session logic later
-      const email = url.searchParams.get('email') || 'roblq123@gmail.com';
+      const email = url.searchParams.get('email');
+      console.log(`[profile.js] GET request received. Attempting to find profile for email: ${email}`);
 
       if (!email) {
-        return new Response(JSON.stringify({ error: 'Email parameter is required.' }), {
+        console.error('[profile.js] Error: Email query parameter was not provided.');
+        return new Response(JSON.stringify({ error: 'Email query parameter is required.' }), {
           status: 400, headers: { 'Content-Type': 'application/json' },
         });
       }
 
-      // TEMPORARY TEST QUERY (Simplified)
       const userStmt = env.DB.prepare(`
         SELECT
             u.email,
@@ -34,14 +34,18 @@ export default async function (context) {
         FROM users u
         WHERE u.email = ?
       `);
+      
+      console.log(`[profile.js] Executing D1 query for email: ${email}`);
       const userResult = await userStmt.bind(email).first();
 
-      if (!userResult || !userResult.email) {
-        return new Response(JSON.stringify({ error: 'User not found or plan data invalid.' }), {
+      if (!userResult) {
+        console.warn(`[profile.js] D1 query executed, but no user found for email: ${email}`);
+        return new Response(JSON.stringify({ error: 'User profile not found.' }), {
           status: 404, headers: { 'Content-Type': 'application/json' },
         });
       }
 
+      console.log(`[profile.js] Successfully found user profile for: ${email}`);
       return new Response(JSON.stringify(userResult), {
         status: 200, headers: { 'Content-Type': 'application/json' },
       });
