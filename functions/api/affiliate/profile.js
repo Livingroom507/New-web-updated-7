@@ -32,7 +32,7 @@ export default async function (context) {
       const userStmt = env.DB.prepare(`
         SELECT
             u.email,
-            u.name AS fullName,
+            u.full_name AS fullName,
             u.profile_picture_url AS profilePictureUrl,
             u.paypal_email AS paypalEmail,
             u.public_bio AS publicBio

@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT,
+  full_name TEXT,
   email TEXT,
   role TEXT CHECK(role IN ('customer','affiliate','admin')),
   join_date DATETIME DEFAULT CURRENT_TIMESTAMP
