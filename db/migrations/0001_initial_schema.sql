@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS plans (
   subscription_cost REAL,
   purchase_unit REAL,
   purchase_earning REAL,
-  network_earnings_goal REAL,
+  network_earnings_goal REAL
 );
 
 CREATE TABLE IF NOT EXISTS transactions (
