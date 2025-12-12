@@ -82,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (mainContent) mainContent.innerHTML = `<h1>Error</h1><p>Could not load your profile data. The server may be experiencing issues. Please try again later.</p><p><small>Details: ${error.message}</small></p>`;
         }
     }
-
     /**
      * Handles the submission of the profile update form.
      */
