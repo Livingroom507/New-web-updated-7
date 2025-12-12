@@ -12,15 +12,15 @@ VALUES
 ('Business', 329.56, 0.0, 0.0, 30859.40);
 
 -- Add minimal sample users only when none exist (safe for dev/test)
-INSERT INTO users(name, email, role)
+INSERT INTO users(full_name, email, role)
 SELECT 'Affiliate One', 'aff1@example.com', 'affiliate'
 WHERE (SELECT COUNT(*) FROM users WHERE role = 'affiliate') = 0;
 
-INSERT INTO users(name, email, role)
+INSERT INTO users(full_name, email, role)
 SELECT 'Customer One', 'cust1@example.com', 'customer'
 WHERE (SELECT COUNT(*) FROM users WHERE role = 'customer') = 0;
 
-INSERT INTO users(name, email, role)
+INSERT INTO users(full_name, email, role)
 SELECT 'Customer Two', 'cust2@example.com', 'customer'
 WHERE (SELECT COUNT(*) FROM users WHERE role = 'customer') = 0;
 

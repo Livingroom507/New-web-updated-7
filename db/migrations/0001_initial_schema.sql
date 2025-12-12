@@ -2,6 +2,9 @@ CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   full_name TEXT,
   email TEXT,
+  paypal_email TEXT,
+  profile_picture_url TEXT,
+  public_bio TEXT,
   role TEXT CHECK(role IN ('customer','affiliate','admin')),
   join_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -34,7 +37,11 @@ CREATE TABLE IF NOT EXISTS plans (
   avg_cost_cycle REAL,
   break_even_flow REAL,
   network_earnings REAL,
-  yearly_capital REAL
+  yearly_capital REAL,
+  subscription_cost REAL,
+  purchase_unit REAL,
+  purchase_earning REAL,
+  network_earnings_goal REAL,
 );
 
 CREATE TABLE IF NOT EXISTS transactions (
