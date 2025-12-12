@@ -4,60 +4,56 @@ export default async function (context) {
   const { env, request } = context;
 
   try {
-    // --- DEBUGGING: Check if the D1 binding exists ---
     if (!env.DB) {
-      return new Response(JSON.stringify({
-        error: 'Database binding not found. Check your wrangler.toml configuration.',
-        details: 'The env.DB object is undefined in the Pages Function context.'
-      }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      // Throwing an error here will be caught by the main catch block,
+      // ensuring a consistent JSON error response.
+      throw new Error('Database binding (env.DB) not found. Check your wrangler.toml.');
     }
 
     if (request.method === 'GET') {
       const url = new URL(request.url);
+      // Default email for testing, as seen in your logs:
       const email = url.searchParams.get('email') || 'roblq123@gmail.com';
-      console.log(`[profile.js] GET request received. Attempting to find profile for email: ${email}`);
 
       if (!email) {
-        console.error('[profile.js] Error: Email query parameter was not provided.');
         return new Response(JSON.stringify({ error: 'Email query parameter is required.' }), {
           status: 400,
           headers: { 'Content-Type': 'application/json' },
         });
       }
 
-      // FIX HERE: Change 'full_name' to 'name' and add other required fields
+      // The MOST comprehensive query based on all fields the client expects
+      // NOTE: We are selecting all known columns from the users table.
+      // If the JOINs are missing, we will still return the user data with mock commission data.
       const userStmt = env.DB.prepare(`
         SELECT
             u.email,
             u.full_name AS fullName,
             u.profile_picture_url AS profilePictureUrl,
             u.paypal_email AS paypalEmail,
-            u.public_bio AS publicBio
+            u.public_bio AS publicBio,
+            u.role
         FROM users u
         WHERE u.email = ?
       `);
 
-      console.log(`[profile.js] Executing D1 query for email: ${email}`);
       const userResult = await userStmt.bind(email).first();
 
       if (!userResult || !userResult.email) {
-        console.warn(`[profile.js] D1 query executed, but no user found for email: ${email}`);
-        return new Response(JSON.stringify({ error: 'User not found or plan data invalid.' }), {
+        return new Response(JSON.stringify({ error: `User not found for email: ${email}` }), {
           status: 404,
           headers: { 'Content-Type': 'application/json' },
         });
       }
 
-      console.log(`[profile.js] Successfully found user profile for: ${email}`);
+      // Add mock data for commission fields expected by affiliate-dashboard.js
       const finalResult = {
           ...userResult,
-          purchaseUnit: 18.00,
-          purchaseEarning: 3.50,
-          currentPlanName: 'Base Affiliate Plan'
+          purchaseUnit: 18.00,        // Mock data
+          purchaseEarning: 3.50,      // Mock data
+          currentPlanName: 'Base Affiliate Plan' // Mock data
       };
+
       return new Response(JSON.stringify(finalResult), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
@@ -65,7 +61,6 @@ export default async function (context) {
     }
 
     if (request.method === 'POST') {
-      // --- POST Logic (Simplified to prevent crashes) ---
       const requestBody = await request.json();
       const { fullName, email, paypalEmail, publicBio } = requestBody;
 
@@ -92,15 +87,16 @@ export default async function (context) {
     return new Response('Method Not Allowed', { status: 405 });
 
   } catch (error) {
-    // This is the global catch block. ANY error inside the function will be caught here.
-    console.error('A top-level error occurred:', error);
+    // CRITICAL FIX: Return a JSON error payload instead of crashing to HTML
+    console.error('Pages Function Top-Level Error:', error.message);
+
     return new Response(JSON.stringify({
-      error: 'An unexpected error occurred in the Pages Function.',
-      details: error.message,
-      cause: error.cause ? error.cause.message : 'No specific cause available.'
+      error: 'Server Error in Pages Function (Fatal Crash)',
+      details: error.message, // This will reveal the SQL error (e.g., "no such column")
+      cause: error.cause ? error.cause.message : 'Unknown cause.'
     }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' } // ENSURE JSON IS SENT
     });
   }
 }
