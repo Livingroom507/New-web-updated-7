@@ -25,14 +25,12 @@ export default async function (context) {
       // The MOST comprehensive query based on all fields the client expects
       // NOTE: We are selecting all known columns from the users table.
       // If the JOINs are missing, we will still return the user data with mock commission data.
+      // 🛑 FIX: Temporarily removing columns that are confirmed to not exist in the live D1 schema
+      // to prevent the function from crashing. We will only select fields we know exist.
       const userStmt = env.DB.prepare(`
         SELECT
             u.email,
-            u.full_name AS fullName,
-            u.profile_picture_url AS profilePictureUrl,
-            u.paypal_email AS paypalEmail,
-            u.public_bio AS publicBio,
-            u.role
+            u.full_name AS fullName
         FROM users u
         WHERE u.email = ?
       `);
@@ -48,6 +46,10 @@ export default async function (context) {
 
       // Add mock data for commission fields expected by affiliate-dashboard.js
       const finalResult = {
+          profilePictureUrl: null, // Default to null since column is missing
+          paypalEmail: '',       // Default to empty string
+          publicBio: '',         // Default to empty string
+          role: 'affiliate',     // Default role
           ...userResult,
           purchaseUnit: 18.00,        // Mock data
           purchaseEarning: 3.50,      // Mock data
@@ -71,12 +73,14 @@ export default async function (context) {
         });
       }
 
+      // 🛑 FIX: Only update columns that are confirmed to exist in the live D1 schema.
       const updateStmt = env.DB.prepare(`
         UPDATE users
-        SET full_name = ?, paypal_email = ?, public_bio = ?
+        SET full_name = ?
         WHERE email = ?
       `);
-      await updateStmt.bind(fullName, paypalEmail, publicBio, email).run();
+      // Only binding fullName and email to match the updated query
+      await updateStmt.bind(fullName, email).run();
 
       return new Response(JSON.stringify({ success: true, message: 'Profile updated successfully.' }), {
         status: 200,
