@@ -28,20 +28,17 @@ export default async function (context) {
         });
       }
 
-      // Production-ready query joining users, subscriptions, and plans
+      // ISOLATION TEST: Simplified query to check if JOINs are the cause of the crash.
       const userStmt = env.DB.prepare(`
         SELECT
+            id,
             u.email,
             u.full_name AS fullName,
             u.profile_picture_url AS profilePictureUrl,
             u.paypal_email AS paypalEmail,
             u.public_bio AS publicBio,
-            p.plan_name AS currentPlanName,
-            p.purchase_unit AS purchaseUnit,
-            p.purchase_earning AS purchaseEarning
+            u.role
         FROM users u
-        LEFT JOIN subscriptions s ON u.id = s.user_id
-        LEFT JOIN plans p ON s.plan_name = p.plan_name
         WHERE u.email = ?
       `);
 
@@ -57,8 +54,15 @@ export default async function (context) {
       }
 
       console.log(`[profile.js] Successfully found user profile for: ${email}`);
-      // The userResult now contains all necessary fields from the database
-      return new Response(JSON.stringify(userResult), {
+      // NOTE: We MUST still provide the plan data, even if it's mock data,
+      // so the frontend doesn't crash trying to access it.
+      const finalResult = {
+          ...userResult,
+          currentPlanName: userResult.role === 'affiliate' ? 'Default Affiliate Plan' : 'Customer Plan',
+          purchaseUnit: 18.00,
+          purchaseEarning: 3.50,
+      };
+      return new Response(JSON.stringify(finalResult), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
