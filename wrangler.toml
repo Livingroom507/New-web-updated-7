@@ -1,21 +1,24 @@
+# Definitive Correct wrangler.toml for Pages Project
+
 name = "new-web-updated-7"
 compatibility_date = "2025-01-01"
 
+# 1. BUILD OUTPUT DIRECTORY (MUST be a simple string)
 pages_build_output_dir = "livingroom507/public"
- 
-# Environment variables for the Pages Functions
+
+# 2. ENVIRONMENT VARIABLES (VAR BINDINGS)
 [vars]
- ADMIN_API_KEY = "TEST-KEY-123"
- DO_WORKER_URL = "https://livingroom507-do-final-worker.roblq123.workers.dev"
- 
-# D1 database binding for Pages Functions
+ADMIN_API_KEY = "TEST-KEY-123"
+DO_WORKER_URL = "https://livingroom507-do-final-worker.roblq123.workers.dev"
+
+# 3. D1 DATABASE BINDINGS (The crucial "DB" binding for profile.js)
 [[d1_databases]]
- binding = "DB"
- database_name = "livingroom507-db"
- database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14"
- 
-# Durable Object binding for Pages Functions
+binding = "DB"  # The name your Pages Function uses: env.DB
+database_name = "livingroom507-db"
+database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14"
+
+# 4. DURABLE OBJECT BINDINGS
 [[durable_objects.bindings]]
- name = "COLLAB_ROOM"
- class_name = "CollaborationRoom"
- script_name = "livingroom507-do-final-worker"
+name = "COLLAB_ROOM"
+class_name = "CollaborationRoom"
+script_name = "livingroom507-do-final-worker"
