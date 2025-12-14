@@ -32,10 +32,9 @@ WHERE u.email = 'aff1@example.com' AND (SELECT COUNT(*) FROM subscriptions) = 0;
 
 
 -- Seed referrals only when referrals table is empty
-INSERT INTO referrals (affiliate_id, referred_user_id, referred_email, plan_name, commission, status, created_at, confirmed_at)
-SELECT a.id, c.id, c.email, 'Basic', 5.00, 'paid',
-       datetime('now','-10 days'), datetime('now','-7 days')
-FROM (SELECT id FROM users WHERE role = 'affiliate' LIMIT 3) a
-CROSS JOIN (SELECT id, email FROM users WHERE role = 'customer' LIMIT 3) c
-WHERE (SELECT COUNT(*) FROM referrals) = 0
-LIMIT 9;
+INSERT INTO referrals (affiliate_id, referred_user_id, plan_name, commission, status)
+SELECT
+    (SELECT id FROM users WHERE email = 'aff1@example.com'),
+    (SELECT id FROM users WHERE email = 'cust1@example.com'),
+    'Basic', 5.00, 'paid'
+WHERE (SELECT COUNT(*) FROM referrals) = 0;
