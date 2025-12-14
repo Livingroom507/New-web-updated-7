@@ -16,6 +16,7 @@ export default async function (context) {
     }
 
     if (request.method === 'GET') {
+      console.log('[profile.js] GET request started.');
       const url = new URL(request.url);
       const email = url.searchParams.get('email') || 'roblq123@gmail.com';
       console.log(`[profile.js] GET request received. Attempting to find profile for email: ${email}`);
@@ -30,6 +31,7 @@ export default async function (context) {
 
       // Production-ready query to safely fetch user and plan data.
       // LEFT JOIN is used to prevent crashes if a user has no subscription.
+      console.log('[profile.js] Preparing D1 statement...');
       const userStmt = env.DB.prepare(`
         SELECT
             u.email,
@@ -46,10 +48,12 @@ export default async function (context) {
         WHERE u.email = ?
       `);
 
-      console.log(`[profile.js] Executing D1 query for email: ${email}`);
+      console.log(`[profile.js] D1 statement prepared. Binding email: ${email}`);
       const userResult = await userStmt.bind(email).first();
+      console.log('[profile.js] D1 query executed.');
 
       if (!userResult || !userResult.email) {
+        console.warn(`[profile.js] User not found for email: ${email}.`);
         console.warn(`[profile.js] D1 query executed, but no user found for email: ${email}`);
         return new Response(JSON.stringify({ error: 'User not found or plan data invalid.' }), {
           status: 404,
@@ -57,7 +61,7 @@ export default async function (context) {
         });
       }
 
-      console.log(`[profile.js] Successfully found user profile for: ${email}`);
+      console.log(`[profile.js] Successfully found user. Preparing final JSON response for: ${email}`);
       // The result from the query now contains all necessary fields.
       return new Response(JSON.stringify(userResult), {
         status: 200,
