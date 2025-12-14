@@ -1,22 +1,21 @@
 name = "new-web-updated-7"
 compatibility_date = "2025-01-01"
 
-[pages_build_output_dir."livingroom507/public"]
-# This section defines bindings and variables for the Pages project built to "livingroom507/public".
-# All bindings (D1, DO, R2, etc.) and variables for Pages Functions must be nested here.
+pages_build_output_dir = "livingroom507/public"
  
- # Environment variables for the Pages Functions
- [pages_build_output_dir."livingroom507/public".vars]
+# Environment variables for the Pages Functions
+[vars]
  ADMIN_API_KEY = "TEST-KEY-123"
  DO_WORKER_URL = "https://livingroom507-do-final-worker.roblq123.workers.dev"
  
- # This section tells your Pages Functions where to find the database called 'DB'
- [[pages_build_output_dir."livingroom507/public".d1_databases]]
+# D1 database binding for Pages Functions
+[[d1_databases]]
  binding = "DB"
  database_name = "livingroom507-db"
  database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14"
  
- [[pages_build_output_dir."livingroom507/public".durable_objects.bindings]]
+# Durable Object binding for Pages Functions
+[[durable_objects.bindings]]
  name = "COLLAB_ROOM"
  class_name = "CollaborationRoom"
  script_name = "livingroom507-do-final-worker"
