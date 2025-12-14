@@ -24,6 +24,13 @@ INSERT INTO users(full_name, email, role)
 SELECT 'Customer Two', 'cust2@example.com', 'customer'
 WHERE (SELECT COUNT(*) FROM users WHERE role = 'customer') = 0;
 
+-- Seed a subscription for the affiliate user to link them to a plan
+INSERT INTO subscriptions (user_id, plan_name)
+SELECT u.id, 'Basic'
+FROM users u
+WHERE u.email = 'aff1@example.com' AND (SELECT COUNT(*) FROM subscriptions) = 0;
+
+
 -- Seed referrals only when referrals table is empty
 INSERT INTO referrals (affiliate_id, referred_user_id, referred_email, plan_name, commission, status, created_at, confirmed_at)
 SELECT a.id, c.id, c.email, 'Basic', 5.00, 'paid',
