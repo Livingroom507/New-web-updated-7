@@ -6,6 +6,44 @@ async function loadOverview() {
   document.getElementById('kpi-earnings').textContent = `$${(data.monthlyEarnings || 0).toFixed(2)}`;
   document.getElementById('kpi-rewards').textContent = `$${(data.compoundedRewards || 0).toFixed(2)}`;
 }
+/**
+ * Fetches all necessary profile data from the server and populates the dashboard.
+ */
+async function loadProfileData() {
+  try {
+    // In a real app, you would get the user's email from an authentication context.
+    const currentUserEmail = 'roblq123@gmail.com'; 
+    const response = await fetch(`/api/affiliate/profile?email=${currentUserEmail}`);
+    const profileData = await response.json();
+
+    // --- Populate Header ---
+    document.querySelector('.user-name').textContent = profileData.fullName || 'Affiliate';
+    document.querySelector('.user-role').textContent = profileData.currentPlanName || 'No Plan';
+    if (profileData.profilePictureUrl) {
+      document.querySelector('.avatar').src = profileData.profilePictureUrl;
+    }
+
+    // --- Populate KPI Cards ---
+    document.getElementById('kpi-plan').textContent = profileData.currentPlanName || '--';
+    // NOTE: The following KPIs need their own API endpoints to be calculated.
+    // This data is not included in the /profile response.
+    document.getElementById('kpi-referrals').textContent = '0'; // Placeholder
+    document.getElementById('kpi-earnings').textContent = '$0.00'; // Placeholder
+    document.getElementById('kpi-rewards').textContent = '$0.00'; // Placeholder
+
+    // --- Populate "My Plan Details" ---
+    const planDetailsEl = document.getElementById('plan-details');
+    if (planDetailsEl) {
+      planDetailsEl.innerHTML = `
+        <p><strong>Plan:</strong> ${profileData.currentPlanName || 'N/A'}</p>
+        <p><strong>Purchase Unit:</strong> $${(profileData.purchaseUnit || 0).toFixed(2)}</p>
+        <p><strong>Earning per Unit:</strong> $${(profileData.purchaseEarning || 0).toFixed(2)}</p>
+      `;
+    }
+  } catch (error) {
+    console.error('Error loading profile data:', error);
+  }
+}
 
 async function loadPlanDetails() {
   // MOCK IMPLEMENTATION
@@ -16,10 +54,21 @@ async function loadPlanDetails() {
     <p><strong>Monthly Cost:</strong> $${data.monthly_cost.toFixed(2)}</p>
     <p><strong>Yearly Capital:</strong> $${data.yearly_capital.toFixed(2)}</p>
   `;
+    if (!response.ok) {
+      // Try to parse the error response from the server, if it's JSON
+      try {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+      } catch (jsonError) {
+        // If the error response isn't JSON, throw a generic error
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+    }
 
   // Also update the header user info
   document.querySelector('.user-role').textContent = data.plan_name;
 }
+    const profileData = await response.json();
 
 async function loadTable(data, tableId, columns) {
   const tbody = document.getElementById(tableId).querySelector('tbody');
@@ -28,6 +77,12 @@ async function loadTable(data, tableId, columns) {
     return `<tr>${columns.map(col => `<td>${item[col]}</td>`).join('')}</tr>`;
   }).join('');
 }
+    // --- Populate Header ---
+    document.querySelector('.user-name').textContent = profileData.fullName || 'Affiliate';
+    document.querySelector('.user-role').textContent = profileData.currentPlanName || 'No Plan';
+    if (profileData.profilePictureUrl) {
+      document.querySelector('.avatar').src = profileData.profilePictureUrl;
+    }
 
 async function loadTrainingHub() {
     // MOCK IMPLEMENTATION
@@ -74,9 +129,16 @@ async function initDashboard() {
     await loadTable(MOCK_API.earnings, 'earnings-table', ['date', 'amount', 'type', 'status']);
     await loadTrainingHub();
     // NOTE: Graph section is not loaded with data yet, only its HTML structure is added.
-  } catch(err) {
-    console.error('Dashboard loading error:', err);
+  } catch (error) {
+    console.error('Dashboard loading error:', error);
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent) {
+      mainContent.innerHTML = `
+        <div class="card"><h2>Error</h2><p>Could not load dashboard data. Please try again later.</p><p><small>Details: ${error.message}</small></p></div>
+      `;
+    }
   }
 }
 
 document.addEventListener('DOMContentLoaded', initDashboard);
+document.addEventListener('DOMContentLoaded', loadProfileData);
