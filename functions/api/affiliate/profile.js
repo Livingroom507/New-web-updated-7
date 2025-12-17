@@ -17,10 +17,24 @@ export default async function (context) {
     const email = url.searchParams.get("email") || "roblq123@gmail.com";
 
     if (request.method === 'GET') {
-      // 2. Simple query to test the connection
-      const user = await env.DB.prepare("SELECT * FROM users WHERE email = ?")
+      // 2. Query to get user and plan details
+      const stmt = env.DB.prepare(`
+        SELECT
+            u.email,
+            u.full_name AS fullName,
+            u.profile_picture_url AS profilePictureUrl,
+            u.paypal_email AS paypalEmail,
+            u.public_bio AS publicBio,
+            p.plan_name AS currentPlanName,
+            p.purchase_unit AS purchaseUnit,
+            p.purchase_earning AS purchaseEarning
+        FROM users u
+        LEFT JOIN subscriptions s ON u.id = s.user_id
+        LEFT JOIN plans p ON s.plan_name = p.plan_name
+        WHERE u.email = ?`)
         .bind(email)
         .first();
+      const user = await stmt.first();
 
       if (!user) {
         return new Response(JSON.stringify({ error: "User not found in database" }), { status: 404 });
