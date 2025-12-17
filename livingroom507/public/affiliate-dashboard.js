@@ -1,3 +1,5 @@
+// This tells the script whether to use real database data or fake "mock" data
+const MOCK_API = false;
 document.addEventListener('DOMContentLoaded', () => {
     // In a real app, user email would come from an authentication context
     const currentUserEmail = 'roblq123@gmail.com';
