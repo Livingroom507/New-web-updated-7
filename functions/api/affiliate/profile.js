@@ -31,10 +31,8 @@ export default async function (context) {
         FROM users u
         LEFT JOIN subscriptions s ON u.id = s.user_id
         LEFT JOIN plans p ON s.plan_name = p.plan_name
-        WHERE u.email = ?`)
-        .bind(email)
-        .first();
-      const user = await stmt.first();
+        WHERE u.email = ?`);
+      const user = await stmt.bind(email).first();
 
       if (!user) {
         return new Response(JSON.stringify({ error: "User not found in database" }), { status: 404 });
