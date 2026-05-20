@@ -170,6 +170,17 @@ const MOCK_API = {
   // You can add more mock data for other endpoints here
   // e.g., affiliate/overview, affiliate/plan, etc.
 
+  affiliateProfile: {
+    fullName: "Roblq Affiliate",
+    email: "roblq123@gmail.com",
+    paypalEmail: "roblq123@gmail.com",
+    publicBio: "Affiliate advocate focused on community growth and customer referrals.",
+    profilePictureUrl: "",
+    purchaseUnit: 89.95,
+    purchaseEarning: 14.61,
+    currentPlanName: "PREMIUM",
+  },
+
   // Mock data for /api/affiliate/overview
   overview: {
     totalReferrals: 27,

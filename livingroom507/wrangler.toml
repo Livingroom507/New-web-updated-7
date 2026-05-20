@@ -1,6 +1,6 @@
 name = "new-web-updated-7"
 compatibility_date = "2025-01-01"
-pages_build_output_dir = "livingroom507/public"
+pages_build_output_dir = "public"
 
 [vars]
 ADMIN_API_KEY = "TEST-KEY-123"
@@ -10,6 +10,8 @@ DO_WORKER_URL = "https://livingroom507-do-final-worker.roblq123.workers.dev"
 binding = "DB"
 database_name = "livingroom507-db"
 database_id = "67c24ec3-b2ff-4831-bd97-f5249339ee14"
+preview_database_id = "DB"
+migrations_dir = "./migrations"
 
 [[durable_objects.bindings]]
 name = "COLLAB_ROOM"

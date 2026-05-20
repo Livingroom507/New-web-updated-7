@@ -146,6 +146,8 @@
     </div>
   </div>
 
+  <script src="app-config.js"></script>
+  <script src="app-runtime.js"></script>
   <script>
     const quizForm = document.getElementById('quiz-form');
     const resultsDiv = document.getElementById('results');
@@ -172,20 +174,13 @@
       const user_email = formData.get('email');
       const module_number = 3;
 
-      const response = await fetch('/api/submit-quiz', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
+      try {
+        const submission = await window.LIVINGROOM507_RUNTIME.submitQuizResult({
           user_email,
           module_number,
           score,
           total_questions: totalQuestions
-        })
-      });
-
-      if (response.ok) {
+        });
         const percentage = (score / totalQuestions) * 100;
         let knowledge_level;
         if (percentage >= 90) {
@@ -199,10 +194,11 @@
         resultsDiv.innerHTML = `<h3>Quiz Complete!</h3>
           <p>Your Score: ${score} out of ${totalQuestions} (${percentage.toFixed(2)}%)</p>
           <p>Knowledge Level: <strong>${knowledge_level}</strong></p>
-          <p>Your results have been saved.</p>`;
+          <p>${submission.mode === 'practice' ? 'Your results were saved in practice mode on this device.' : 'Your results have been saved.'}</p>`;
         resultsDiv.classList.remove('hidden');
         quizForm.classList.add('hidden');
-      } else {
+      } catch (error) {
+        console.error('Quiz submission failed:', error);
         resultsDiv.innerHTML = `<p>There was an error submitting your results. Please try again.</p>`;
         resultsDiv.classList.remove('hidden');
       }

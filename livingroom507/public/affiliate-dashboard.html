@@ -18,7 +18,7 @@
                         <span class="user-name" id="nav-user-name">Loading...</span>
                         <span class="user-role">Affiliate</span>
                     </div>
-                    <img src="/default-avatar.png" alt="User Avatar" class="avatar" id="nav-avatar">
+                    <img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20120%20120%22%3E%3Crect%20width%3D%22120%22%20height%3D%22120%22%20rx%3D%2260%22%20fill%3D%22%23d9e2ec%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2244%22%20r%3D%2224%22%20fill%3D%22%239fb3c8%22/%3E%3Cpath%20d%3D%22M24%20104c8-20%2026-30%2036-30s28%2010%2036%2030%22%20fill%3D%22%239fb3c8%22/%3E%3C/svg%3E" alt="User Avatar" class="avatar" id="nav-avatar">
                 </div>
                 <div class="dropdown-menu hidden" id="dropdown-menu">
                     <a href="#" class="dropdown-item">Profile</a>
@@ -60,7 +60,7 @@
                     <form id="profile-update-form">
                         <!-- Avatar Upload -->
                         <div class="avatar-upload-container">
-                            <img id="advocate-avatar" class="avatar-preview" src="/default-avatar.png" alt="Advocate Avatar">
+                            <img id="advocate-avatar" class="avatar-preview" src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20120%20120%22%3E%3Crect%20width%3D%22120%22%20height%3D%22120%22%20rx%3D%2260%22%20fill%3D%22%23d9e2ec%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2244%22%20r%3D%2224%22%20fill%3D%22%239fb3c8%22/%3E%3Cpath%20d%3D%22M24%20104c8-20%2026-30%2036-30s28%2010%2036%2030%22%20fill%3D%22%239fb3c8%22/%3E%3C/svg%3E" alt="Advocate Avatar">
                             <div>
                                 <label for="avatar-upload">Update Profile Picture</label>
                                 <input type="file" id="avatar-upload" name="avatarUpload" accept="image/*">
@@ -102,6 +102,9 @@
             </main>
         </div>
     </div>
+    <script src="app-config.js"></script>
+    <script src="app-runtime.js"></script>
+    <script src="mock-api.js"></script>
     <script src="affiliate-dashboard.js"></script>
 </body>
 </html>
