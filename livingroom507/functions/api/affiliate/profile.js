@@ -1,4 +1,4 @@
-import { loadAffiliateProfile, ensureAffiliateUser, findUserByEmail } from '../../_lib/affiliate.js';
+import { loadAffiliateProfile, ensureAffiliateUser, findUserByEmail, updateAffiliateProfile } from '../../_lib/affiliate.js';
 import { hashPassword } from '../../_lib/crypto.js';
 import { error, json, requireDb } from '../../_lib/http.js';
 
@@ -55,42 +55,20 @@ export async function onRequestPost({ request, env }) {
       return error('New password must be at least 8 characters long.');
     }
 
-    const existingUser = await findUserByEmail(env, email);
+    let existingUser = await findUserByEmail(env, email);
     if (!existingUser) {
-      await ensureAffiliateUser(env, { email, fullName });
+      existingUser = await ensureAffiliateUser(env, { email, fullName });
     }
 
-    const resolvedName = fullName || existingUser?.name || email.split('@')[0];
-    const resolvedPaypalEmail = paypalEmail || email;
+    const password = newPassword ? await hashPassword(newPassword) : null;
+    const updatedProfile = await updateAffiliateProfile(env, {
+      email,
+      fullName: fullName || existingUser?.fullName,
+      paypalEmail,
+      publicBio,
+      password,
+    });
 
-    if (newPassword) {
-      const password = await hashPassword(newPassword);
-      await env.DB.prepare(
-        `UPDATE users
-         SET name = ?, paypal_email = ?, public_bio = ?, password_hash = ?, password_salt = ?, updated_at = CURRENT_TIMESTAMP
-         WHERE email = ?`
-      ).bind(
-        resolvedName,
-        resolvedPaypalEmail,
-        publicBio,
-        password.hash,
-        password.salt,
-        email
-      ).run();
-    } else {
-      await env.DB.prepare(
-        `UPDATE users
-         SET name = ?, paypal_email = ?, public_bio = ?, updated_at = CURRENT_TIMESTAMP
-         WHERE email = ?`
-      ).bind(
-        resolvedName,
-        resolvedPaypalEmail,
-        publicBio,
-        email
-      ).run();
-    }
-
-    const updatedProfile = await loadAffiliateProfile(env, email);
     return json(updatedProfile);
   } catch (caughtError) {
     return error('Failed to update affiliate profile.', 500, caughtError.message);
