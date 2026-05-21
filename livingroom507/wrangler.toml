@@ -2,7 +2,6 @@ name = "new-web-updated-7"
 compatibility_date = "2025-01-01"
 
 [vars]
-ADMIN_API_KEY = "TEST-KEY-123"
 DO_WORKER_URL = "https://livingroom507-do-final-worker.roblq123.workers.dev"
 
 [[d1_databases]]
